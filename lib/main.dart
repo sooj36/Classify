@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'firebase_options.dart';
-
+import 'top_level_setting.dart';
+import 'package:weathercloset/screens/initial_loading_screen.dart';
 
 void main() async {
-  // Flutter 바인딩 초기화
-  WidgetsFlutterBinding.ensureInitialized();
-  // Firebase 초기화
+  WidgetsFlutterBinding.ensureInitialized(); //flutter engine과 app 연결
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -18,17 +18,25 @@ void main() async {
   runApp(const MainApp());
 }
 
+
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp(
+      theme: AppTheme.lightTheme,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ko'),
+        Locale('en'),
+      ],
+      home: const InitialLoadingScreen(),
     );
   }
 }
