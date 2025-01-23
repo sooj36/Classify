@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1065933419614",
+    "project_id": "weathercloset-b7a14",
+    "storage_bucket": "weathercloset-b7a14.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1065933419614:android:7a86706623eedb37d130cf",
+        "android_client_info": {
+          "package_name": "com.example.weathercloset"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAx93q3l1UoFpf4Jsn0QwPIBlhNBwJNJ8U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
