@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:weathercloset/screens/signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -43,7 +44,15 @@ class _LoginScreenState extends State<LoginScreen> {
           const Text("WeatherCloset", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
           const SizedBox(height: 20,),
           longinForm(),
-          loginButton(),
+          const SizedBox(height: 10,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              loginButton(),
+              const SizedBox(width: 20,),
+              signUpButton(),
+            ],
+          ),
           const SizedBox(height: 20),
         ],
       ),
@@ -91,6 +100,30 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
   }
+
+    ElevatedButton signUpButton() {
+    return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF68CAEA),
+            padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 12),
+          ),
+          onPressed: () {
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SignupScreen()),
+            );
+          },
+          child: const Text(
+            "회원가입",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 17,
+            ),
+          ),
+        );
+  }
+
 
   void initializeSharedPreferences() async {
     sharedPreferences = await SharedPreferences.getInstance();
