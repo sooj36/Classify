@@ -22,6 +22,9 @@ class PlatformWidget extends StatelessWidget {
 
 //최상위 앱 테마를 설정
 class AppTheme {
+  static const Color primaryColor = Colors.blue;
+  static const Color secondaryColor = Colors.white;
+  
   static final ThemeData lightTheme = ThemeData(
     primarySwatch: Colors.blue,
     brightness: Brightness.light,

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:weathercloset/global/global.dart';
 import 'package:flutter/material.dart';
 import 'package:weathercloset/test.dart';
+import 'package:weathercloset/top_level_setting.dart';
 
 class InitialLoadingScreen extends StatefulWidget {
   const InitialLoadingScreen({super.key});
@@ -26,8 +27,8 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color.fromARGB(255, 207, 70, 241),
-              Color.fromARGB(255, 72, 70, 228),
+              AppTheme.primaryColor,
+              AppTheme.secondaryColor,
             ],
             begin: FractionalOffset(0.0, 0.0),
             end: FractionalOffset(1.0, 0.0),
@@ -36,25 +37,14 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
           ),
         ),
         child: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Image.asset("assets/images/welcome.png"),
-              SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: EdgeInsets.all(8.0),
-              ),
-            ],
-          ),
+          child: Text("weatherCloset"),
         ),
       ),
     );
   }
 
   startTimer() {
-    Timer(const Duration(seconds: 3), () async {
+    Timer(const Duration(seconds: 2), () async {
       if (firebaseAuth.currentUser != null) {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (c) => const TestWidget(text: 'weatherCloset')));
       } else {
