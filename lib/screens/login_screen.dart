@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weathercloset/screens/signup_screen.dart';
+import 'package:weathercloset/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -169,6 +170,11 @@ class _LoginScreenState extends State<LoginScreen> {
       )
       .then((auth) { 
         currentUser = auth.user!;
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          (route) => false,  // 모든 이전 라우트 제거
+        );
       })
       .catchError((error) {
       Navigator.pop(context);
@@ -185,30 +191,30 @@ class _LoginScreenState extends State<LoginScreen> {
     // }
   }
 
-  Future readDataAndSetDataLocally(User currentUser) async {
-    await FirebaseFirestore.instance.collection("users").doc(currentUser.uid).get().then((snapshot) async {
-      if (snapshot.exists) {
-        await sharedPreferences!.setString("uid", currentUser.uid);
-        await sharedPreferences!.setString("email", snapshot.data()!["userEmail"]);
-        await sharedPreferences!.setString("name", snapshot.data()!["userName"]);
-        await sharedPreferences!.setString("photoUrl", snapshot.data()!["userAvatarUrl"]);
+  // Future readDataAndSetDataLocally(User currentUser) async {
+  //   await FirebaseFirestore.instance.collection("users").doc(currentUser.uid).get().then((snapshot) async {
+  //     if (snapshot.exists) {
+  //       await sharedPreferences!.setString("uid", currentUser.uid);
+  //       await sharedPreferences!.setString("email", snapshot.data()!["userEmail"]);
+  //       await sharedPreferences!.setString("name", snapshot.data()!["userName"]);
+  //       await sharedPreferences!.setString("photoUrl", snapshot.data()!["userAvatarUrl"]);
 
-        Navigator.pop(context);
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TestWidget(text: "Test")));
-      } else {
-        firebaseAuth.signOut();
-        Navigator.pop(context);
-        Navigator.push(context, MaterialPageRoute(builder: (c) => const TestWidget(text: "test")));
+  //       Navigator.pop(context);
+  //       Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TestWidget(text: "Test")));
+  //     } else {
+  //       firebaseAuth.signOut();
+  //       Navigator.pop(context);
+  //       Navigator.push(context, MaterialPageRoute(builder: (c) => const TestWidget(text: "test")));
 
-        showDialog(
-            context: context,
-            builder: (c) {
-              return const ErrorDialog(
-                message: "계정을 찾을 수 없습니다.",
-              );
-            });
-      }
-    });
-  }
+  //       showDialog(
+  //           context: context,
+  //           builder: (c) {
+  //             return const ErrorDialog(
+  //               message: "계정을 찾을 수 없습니다.",
+  //             );
+  //           });
+  //     }
+  //   });
+  // }
 
 }

@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'firebase_options.dart';
 import 'top_level_setting.dart';
 import 'package:weathercloset/screens/initial_loading_screen.dart';
+// import 'package:weathercloset/screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //flutter engine과 app 연결
@@ -37,6 +38,7 @@ class MainApp extends StatelessWidget {
         Locale('en'),
       ],
       home: const InitialLoadingScreen(),
+      // home: const HomeScreen(),
     );
   }
 }

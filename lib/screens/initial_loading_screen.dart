@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:weathercloset/global/global.dart';
 import 'package:flutter/material.dart';
+import 'package:weathercloset/screens/home_screen.dart';
 import 'package:weathercloset/screens/login_screen.dart';
 import 'package:weathercloset/test.dart';
 import 'package:weathercloset/top_level_setting.dart';
@@ -47,7 +48,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
   startTimer() {
     Timer(const Duration(seconds: 1), () async {
       if (firebaseAuth.currentUser != null) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (c) => const TestWidget(text: 'weatherCloset')));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (c) => const HomeScreen()));
       } else {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (c) => const LoginScreen()));
       }

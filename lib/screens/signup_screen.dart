@@ -1,12 +1,13 @@
-import 'dart:io';
+// import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:weathercloset/global/global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart' as fstorage;
+// import 'package:firebase_storage/firebase_storage.dart' as fstorage;
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:weathercloset/screens/home_screen.dart';
 import 'package:weathercloset/test.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../widgets/error_dialog.dart';
@@ -27,10 +28,10 @@ class _SignupScreenState extends State<SignupScreen> {
   TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
-  XFile? imageXFile;
-  final ImagePicker _picker = ImagePicker();
+  // XFile? imageXFile;
+  // final ImagePicker _picker = ImagePicker();
 
-  String userImageUrl = "";
+  // String userImageUrl = "";
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +40,7 @@ class _SignupScreenState extends State<SignupScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            const SizedBox(height: 10),
-            addProfilePhoto(context),
+            // addProfilePhoto(context),
             const SizedBox(height: 10),
             signUpForm(),
             const SizedBox(height: 10),
@@ -114,43 +114,43 @@ class _SignupScreenState extends State<SignupScreen> {
         );
   }
 
-  InkWell addProfilePhoto(BuildContext context) {
-    return InkWell(
-          onTap: () {
-            _getImage();
-          },
-          child: CircleAvatar(
-            radius: MediaQuery.of(context).size.width * 0.20,
-            backgroundColor: Colors.white,
-            backgroundImage: imageXFile == null ? null : FileImage(File(imageXFile!.path)),
-            child: imageXFile == null
-                ? Icon(
-                    Icons.add_photo_alternate,
-                    size: MediaQuery.of(context).size.width * 0.20,
-                    color: Colors.grey,
-                  )
-                : null,
-          ),
-        );
-  }
+  // InkWell addProfilePhoto(BuildContext context) {
+  //   return InkWell(
+  //         onTap: () {
+  //           _getImage();
+  //         },
+  //         child: CircleAvatar(
+  //           radius: MediaQuery.of(context).size.width * 0.20,
+  //           backgroundColor: Colors.white,
+  //           backgroundImage: imageXFile == null ? null : FileImage(File(imageXFile!.path)),
+  //           child: imageXFile == null
+  //               ? Icon(
+  //                   Icons.add_photo_alternate,
+  //                   size: MediaQuery.of(context).size.width * 0.20,
+  //                   color: Colors.grey,
+  //                 )
+  //               : null,
+  //         ),
+  //       );
+  // }
 
-  Future<void> _getImage() async {
-    imageXFile = await _picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      imageXFile;
-    });
-  }
+  // Future<void> _getImage() async {
+  //   imageXFile = await _picker.pickImage(source: ImageSource.gallery);
+  //   setState(() {
+  //     imageXFile;
+  //   });
+  // }
 
   Future<void> formValidation() async {
-    if (imageXFile == null) {
-      return showDialog(
-          context: context,
-          builder: (c) {
-            return const ErrorDialog(
-              message: "이미지를 선택해주세요.",
-            );
-          });
-    }
+    // if (imageXFile == null) {
+    //   return showDialog(
+    //       context: context,
+    //       builder: (c) {
+    //         return const ErrorDialog(
+    //           message: "이미지를 선택해주세요.",
+    //         );
+    //       });
+    // }
     if (passwordController.text == confirmPasswordController.text) {
         if (confirmPasswordController.text.isNotEmpty &&
             emailController.text.isNotEmpty && 
@@ -164,15 +164,14 @@ class _SignupScreenState extends State<SignupScreen> {
                 );
               });
           debugPrint("계정생성 시작");
-
           authenticateUserAndSignUp();
-          String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-          fstorage.Reference reference = fstorage.FirebaseStorage.instance.ref().child("users").child(fileName);
-          fstorage.UploadTask uploadTask = reference.putFile(File(imageXFile!.path));
-          fstorage.TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
-          await taskSnapshot.ref.getDownloadURL().then((url) {
-            userImageUrl = url;
-          });
+          // String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+          // fstorage.Reference reference = fstorage.FirebaseStorage.instance.ref().child("users").child(fileName);
+          // fstorage.UploadTask uploadTask = reference.putFile(File(imageXFile!.path));
+          // fstorage.TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
+          // await taskSnapshot.ref.getDownloadURL().then((url) {
+          //   userImageUrl = url;
+          // });
         } else {
           showDialog(
               context: context,
@@ -219,7 +218,7 @@ class _SignupScreenState extends State<SignupScreen> {
         //formValidation에서 생성한 dialog 제거
         Navigator.pop(context);
         //signup이 완료되었으니 메인 화면으로 갈 준비
-        Route newRoute = MaterialPageRoute(builder: (c) => const TestWidget(text: "main",));
+        Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
         //스택 상 최상위 페이지를 signupscreen -> newRoute로 교체
         Navigator.pushReplacement(context, newRoute);
       });
@@ -231,7 +230,7 @@ class _SignupScreenState extends State<SignupScreen> {
       "userUID": currentUser.uid,
       "userEmail": currentUser.email,
       "userName": nameController.text.trim(),
-      "userAvatarUrl": userImageUrl,
+      // "userAvatarUrl": userImageUrl,
       "phone": phoneController.text.trim(),
       "status": "approved",
     });
@@ -240,7 +239,7 @@ class _SignupScreenState extends State<SignupScreen> {
     await sharedPreferences!.setString("uid", currentUser.uid);
     await sharedPreferences!.setString("email", currentUser.email.toString());
     await sharedPreferences!.setString("name", nameController.text.trim());
-    await sharedPreferences!.setString("photoUrl", userImageUrl);
+    // await sharedPreferences!.setString("photoUrl", userImageUrl);
     await sharedPreferences!.setString("phone", phoneController.text.trim());
   }
 
