@@ -3,7 +3,6 @@ import 'package:weathercloset/global/global.dart';
 import 'package:flutter/material.dart';
 import 'package:weathercloset/screens/home_screen.dart';
 import 'package:weathercloset/screens/login_screen.dart';
-import 'package:weathercloset/test.dart';
 import 'package:weathercloset/top_level_setting.dart';
 
 class InitialLoadingScreen extends StatefulWidget {
@@ -47,6 +46,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
 
   startTimer() {
     Timer(const Duration(seconds: 1), () async {
+      //한 번 로그인 해놓으면 firebaseAuth에서 알아서 자동 로그인 시켜줌
       if (firebaseAuth.currentUser != null) {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (c) => const HomeScreen()));
       } else {

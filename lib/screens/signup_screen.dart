@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 // import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weathercloset/screens/home_screen.dart';
-import 'package:weathercloset/test.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../widgets/error_dialog.dart';
 import '../../widgets/loading_dialog.dart';
@@ -194,6 +193,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void authenticateUserAndSignUp() async {
     User? currentUser;
+    debugPrint("🔄 인증 시작");
 
     await firebaseAuth
         .createUserWithEmailAndPassword(
@@ -202,8 +202,10 @@ class _SignupScreenState extends State<SignupScreen> {
     )
         .then((auth) {
       currentUser = auth.user;
+      debugPrint("✅ 유저 생성 성공: ${currentUser?.uid}");
     }).catchError((error) {
       Navigator.pop(context);
+      debugPrint("❌ 인증 에러: $error");
       showDialog(
           context: context,
           builder: (c) {
@@ -212,35 +214,56 @@ class _SignupScreenState extends State<SignupScreen> {
             );
           });
     });
+
     if (currentUser != null) {
-      debugPrint("성공적으로 새 유저 생성 완료");
-      saveDataToFireStore(currentUser!).then((value) {
-        //formValidation에서 생성한 dialog 제거
-        Navigator.pop(context);
-        //signup이 완료되었으니 메인 화면으로 갈 준비
+      try {
+        await saveDataToFireStore(currentUser!);
+        debugPrint("➡️ Firestore 저장 완료 후 페이지 처리");
+        
+        // 페이지 전환을 먼저 준비
         Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
-        //스택 상 최상위 페이지를 signupscreen -> newRoute로 교체
-        Navigator.pushReplacement(context, newRoute);
-      });
+        
+        // LoadingDialog를 닫고 바로 새 페이지로 이동
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          (route) => false,  // 모든 이전 라우트 제거
+        );
+        
+      } catch (error) {
+        debugPrint("❌ Firestore 저장 에러: $error");
+        Navigator.pop(context);  // 에러 발생시에만 LoadingDialog 닫기
+      }
     }
   }
 
-  Future saveDataToFireStore(User currentUser) async {
-    FirebaseFirestore.instance.collection("users").doc(currentUser.uid).set({
-      "userUID": currentUser.uid,
-      "userEmail": currentUser.email,
-      "userName": nameController.text.trim(),
-      // "userAvatarUrl": userImageUrl,
-      "phone": phoneController.text.trim(),
-      "status": "approved",
-    });
+  Future<void> saveDataToFireStore(User currentUser) async {
+    try {
+      await FirebaseFirestore.instance.collection("users").doc(currentUser.uid).set({
+        "userUID": currentUser.uid,
+        "userEmail": currentUser.email,
+        "userName": nameController.text.trim(),
+        "phone": phoneController.text.trim(),
+        "status": "approved",
+        // "userAvatarUrl": userImageUrl,
+      });
+      debugPrint("✅ Firestore 데이터 저장 성공!");
+      debugPrint("저장된 데이터: {");
+      debugPrint("  userUID: ${currentUser.uid}");
+      debugPrint("  userEmail: ${currentUser.email}");
+      debugPrint("  userName: ${nameController.text.trim()}");
+      debugPrint("  phone: ${phoneController.text.trim()}");
+      debugPrint("}");
+    } catch (e) {
+      debugPrint("❌ Firestore 저장 실패: $e");
+      throw e;
+    }
 
     sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences!.setString("uid", currentUser.uid);
     await sharedPreferences!.setString("email", currentUser.email.toString());
     await sharedPreferences!.setString("name", nameController.text.trim());
-    // await sharedPreferences!.setString("photoUrl", userImageUrl);
     await sharedPreferences!.setString("phone", phoneController.text.trim());
+    // await sharedPreferences!.setString("photoUrl", userImageUrl);
   }
-
 }

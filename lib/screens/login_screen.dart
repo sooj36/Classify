@@ -1,10 +1,8 @@
 import 'package:weathercloset/global/global.dart';
-import 'package:weathercloset/test.dart';
 import 'package:weathercloset/widgets/custom_text_field.dart';
 import 'package:weathercloset/widgets/error_dialog.dart';
 import 'package:weathercloset/widgets/loading_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weathercloset/screens/signup_screen.dart';
@@ -170,10 +168,10 @@ class _LoginScreenState extends State<LoginScreen> {
       )
       .then((auth) { 
         currentUser = auth.user!;
-        Navigator.pushAndRemoveUntil(
+        Navigator.pushAndRemoveUntil( //새로운 화면으로 이동하면서 모든 이전 루트 제거
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
-          (route) => false,  // 모든 이전 라우트 제거
+          (route) => false,  // 실질적으로 모든 이전 루트 제거는 여기서 이뤄짐
         );
       })
       .catchError((error) {

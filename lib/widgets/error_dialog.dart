@@ -12,13 +12,13 @@ class ErrorDialog extends StatelessWidget {
       actions: [
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
+            backgroundColor: Colors.orange,
           ),
           onPressed: () {
             Navigator.pop(context);
           },
           child: const Center(
-            child: Text("Tamam"),
+            child: Text("확인", style: TextStyle(color: Colors.white),),
           ),
         ),
       ],
