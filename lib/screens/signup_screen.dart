@@ -220,9 +220,6 @@ class _SignupScreenState extends State<SignupScreen> {
         await saveDataToFireStore(currentUser!);
         debugPrint("➡️ Firestore 저장 완료 후 페이지 처리");
         
-        // 페이지 전환을 먼저 준비
-        Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
-        
         // LoadingDialog를 닫고 바로 새 페이지로 이동
         Navigator.pushAndRemoveUntil(
           context,
@@ -232,14 +229,16 @@ class _SignupScreenState extends State<SignupScreen> {
         
       } catch (error) {
         debugPrint("❌ Firestore 저장 에러: $error");
-        Navigator.pop(context);  // 에러 발생시에만 LoadingDialog 닫기
+        Navigator.pop(context);  // 에러 발생 시 LoadingDialog 닫기
       }
     }
   }
 
   Future<void> saveDataToFireStore(User currentUser) async {
     try {
-      await FirebaseFirestore.instance.collection("users").doc(currentUser.uid).set({
+      await FirebaseFirestore.instance.collection("users") //데이터를 쓸 폴더 지정
+                                      .doc(currentUser.uid) //문서 제목
+                                      .set({ //문서 내용
         "userUID": currentUser.uid,
         "userEmail": currentUser.email,
         "userName": nameController.text.trim(),
