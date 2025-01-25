@@ -44,14 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
           const SizedBox(height: 20,),
           longinForm(),
           const SizedBox(height: 10,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              loginButton(),
-              const SizedBox(width: 20,),
-              signUpButton(),
-            ],
-          ),
+          buildButtons(),
           const SizedBox(height: 20),
         ],
       ),
@@ -80,49 +73,57 @@ class _LoginScreenState extends State<LoginScreen> {
         );
   }
 
-  ElevatedButton loginButton() {
-    return ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF68CAEA),
-            padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 12),
-          ),
-          onPressed: () {
-            formValidation();
-          },
-          child: const Text(
-            "로그인",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 17,
+  Widget buildButtons() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          Expanded(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF68CAEA),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+              onPressed: () {
+                formValidation();
+              },
+              child: const Text(
+                "로그인",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                ),
+              ),
             ),
           ),
-        );
-  }
-
-    ElevatedButton signUpButton() {
-    return ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF68CAEA),
-            padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 12),
-          ),
-          onPressed: () {
-              Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SignupScreen()),
-            );
-          },
-          child: const Text(
-            "회원가입",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 17,
+          const SizedBox(width: 10),  // 버튼 사이 간격
+          Expanded(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF68CAEA),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SignupScreen()),
+                );
+              },
+              child: const Text(
+                "회원가입",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                ),
+              ),
             ),
           ),
-        );
+        ],
+      ),
+    );
   }
-
 
   void initializeSharedPreferences() async {
     sharedPreferences = await SharedPreferences.getInstance();
