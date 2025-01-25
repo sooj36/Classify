@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weathercloset/screens/signup_screen.dart';
-import 'package:weathercloset/screens/home_screen.dart';
+import 'package:weathercloset/screens/root_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -171,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
         currentUser = auth.user!;
         Navigator.pushAndRemoveUntil( //새로운 화면으로 이동하면서 모든 이전 루트 제거
           context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          MaterialPageRoute(builder: (context) => const RootScreen()),
           (route) => false,  // 실질적으로 모든 이전 루트 제거는 여기서 이뤄짐
         );
       })

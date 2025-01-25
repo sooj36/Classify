@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:weathercloset/screens/home_screen.dart';
+import 'package:weathercloset/screens/root_screen.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../widgets/error_dialog.dart';
 import '../../widgets/loading_dialog.dart';
@@ -224,7 +224,7 @@ class _SignupScreenState extends State<SignupScreen> {
         // LoadingDialog를 닫고 바로 새 페이지로 이동
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          MaterialPageRoute(builder: (context) => const RootScreen()),
           (route) => false,  // 모든 이전 라우트 제거
         );
         
