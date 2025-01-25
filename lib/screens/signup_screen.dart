@@ -40,7 +40,8 @@ class _SignupScreenState extends State<SignupScreen> {
           mainAxisSize: MainAxisSize.max,
           children: [
             // addProfilePhoto(context),
-            const SizedBox(height: 10),
+            const SizedBox(height: 55),
+            const Text("WeatherCloset", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
             signUpForm(),
             const SizedBox(height: 10),
             signUpButton(),
