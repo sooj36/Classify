@@ -1,79 +1,197 @@
 import 'package:weathercloset/global/global.dart';
 import 'package:weathercloset/widgets/custom_text_field.dart';
-import 'package:weathercloset/widgets/error_dialog.dart';
-import 'package:weathercloset/widgets/loading_dialog.dart';
+// import 'package:weathercloset/widgets/error_dialog.dart';
+// import 'package:weathercloset/widgets/loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weathercloset/screens/signup_screen.dart';
 import 'package:weathercloset/screens/root_screen.dart';
+import 'package:provider/provider.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginUserModel {
+  final String email;
+  final bool rememberMe;
 
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  LoginUserModel({
+    required this.email,
+    this.rememberMe = false,
+  });
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  late bool rememberMe;
+class LoginRepository {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final SharedPreferences _prefs;
 
-  @override
-  void initState() {
-    super.initState();
-    initializeSharedPreferences();
-    rememberMe = false;
+  LoginRepository(this._prefs);
 
-    if (sharedPreferences != null && sharedPreferences!.containsKey("savedEmail")) {
-      emailController.text = sharedPreferences!.getString("savedEmail") ?? "";
-      rememberMe = true;
+  Future<UserCredential> login(String email, String password) async {
+    debugPrint("✅ 로그인 시도: $email");
+    return await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+  }
+
+  Future<void> saveEmail(String email, bool remember) async {
+    if (remember) {
+      await _prefs.setString("savedEmail", email);
+      debugPrint("✅ 이메일 저장됨: $email");
+    } else {
+      await _prefs.remove("savedEmail");
+      debugPrint("✅ 저장된 이메일 삭제됨");
     }
   }
 
+  String? getSavedEmail() {
+    return _prefs.getString("savedEmail");
+  }
+}
+
+class LoginViewModel extends ChangeNotifier {
+  final LoginRepository _repository;
+  
+  bool _isLoading = false;
+  String? _error;
+  bool _rememberMe = false;
+  String? _savedEmail;
+  
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+  bool get rememberMe => _rememberMe;
+  String? get savedEmail => _savedEmail;
+
+  LoginViewModel(this._repository) {
+    _initializeEmail();
+  }
+
+  void _initializeEmail() {
+    _savedEmail = _repository.getSavedEmail();
+    if (_savedEmail != null) {
+      _rememberMe = true;
+      notifyListeners();
+    }
+  }
+
+  void setRememberMe(bool value) {
+    _rememberMe = value;
+    notifyListeners();
+  }
+
+  Future<bool> login(String email, String password) async {
+    if (!_validateInputs(email, password)) {
+      debugPrint("❌ 입력값 검증 실패");
+      return false;
+    }
+
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _repository.login(email, password);
+      await _repository.saveEmail(email, _rememberMe);
+      _isLoading = false;
+      notifyListeners();
+      debugPrint("✅ 로그인 성공");
+      return true;
+    } catch (e) {
+      _error = "로그인 실패: 이메일과 비밀번호를 확인해주세요";
+      _isLoading = false;
+      notifyListeners();
+      debugPrint("❌ 로그인 실패: $e");
+      return false;
+    }
+  }
+
+  bool _validateInputs(String email, String password) {
+    if (email.isEmpty || password.isEmpty) {
+      _error = "이메일과 비밀번호를 입력해주세요.";
+      notifyListeners();
+      return false;
+    }
+    return true;
+  }
+}
+
+class LoginScreen extends StatelessWidget {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  LoginScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+    return FutureBuilder<SharedPreferences>(
+      future: SharedPreferences.getInstance(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        return ChangeNotifierProvider(
+          create: (_) => LoginViewModel(
+            LoginRepository(snapshot.data!),
+          ),
+          child: Consumer<LoginViewModel>(
+            builder: (context, viewModel, _) {
+              return Scaffold(
+                body: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "WeatherCloset",
+                      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 20),
+                    loginForm(viewModel),
+                    const SizedBox(height: 10),
+                    if (viewModel.error != null)
+                      Text(viewModel.error!, style: const TextStyle(color: Colors.red)),
+                    buildButtons(context, viewModel),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+    Form loginForm(LoginViewModel viewModel) {
+    // 컨트롤러 초기값 설정
+    if (viewModel.savedEmail != null) {
+      emailController.text = viewModel.savedEmail!;
+    }
+
+    return Form(
+      child: Column(
         children: [
-          const Text("WeatherCloset", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
-          const SizedBox(height: 20,),
-          longinForm(),
-          const SizedBox(height: 10,),
-          buildButtons(),
-          const SizedBox(height: 20),
+          CustomTextField(
+            data: Icons.email,
+            controller: emailController,
+            hintText: "Email",  // 힌트는 기본값으로
+            isObsecre: false,
+          ),
+          CustomTextField(
+            data: Icons.lock,
+            controller: passwordController,
+            hintText: "비밀번호",
+            isObsecre: true, 
+          ),
+          CheckboxListTile(
+            title: const Text("이메일 저장"),
+            value: viewModel.rememberMe,
+            onChanged: (value) => viewModel.setRememberMe(value ?? false),
+          ),
         ],
       ),
     );
   }
 
-  Form longinForm() {
-    return Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              CustomTextField(
-                data: Icons.email,
-                controller: emailController,
-                hintText: "Email",
-                isObsecre: false,
-              ),
-              CustomTextField(
-                data: Icons.lock,
-                controller: passwordController,
-                hintText: "비밀번호",
-                isObsecre: true, 
-              ),
-            ],
-          ),
-        );
-  }
 
-  Widget buildButtons() {
+  Widget buildButtons(BuildContext context, LoginViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
@@ -84,20 +202,35 @@ class _LoginScreenState extends State<LoginScreen> {
                 backgroundColor: const Color(0xFF68CAEA),
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
-              onPressed: () {
-                formValidation();
-              },
-              child: const Text(
-                "로그인",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 17,
-                ),
-              ),
+              onPressed: viewModel.isLoading
+                ? null
+                : () async {
+                    final success = await viewModel.login(
+                      emailController.text,
+                      passwordController.text,
+                    );
+                    
+                    if (success && context.mounted) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => const RootScreen()),
+                        (route) => false,
+                      );
+                    }
+                  },
+              child: viewModel.isLoading
+                ? const CircularProgressIndicator()
+                : const Text(
+                    "로그인",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                    ),
+                  ),
             ),
           ),
-          const SizedBox(width: 10),  // 버튼 사이 간격
+          const SizedBox(width: 10),
           Expanded(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -124,96 +257,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
-  void initializeSharedPreferences() async {
-    sharedPreferences = await SharedPreferences.getInstance();
-  }
-
-  //login 전에 textfield에 아이디와 비밀번호가 잘 입력되어 있는지 확인
-  formValidation() {
-    if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
-      //rememberMe가 true이면 이메일을 기기에 저장
-      if (rememberMe) {
-        sharedPreferences?.setString("savedEmail", emailController.text);
-      } else {
-        // If Remember Me is unchecked, remove the saved email
-        sharedPreferences?.remove("savedEmail");
-      }
-      //login
-      loginNow();
-    } else {
-      showDialog(
-          context: context,
-          builder: (c) {
-            return const ErrorDialog(
-              message: "이메일과 비밀번호를 입력해주세요.",
-            );
-          });
-    }
-  }
-
-  loginNow() async {
-    showDialog(
-        context: context,
-        builder: (c) {
-          return const LoadingDialog(
-            message: "정보를 확인하는 중",
-          );
-        });
-
-    User? currentUser;
-    await firebaseAuth
-      .signInWithEmailAndPassword(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim(),
-      )
-      .then((auth) { 
-        currentUser = auth.user!;
-        Navigator.pushAndRemoveUntil( //새로운 화면으로 이동하면서 모든 이전 루트 제거
-          context,
-          MaterialPageRoute(builder: (context) => const RootScreen()),
-          (route) => false,  // 실질적으로 모든 이전 루트 제거는 여기서 이뤄짐
-        );
-      })
-      .catchError((error) {
-      Navigator.pop(context);
-      showDialog(
-          context: context,
-          builder: (c) {
-            return const ErrorDialog(
-              message: "등록되지 않은 사용자입니다. 먼저 회원가입을 해주세요.",
-            );
-          });
-    });
-    // if (currentUser != null) {
-    //   readDataAndSetDataLocally(currentUser!);
-    // }
-  }
-
-  // Future readDataAndSetDataLocally(User currentUser) async {
-  //   await FirebaseFirestore.instance.collection("users").doc(currentUser.uid).get().then((snapshot) async {
-  //     if (snapshot.exists) {
-  //       await sharedPreferences!.setString("uid", currentUser.uid);
-  //       await sharedPreferences!.setString("email", snapshot.data()!["userEmail"]);
-  //       await sharedPreferences!.setString("name", snapshot.data()!["userName"]);
-  //       await sharedPreferences!.setString("photoUrl", snapshot.data()!["userAvatarUrl"]);
-
-  //       Navigator.pop(context);
-  //       Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TestWidget(text: "Test")));
-  //     } else {
-  //       firebaseAuth.signOut();
-  //       Navigator.pop(context);
-  //       Navigator.push(context, MaterialPageRoute(builder: (c) => const TestWidget(text: "test")));
-
-  //       showDialog(
-  //           context: context,
-  //           builder: (c) {
-  //             return const ErrorDialog(
-  //               message: "계정을 찾을 수 없습니다.",
-  //             );
-  //           });
-  //     }
-  //   });
-  // }
-
 }
+
+

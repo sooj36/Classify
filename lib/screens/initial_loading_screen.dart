@@ -50,7 +50,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
       if (firebaseAuth.currentUser != null) {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (c) => const RootScreen()));
       } else {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (c) => const LoginScreen()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (c) => LoginScreen()));
       }
     });
   }

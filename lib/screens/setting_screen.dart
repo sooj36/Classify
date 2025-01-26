@@ -40,7 +40,7 @@ class _SettingScreenState extends State<SettingScreen> {
     await firebaseAuth.signOut();
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      MaterialPageRoute(builder: (context) => LoginScreen()),
     );
   }
 
@@ -62,7 +62,7 @@ class _SettingScreenState extends State<SettingScreen> {
         
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
+          MaterialPageRoute(builder: (context) => LoginScreen()),
         );
       }
     } catch (e) {
