@@ -1,7 +1,4 @@
-import 'package:weathercloset/global/global.dart';
 import 'package:weathercloset/widgets/custom_text_field.dart';
-// import 'package:weathercloset/widgets/error_dialog.dart';
-// import 'package:weathercloset/widgets/loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
