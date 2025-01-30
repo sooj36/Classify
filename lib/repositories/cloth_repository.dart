@@ -1,0 +1,22 @@
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+class ClothRepository {
+  final ImagePicker _picker = ImagePicker();
+
+  Future<bool> requestPermissions() async {
+    final camera = await Permission.camera.request();
+    final storage = await Permission.storage.request();
+    return camera.isGranted && storage.isGranted;
+  }
+
+  Future<String?> getImageFromCamera() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    return image?.path;
+  }
+
+  Future<String?> getImageFromGallery() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    return image?.path;
+  }
+} 

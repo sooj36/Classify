@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:weathercloset/global/global.dart';
-import 'package:weathercloset/screens/login_screen.dart';
+import 'package:weathercloset/ui/auth/login/widgets/login_screen.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});

@@ -1,115 +1,13 @@
-import 'package:weathercloset/widgets/custom_text_field.dart';
+import 'package:weathercloset/utils/custom_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:weathercloset/screens/signup_screen.dart';
-import 'package:weathercloset/screens/root_screen.dart';
+import 'package:weathercloset/ui/auth/signup/widget/signup_screen.dart';
+import 'package:weathercloset/ui/basics/root_screen.dart';
 import 'package:provider/provider.dart';
-
-class LoginUserModel {
-  final String email;
-  final bool rememberMe;
-
-  LoginUserModel({
-    required this.email,
-    this.rememberMe = false,
-  });
-}
-
-class LoginRepository {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final SharedPreferences _prefs;
-
-  LoginRepository(this._prefs);
-
-  Future<UserCredential> login(String email, String password) async {
-    debugPrint("✅ 로그인 시도: $email");
-    return await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-  }
-
-  Future<void> saveEmail(String email, bool remember) async {
-    if (remember) {
-      await _prefs.setString("savedEmail", email);
-      debugPrint("✅ 이메일 저장됨: $email");
-    } else {
-      await _prefs.remove("savedEmail");
-      debugPrint("✅ 저장된 이메일 삭제됨");
-    }
-  }
-
-  String? getSavedEmail() {
-    return _prefs.getString("savedEmail");
-  }
-}
-
-class LoginViewModel extends ChangeNotifier {
-  final LoginRepository _repository;
-  
-  bool _isLoading = false;
-  String? _error;
-  bool _rememberMe = false;
-  String? _savedEmail;
-  
-  bool get isLoading => _isLoading;
-  String? get error => _error;
-  bool get rememberMe => _rememberMe;
-  String? get savedEmail => _savedEmail;
-
-  LoginViewModel(this._repository) {
-    _initializeEmail();
-  }
-
-  void _initializeEmail() {
-    _savedEmail = _repository.getSavedEmail();
-    if (_savedEmail != null) {
-      _rememberMe = true;
-      notifyListeners();
-    }
-  }
-
-  void setRememberMe(bool value) {
-    _rememberMe = value;
-    notifyListeners();
-  }
-
-  Future<bool> login(String email, String password) async {
-    if (!_validateInputs(email, password)) {
-      debugPrint("❌ 입력값 검증 실패");
-      return false;
-    }
-
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
-
-    try {
-      await _repository.login(email, password);
-      await _repository.saveEmail(email, _rememberMe);
-      _isLoading = false;
-      notifyListeners();
-      debugPrint("✅ 로그인 성공");
-      return true;
-    } catch (e) {
-      _error = "로그인 실패: 이메일과 비밀번호를 확인해주세요";
-      _isLoading = false;
-      notifyListeners();
-      debugPrint("❌ 로그인 실패: $e");
-      return false;
-    }
-  }
-
-  bool _validateInputs(String email, String password) {
-    if (email.isEmpty || password.isEmpty) {
-      _error = "이메일과 비밀번호를 입력해주세요.";
-      notifyListeners();
-      return false;
-    }
-    return true;
-  }
-}
+// import 'package:weathercloset/models/login_user_model.dart';
+import 'package:weathercloset/data/repositories/auth/login_repository.dart';
+import 'package:weathercloset/ui/auth/login/view_models/login_viewmodel.dart';
 
 class LoginScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();

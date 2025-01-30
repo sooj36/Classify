@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../cloth_add/widget/cloth_add_screen.dart';
+
 
 class ClosetScreen extends StatefulWidget {
   const ClosetScreen({super.key});
@@ -59,6 +61,17 @@ class _ClosetScreenState extends State<ClosetScreen> {
             ),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ClothAddScreen(),
+            ),
+          );
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }

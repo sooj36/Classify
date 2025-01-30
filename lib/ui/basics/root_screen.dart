@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/screens/setting_screen.dart';
-import 'package:weathercloset/screens/closet_screen.dart';
-import 'package:weathercloset/screens/home_screen.dart';
+import 'package:weathercloset/ui/setting/widgets/setting_screen.dart';
+import 'package:weathercloset/ui/closet/closet_view/widgets/closet_screen.dart';
+import 'package:weathercloset/ui/basics/home_screen.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});

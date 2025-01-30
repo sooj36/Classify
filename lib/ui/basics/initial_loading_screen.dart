@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:weathercloset/global/global.dart';
 import 'package:flutter/material.dart';
-import 'package:weathercloset/screens/root_screen.dart';
-import 'package:weathercloset/screens/login_screen.dart';
-import 'package:weathercloset/top_level_setting.dart';
+import 'package:weathercloset/ui/basics/root_screen.dart';
+import 'package:weathercloset/ui/auth/login/widgets/login_screen.dart';
+import 'package:weathercloset/utils/top_level_setting.dart';
 
 class InitialLoadingScreen extends StatefulWidget {
   const InitialLoadingScreen({super.key});

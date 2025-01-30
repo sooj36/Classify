@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'firebase_options.dart';
-import 'top_level_setting.dart';
-import 'package:weathercloset/screens/initial_loading_screen.dart';
+import 'utils/top_level_setting.dart';
+import 'package:weathercloset/ui/basics/initial_loading_screen.dart';
 // import 'package:weathercloset/screens/home_screen.dart';
 
 void main() async {
@@ -38,7 +38,7 @@ class MainApp extends StatelessWidget {
         Locale('en'),
       ],
       home: const InitialLoadingScreen(),
-      // home: const HomeScreen(),
+      // home: const ClothAddScreen(),
     );
   }
 }
