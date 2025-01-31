@@ -2,7 +2,7 @@ import 'package:weathercloset/utils/custom_text_field.dart';
 import 'package:flutter/material.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:weathercloset/ui/auth/signup/widget/signup_screen.dart';
+import 'package:weathercloset/ui/auth/signup/widgets/signup_screen.dart';
 import 'package:weathercloset/ui/basics/root_screen.dart';
 import 'package:provider/provider.dart';
 // import 'package:weathercloset/models/login_user_model.dart';

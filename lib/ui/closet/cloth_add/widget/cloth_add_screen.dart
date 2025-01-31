@@ -25,7 +25,7 @@ class ClothAddScreen extends StatelessWidget {
                 if (viewModel.cloth?.imagePath != null)
                   Expanded(
                     child: Image.file(
-                      File(viewModel.cloth!.imagePath!),
+                      File(viewModel.cloth!.imagePath),
                       fit: BoxFit.contain,
                     ),
                   ),

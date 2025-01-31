@@ -115,7 +115,7 @@ The MVVM pattern consists of the following components:
 - service: a stateless widget that solely wraps external API.
 - Repository: Single Source Of Truth, responsible for periodically fetching data from services or converting raw data into domain models.
 - viewmodel: a class responsible for handling UI logic. It takes domain data as input and exposes data as ui state to corresponding view.
-- view: a stateless widget that actually draws UI by receiving data from viewmodel.
+- view: a stateless widget that actuyhyally draws UI by receiving data from viewmodel.
 views and viewmodels should only know one counterpart, while services and repositories can know multiple counterparts.
 
 
