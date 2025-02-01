@@ -38,9 +38,9 @@ class _ClosetScreenState extends State<ClosetScreen> {
           return Card(
             elevation: 2,
             child: InkWell(
-              onTap: () {
-                // TODO: 카테고리 탭 처리
-              },
+              // onTap: () {
+              //   // TODO: 카테고리 탭 처리
+              // },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

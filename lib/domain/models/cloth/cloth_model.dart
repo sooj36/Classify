@@ -55,7 +55,7 @@ class ClothModel {
     category: category ?? this.category,
     color: color ?? this.color,
     season: season ?? this.season,
-    response: response ?? this.response,
+    response: response ?? response,
     createdAt: createdAt ?? this.createdAt,
   );
 }
