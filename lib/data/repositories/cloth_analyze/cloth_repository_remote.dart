@@ -1,0 +1,41 @@
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:weathercloset/data/repositories/cloth_analyze/cloth_repository.dart';
+import 'package:weathercloset/data/services/gemini_service.dart';
+import 'package:weathercloset/domain/models/cloth/cloth_model.dart';
+
+class ClothRepositoryRemote extends ClothRepository {
+  final GeminiService _geminiService;
+  final ImagePicker _picker;
+
+  ClothRepositoryRemote({
+    required GeminiService geminiService,
+  }) : _geminiService = geminiService,
+       _picker = ImagePicker();
+
+  @override
+  Future<bool> requestPermissions() async {
+    final camera = await Permission.camera.request();
+    final storage = await Permission.storage.request();
+    return camera.isGranted && storage.isGranted;
+  }
+
+  @override
+  Future<ClothModel> getImageFromCamera() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    final response = await analyzeImage(image?.path ?? '');
+    return ClothModel(imagePath: image?.path ?? '', response: response);
+  }
+
+  @override
+  Future<ClothModel> getImageFromGallery() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final response = await analyzeImage(image?.path ?? '');
+    return ClothModel(imagePath: image?.path ?? '', response: response);
+  }
+
+  @override
+  Future<String> analyzeImage(String imagePath) async {
+    return await _geminiService.analyzeImage(imagePath);
+  }
+} 

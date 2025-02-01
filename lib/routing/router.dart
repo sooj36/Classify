@@ -8,6 +8,9 @@ import '../ui/auth/login/view_models/login_viewmodel.dart';
 import '../ui/auth/signup/view_models/signup_viewmodel.dart';
 import '../data/repositories/auth/auth_repository_remote.dart';
 import 'package:provider/provider.dart';
+import '../ui/closet/cloth_add/widget/cloth_add_screen.dart';
+import '../ui/closet/cloth_add/view_models/cloth_add_viewmodel.dart';
+import '../data/repositories/cloth_analyze/cloth_repository_remote.dart';
 final router = GoRouter(
   initialLocation: Routes.home,
   routes: <GoRoute>[
@@ -28,6 +31,14 @@ final router = GoRouter(
         builder: (context, state) => SignupScreen(
           viewModel: SignUpViewModel(
             authRepositoryRemote: context.read<AuthRepositoryRemote>(),
+          ),
+        ),
+      ),
+      GoRoute(
+        path: Routes.clothAdd,
+        builder: (context, state) => ClothAddScreen(
+          viewModel: ClothAddViewModel(
+            clothRepositoryRemote: context.read<ClothRepositoryRemote>(),
           ),
         ),
       ),

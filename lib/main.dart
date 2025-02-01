@@ -9,10 +9,8 @@ import 'package:provider/provider.dart';
 import 'data/repositories/auth/auth_repository_remote.dart';
 import 'data/services/firebase_auth_service.dart';
 import 'data/services/firestore_service.dart';
-
-
-const apiKey = 'AIzaSyBdhi3SyjsLP9Y3HFyaRjvSJRcGOydR6fE';
-
+import 'data/services/gemini_service.dart';
+import 'data/repositories/cloth_analyze/cloth_repository_remote.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //flutter engine과 app 연결
   try {
@@ -22,7 +20,7 @@ void main() async {
     debugPrint('✅ Firebase 초기화 성공!');
     await initSharedPreferences();
     debugPrint('✅ SharedPreferences 초기화 성공!');
-
+    initGemini();
     debugPrint('✅ Gemini 초기화 성공!');
   } catch (e) {
     debugPrint('❌ 앱 초기화 실패: $e');
@@ -44,10 +42,18 @@ class MainApp extends StatelessWidget {
         Provider<FirestoreService>(
           create: (_) => FirestoreService(),
         ),
+        Provider<GeminiService>(
+          create: (_) => GeminiService(),
+        ),
         ChangeNotifierProvider<AuthRepositoryRemote>(
           create: (context) => AuthRepositoryRemote(
             firebaseAuthService: context.read<FirebaseAuthService>(),
             firestoreService: context.read<FirestoreService>(),
+          ),
+        ),
+        ChangeNotifierProvider<ClothRepositoryRemote>(
+          create: (context) => ClothRepositoryRemote(
+            geminiService: context.read<GeminiService>(),
           ),
         ),
       ],

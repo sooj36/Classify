@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../cloth_add/widget/cloth_add_screen.dart';
+import '../../../../routing/router.dart';
+import '../../../../routing/routes.dart';
 
 
 class ClosetScreen extends StatefulWidget {
@@ -64,12 +65,7 @@ class _ClosetScreenState extends State<ClosetScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ClothAddScreen(),
-            ),
-          );
+          router.push(Routes.clothAdd);
         },
         child: const Icon(Icons.add),
       ),

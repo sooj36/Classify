@@ -1,32 +1,33 @@
 import 'package:flutter/material.dart';
-import '../../../../repositories/cloth_repository.dart';
+import '../../../../data/repositories/cloth_analyze/cloth_repository_remote.dart';
 import '../../../../domain/models/cloth/cloth_model.dart';
 
 class ClothAddViewModel extends ChangeNotifier {
-  final ClothRepository _repository;
+  final ClothRepositoryRemote _clothRepositoryRemote;
   ClothModel? _cloth;
+  String? _analyzeResult;
   bool _isLoading = false;
   String? _error;
 
-  ClothAddViewModel(this._repository);
+  ClothAddViewModel({
+    required ClothRepositoryRemote clothRepositoryRemote,
+  }) : _clothRepositoryRemote = clothRepositoryRemote;
 
   ClothModel? get cloth => _cloth;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  String? get analyzeResult => _analyzeResult;
 
   Future<void> takePhoto() async {
     try {
       _setLoading(true);
-      final hasPermission = await _repository.requestPermissions();
+      final hasPermission = await _clothRepositoryRemote.requestPermissions();
       if (!hasPermission) {
         throw '카메라 및 저장소 권한이 필요합니다.';
       }
-      
-      final imagePath = await _repository.getImageFromCamera();
-      if (imagePath != null) {
-        _cloth = ClothModel(imagePath: imagePath);
-        notifyListeners();
-      }
+      final clothModel = await _clothRepositoryRemote.getImageFromCamera();
+      _cloth = clothModel;
+      notifyListeners();
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -37,11 +38,9 @@ class ClothAddViewModel extends ChangeNotifier {
   Future<void> pickFromGallery() async {
     try {
       _setLoading(true);
-      final imagePath = await _repository.getImageFromGallery();
-      if (imagePath != null) {
-        _cloth = ClothModel(imagePath: imagePath);
-        notifyListeners();
-      }
+      final clothModel = await _clothRepositoryRemote.getImageFromGallery();
+      _cloth = clothModel;
+      notifyListeners();
     } catch (e) {
       _error = e.toString();
     } finally {

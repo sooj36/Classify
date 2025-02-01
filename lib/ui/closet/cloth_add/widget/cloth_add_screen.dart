@@ -1,61 +1,81 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'dart:io';
 import '../view_models/cloth_add_viewmodel.dart';
-import '../../../../repositories/cloth_repository.dart';
 
-class ClothAddScreen extends StatelessWidget {
-  const ClothAddScreen({super.key});
+class ClothAddScreen extends StatefulWidget {
+  final ClothAddViewModel viewModel;
+
+  const ClothAddScreen({super.key, required this.viewModel});
 
   @override
+  State<ClothAddScreen> createState() => _ClothAddScreenState();
+}
+
+class _ClothAddScreenState extends State<ClothAddScreen> {
+  @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ClothAddViewModel(ClothRepository()),
-      child: Scaffold(
-        appBar: AppBar(title: const Text('옷 추가하기')),
-        body: Consumer<ClothAddViewModel>(
-          builder: (context, viewModel, child) {
-            if (viewModel.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }           
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (viewModel.cloth?.imagePath != null)
-                  Expanded(
-                    child: Image.file(
-                      File(viewModel.cloth!.imagePath),
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                Row(
+    return ListenableBuilder(
+      listenable: widget.viewModel,
+      builder: (context, child) {
+        return Scaffold(
+          appBar: AppBar(title: const Text('옷 추가')),
+          body: widget.viewModel.isLoading 
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (widget.viewModel.cloth?.imagePath != null)  
+                    imageArea(),
+                  if (widget.viewModel.cloth?.response != null)
+                    responseArea(),
+                  buttonArea(),
+                  if (widget.viewModel.error != null)
+                    errorArea(),
+                ],
+              ),
+        );
+      },
+    );
+  }
+
+  Row buttonArea() {
+    return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton.icon(
-                      onPressed: viewModel.takePhoto,
+                      onPressed: widget.viewModel.takePhoto,
                       icon: const Icon(Icons.camera_alt),
                       label: const Text('카메라'),
                     ),
                     ElevatedButton.icon(
-                      onPressed: viewModel.pickFromGallery,
+                      onPressed: widget.viewModel.pickFromGallery,
                       icon: const Icon(Icons.photo_library),
                       label: const Text('갤러리'),
                     ),
                   ],
-                ),
-                if (viewModel.error != null)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      viewModel.error!,
-                      style: const TextStyle(color: Colors.red),
+                );
+  }
+
+  Expanded imageArea() {
+    return Expanded(
+                    child: Image.file(
+                      File(widget.viewModel.cloth!.imagePath),
+                      fit: BoxFit.contain,
                     ),
-                  ),
-              ],
-            );
-          },
-        ),
-      ),
+                  );
+  }
+
+  Text responseArea() {
+    return Text(
+      widget.viewModel.cloth!.response!,
+      style: const TextStyle(color: Colors.blue),
+    );
+  }
+
+  Text errorArea() {
+    return Text(
+      widget.viewModel.error!,
+      style: const TextStyle(color: Colors.red),
     );
   }
 } 
