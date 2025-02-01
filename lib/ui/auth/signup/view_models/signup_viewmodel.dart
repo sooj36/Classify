@@ -1,9 +1,13 @@
 
 import 'package:flutter/material.dart';
-import 'package:weathercloset/data/repositories/auth/signup_repository.dart';
+import 'package:weathercloset/data/repositories/auth/auth_repository_remote.dart';
+
 
 class SignUpViewModel extends ChangeNotifier {
-  final AuthRepository _repository = AuthRepository();
+  final AuthRepositoryRemote _repository;
+
+  SignUpViewModel({required AuthRepositoryRemote authRepositoryRemote})
+  : _repository = authRepositoryRemote;
   
   bool _isLoading = false;
   String? _error;

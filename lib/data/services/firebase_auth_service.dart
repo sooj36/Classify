@@ -1,0 +1,42 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:weathercloset/global/global.dart';
+
+class FirebaseAuthService {
+  final FirebaseAuth _auth = firebaseAuth;
+
+  Future<UserCredential> signUp({
+    required String email,
+    required String password,
+  }) async {
+    final userCredential = await _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    return userCredential;
+  }
+
+  Future<UserCredential> login({
+    required String email,
+    required String password,
+  }) async {
+    final userCredential = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    return userCredential;
+  }
+
+  Future<void> logout() async {
+    await _auth.signOut();
+  }
+
+  Future<void> deleteAccount() async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) return;
+      await user.delete();
+    } catch (e) {
+      rethrow;
+    }
+  }
+}

@@ -4,8 +4,9 @@
 //다른 경로의 일부분으로 'search'만 필요할 때는 searchRelative를 사용하는 식
   // static const search = '/$searchRelative';
 
-abstract final class Routes {
+final class Routes {
   static const home = '/';
   static const login = '/login';
   static const signup = '/signup';
+  static const setting = '/setting';
 }

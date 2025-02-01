@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:weathercloset/global/global.dart';
 import 'package:flutter/material.dart';
-import 'package:weathercloset/ui/basics/root_screen.dart';
-import 'package:weathercloset/ui/auth/login/widgets/login_screen.dart';
+import 'package:weathercloset/routing/routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:weathercloset/utils/top_level_setting.dart';
 
 class InitialLoadingScreen extends StatefulWidget {
@@ -48,9 +48,9 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
     Timer(const Duration(seconds: 1), () async {
       //한 번 로그인 해놓으면 firebaseAuth에서 알아서 자동 로그인 시켜줌
       if (firebaseAuth.currentUser != null) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (c) => const RootScreen()));
+        context.go(Routes.home);
       } else {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (c) => LoginScreen()));
+        context.go(Routes.login);
       }
     });
   }

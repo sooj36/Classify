@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:weathercloset/global/global.dart';
-import 'package:weathercloset/ui/auth/login/widgets/login_screen.dart';
+import 'package:weathercloset/routing/routes.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -38,10 +39,9 @@ class _SettingScreenState extends State<SettingScreen> {
   
   Future<void> _logout() async {
     await firebaseAuth.signOut();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
+    if (context.mounted) {
+      context.go(Routes.login);
+    }
   }
 
   Future<void> _deleteAccount() async {
@@ -60,10 +60,7 @@ class _SettingScreenState extends State<SettingScreen> {
         // SharedPreferences 데이터 삭제
         await sharedPreferences?.clear();
         
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-        );
+        context.go(Routes.login);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

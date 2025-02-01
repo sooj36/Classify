@@ -3,8 +3,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'firebase_options.dart';
 import 'utils/top_level_setting.dart';
-import 'package:weathercloset/ui/basics/initial_loading_screen.dart';
-// import 'package:weathercloset/screens/home_screen.dart';
+import 'routing/router.dart';
+import 'package:provider/provider.dart';
+import 'data/repositories/auth/auth_repository_remote.dart';
+import 'data/services/firebase_auth_service.dart';
+import 'data/services/firestore_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //flutter engine과 app 연결
@@ -25,20 +28,35 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: AppTheme.lightTheme,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+    return MultiProvider(
+      providers: [
+        Provider<FirebaseAuthService>(
+          create: (_) => FirebaseAuthService(),
+        ),
+        Provider<FirestoreService>(
+          create: (_) => FirestoreService(),
+        ),
+        Provider<AuthRepositoryRemote>(
+          create: (context) => AuthRepositoryRemote(
+            firebaseAuthService: context.read<FirebaseAuthService>(),
+            firestoreService: context.read<FirestoreService>(),
+          ),
+        ),
       ],
-      supportedLocales: const [
-        Locale('ko'),
-        Locale('en'),
-      ],
-      home: const InitialLoadingScreen(),
-      // home: const ClothAddScreen(),
+      child: MaterialApp.router(
+        theme: AppTheme.lightTheme,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('ko'),
+          Locale('en'),
+        ],
+        routerConfig: router,
+      ),
     );
   }
 }

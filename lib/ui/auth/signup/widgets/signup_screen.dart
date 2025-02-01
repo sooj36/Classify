@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/ui/basics/root_screen.dart';
-import '../../../../utils/custom_text_field.dart';
-import 'package:provider/provider.dart';
+import 'package:weathercloset/routing/routes.dart';
+import 'package:weathercloset/utils/custom_text_field.dart';
 import 'package:weathercloset/ui/auth/signup/view_models/signup_viewmodel.dart';
+import 'package:go_router/go_router.dart';
 
 class SignupScreen extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
@@ -10,32 +10,32 @@ class SignupScreen extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+  final SignUpViewModel _viewModel;
 
-  SignupScreen({super.key});
+  SignupScreen({super.key, required SignUpViewModel viewModel}) :
+    _viewModel = viewModel;
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => SignUpViewModel(),
-      child: Consumer<SignUpViewModel>(
-        builder: (context, viewModel, _) {
-          return Scaffold(
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 55),
-                  const Text("WeatherCloset", 
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-                  signUpForm(),
-                  const SizedBox(height: 10),
-                  if (viewModel.error != null)
-                    Text(viewModel.error!, style: const TextStyle(color: Colors.red)),
-                  signUpButton(context, viewModel),
-                ],
-              ),
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 55),
+            const Text(
+              "WeatherCloset",
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
-          );
-        },
+            signUpForm(),
+            const SizedBox(height: 10),
+            if (_viewModel.error != null)
+              Text(
+                _viewModel.error!,
+                style: const TextStyle(color: Colors.red),
+              ),
+            signUpButton(context, _viewModel),
+          ],
+        ),
       ),
     );
   }
@@ -97,11 +97,7 @@ class SignupScreen extends StatelessWidget {
               );
               
               if (success && context.mounted) {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const RootScreen()),
-                  (route) => false,
-                );
+                context.go(Routes.home);
               }
             },
       child: viewModel.isLoading

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/ui/setting/widgets/setting_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:weathercloset/ui/closet/closet_view/widgets/closet_screen.dart';
 import 'package:weathercloset/ui/basics/home_screen.dart';
+import 'package:weathercloset/routing/routes.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -16,7 +17,7 @@ class _RootScreenState extends State<RootScreen> {
   // 각 탭에 해당하는 화면들
   final List<Widget> _screens = [
     const ClosetScreen(),    // 옷장 화면
-    const HomeScreen(),  // 홈 화면
+    const CoordinatorScreen(),  // 홈 화면
     const Center(child: Text('프로필')), // 임시 프로필 화면
   ];
 
@@ -37,10 +38,7 @@ class _RootScreenState extends State<RootScreen> {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingScreen()),
-              );
+              context.push(Routes.setting);
             },
           ),
         ],

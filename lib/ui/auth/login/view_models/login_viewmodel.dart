@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/data/repositories/auth/login_repository.dart';
+import 'package:weathercloset/data/repositories/auth/auth_repository_remote.dart';
 
 class LoginViewModel extends ChangeNotifier {
-  final LoginRepository _repository;
+  LoginViewModel({
+    required AuthRepositoryRemote authRepositoryRemote,
+  })  :
+    // Repositories are manually assigned because they're private members.
+    _authRepositoryRemote = authRepositoryRemote {
+      _initializeEmail();
+    }
+
+  final AuthRepositoryRemote _authRepositoryRemote;
   
   bool _isLoading = false;
   String? _error;
@@ -14,12 +22,8 @@ class LoginViewModel extends ChangeNotifier {
   bool get rememberMe => _rememberMe;
   String? get savedEmail => _savedEmail;
 
-  LoginViewModel(this._repository) {
-    _initializeEmail();
-  }
-
   void _initializeEmail() {
-    _savedEmail = _repository.getSavedEmail();
+    _savedEmail = _authRepositoryRemote.getSavedEmail();
     if (_savedEmail != null) {
       _rememberMe = true;
       notifyListeners();
@@ -36,23 +40,20 @@ class LoginViewModel extends ChangeNotifier {
       debugPrint("❌ 입력값 검증 실패");
       return false;
     }
-
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      await _repository.login(email, password);
-      await _repository.saveEmail(email, _rememberMe);
+      await _authRepositoryRemote.login(email: email, password: password);
+      await _authRepositoryRemote.saveEmail(email, _rememberMe);
       _isLoading = false;
       notifyListeners();
-      debugPrint("✅ 로그인 성공");
       return true;
     } catch (e) {
       _error = "로그인 실패: 이메일과 비밀번호를 확인해주세요";
       _isLoading = false;
       notifyListeners();
-      debugPrint("❌ 로그인 실패: $e");
       return false;
     }
   }
