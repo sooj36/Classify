@@ -1,18 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:google_gemini/google_gemini.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 
 const apiKey = 'AIzaSyBdhi3SyjsLP9Y3HFyaRjvSJRcGOydR6fE';
 SharedPreferences? sharedPreferences;
 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-GoogleGemini? gemini;
+GenerativeModel? model;
 
 Future<void> initSharedPreferences() async {
   sharedPreferences = await SharedPreferences.getInstance();
 }
 
 void initGemini() {
-  gemini = GoogleGemini(
+  model = GenerativeModel(
+    model: 'gemini-1.5-flash-latest',
     apiKey: apiKey,
   );
+
 }
