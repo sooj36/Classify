@@ -4,7 +4,6 @@ import 'dart:io';
 import '../view_models/cloth_add_viewmodel.dart';
 import '../../../../repositories/cloth_repository.dart';
 
-
 class ClothAddScreen extends StatelessWidget {
   const ClothAddScreen({super.key});
 

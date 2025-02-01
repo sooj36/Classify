@@ -10,6 +10,9 @@ import 'data/repositories/auth/auth_repository_remote.dart';
 import 'data/services/firebase_auth_service.dart';
 import 'data/services/firestore_service.dart';
 
+
+const apiKey = 'AIzaSyBdhi3SyjsLP9Y3HFyaRjvSJRcGOydR6fE';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //flutter engine과 app 연결
   try {
@@ -19,6 +22,8 @@ void main() async {
     debugPrint('✅ Firebase 초기화 성공!');
     await initSharedPreferences();
     debugPrint('✅ SharedPreferences 초기화 성공!');
+
+    debugPrint('✅ Gemini 초기화 성공!');
   } catch (e) {
     debugPrint('❌ 앱 초기화 실패: $e');
   }
