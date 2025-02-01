@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'firebase_options.dart';
 import 'utils/top_level_setting.dart';
+import 'global/global.dart';
 import 'routing/router.dart';
 import 'package:provider/provider.dart';
 import 'data/repositories/auth/auth_repository_remote.dart';
@@ -15,9 +16,11 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    debugPrint('Firebase 초기화 성공!');
+    debugPrint('✅ Firebase 초기화 성공!');
+    await initSharedPreferences();
+    debugPrint('✅ SharedPreferences 초기화 성공!');
   } catch (e) {
-    debugPrint('Firebase 초기화 실패: $e');
+    debugPrint('❌ 앱 초기화 실패: $e');
   }
   runApp(const MainApp());
 }
@@ -36,7 +39,7 @@ class MainApp extends StatelessWidget {
         Provider<FirestoreService>(
           create: (_) => FirestoreService(),
         ),
-        Provider<AuthRepositoryRemote>(
+        ChangeNotifierProvider<AuthRepositoryRemote>(
           create: (context) => AuthRepositoryRemote(
             firebaseAuthService: context.read<FirebaseAuthService>(),
             firestoreService: context.read<FirestoreService>(),
