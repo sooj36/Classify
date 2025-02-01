@@ -1,7 +1,6 @@
 import 'package:weathercloset/utils/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:weathercloset/routing/routes.dart';
-import 'package:weathercloset/ui/basics/root_screen.dart';
 import 'package:weathercloset/ui/auth/login/view_models/login_viewmodel.dart';
 import 'package:go_router/go_router.dart';
 
