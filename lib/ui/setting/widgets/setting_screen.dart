@@ -39,7 +39,7 @@ class _SettingScreenState extends State<SettingScreen> {
   
   Future<void> _logout() async {
     await firebaseAuth.signOut();
-    if (context.mounted) {
+    if (mounted && context.mounted) {
       context.go(Routes.login);
     }
   }
@@ -60,12 +60,16 @@ class _SettingScreenState extends State<SettingScreen> {
         // SharedPreferences 데이터 삭제
         await sharedPreferences?.clear();
         
-        context.go(Routes.login);
+        if (mounted && context.mounted) {
+          context.go(Routes.login);
+        }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('회원 탈퇴 중 오류가 발생했습니다: $e')),
-      );
+      if (mounted && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('회원 탈퇴 중 오류가 발생했습니다: $e')),
+        );
+      }
     }
   }
 
