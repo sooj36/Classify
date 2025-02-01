@@ -5,35 +5,45 @@ import 'package:weathercloset/ui/basics/root_screen.dart';
 import 'package:weathercloset/ui/auth/login/view_models/login_viewmodel.dart';
 import 'package:go_router/go_router.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  final LoginViewModel viewModel;
+
+  const LoginScreen({super.key, required this.viewModel});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final LoginViewModel _viewModel;
-
-  LoginScreen({super.key, required LoginViewModel viewModel}) :
-    _viewModel = viewModel;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    return ListenableBuilder(
+      listenable: widget.viewModel,
+      builder: (context, child) {
+        return Scaffold(
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
             "WeatherCloset",
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
-          loginForm(_viewModel),
+          loginForm(widget.viewModel),
           const SizedBox(height: 10),
-          if (_viewModel.error != null)
+          if (widget.viewModel.error != null)
             Text(
-              _viewModel.error!, 
+              widget.viewModel.error!, 
               style: const TextStyle(color: Colors.red),
             ),
-          buildButtons(context, _viewModel),
+          buildButtons(context, widget.viewModel),
         ],
       ),
+        );
+      },
     );
   }
 
@@ -60,14 +70,13 @@ class LoginScreen extends StatelessWidget {
           ),
           CheckboxListTile(
             title: const Text("이메일 저장"),
-            value: viewModel.rememberMe,
-            onChanged: (value) => viewModel.setRememberMe(value ?? false),
+            value: widget.viewModel.rememberMe,
+            onChanged: (value) => widget.viewModel.setRememberMe(value ?? false),
           ),
         ],
       ),
     );
   }
-
 
   Widget buildButtons(BuildContext context, LoginViewModel viewModel) {
     return Padding(
@@ -80,23 +89,19 @@ class LoginScreen extends StatelessWidget {
                 backgroundColor: const Color(0xFF68CAEA),
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
-              onPressed: viewModel.isLoading
+              onPressed: widget.viewModel.isLoading
                 ? null
                 : () async {
-                    final success = await viewModel.login(
+                    final success = await widget.viewModel.login(
                       emailController.text,
                       passwordController.text,
                     );
                     
                     if (success && context.mounted) {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => const RootScreen()),
-                        (route) => false,
-                      );
+                      context.go(Routes.home);
                     }
                   },
-              child: viewModel.isLoading
+              child: widget.viewModel.isLoading
                 ? const CircularProgressIndicator()
                 : const Text(
                     "로그인",
