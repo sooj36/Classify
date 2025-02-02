@@ -10,4 +10,5 @@ final class Routes {
   static const signup = '/signup';
   static const setting = '/setting';
   static const clothAdd = '/clothAdd';
+  static const closet = '/closet';
 }

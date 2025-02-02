@@ -11,6 +11,8 @@ import 'package:provider/provider.dart';
 import '../ui/closet/cloth_add/widget/cloth_add_screen.dart';
 import '../ui/closet/cloth_add/view_models/cloth_add_viewmodel.dart';
 import '../data/repositories/cloth_analyze/cloth_repository_remote.dart';
+import '../ui/closet/closet_view/widgets/closet_screen.dart';
+
 final router = GoRouter(
   initialLocation: Routes.home,
   routes: <GoRoute>[
@@ -41,6 +43,10 @@ final router = GoRouter(
             clothRepositoryRemote: context.read<ClothRepositoryRemote>(),
           ),
         ),
+      ),
+      GoRoute(
+        path: Routes.closet,
+        builder: (context, state) => const ClosetScreen(),
       ),
       GoRoute(
         path: Routes.setting,

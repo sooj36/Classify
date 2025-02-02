@@ -6,7 +6,7 @@ import 'package:weathercloset/domain/models/cloth/cloth_model.dart';
 import 'dart:typed_data';
 import 'dart:convert';
 import 'package:weathercloset/data/services/firestore_service.dart';
-
+import 'package:flutter/material.dart';
 class ClothRepositoryRemote extends ClothRepository {
   final GeminiService _geminiService;
   final ImagePicker _picker;
@@ -56,5 +56,6 @@ class ClothRepositoryRemote extends ClothRepository {
     final responseMap = jsonDecode(cleanJson);
     //firestore에 저장
     await _firestoreService.saveCloth(responseMap);
+    debugPrint("✅ 옷 저장 성공!");
   }
 } 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import '../view_models/cloth_add_viewmodel.dart';
+import 'package:weathercloset/routing/routes.dart';
+import 'package:go_router/go_router.dart';
 
 class ClothAddScreen extends StatefulWidget {
   final ClothAddViewModel viewModel;
@@ -75,6 +77,7 @@ class _ClothAddScreenState extends State<ClothAddScreen> {
     return ElevatedButton(
       onPressed: () {
         widget.viewModel.saveCloth();
+        context.pop();
       },
       child: const Text('저장'),
     );
