@@ -52,4 +52,8 @@ class ClothAddViewModel extends ChangeNotifier {
     _isLoading = loading;
     notifyListeners();
   }
+
+  Future<void> saveCloth() async {
+    await _clothRepositoryRemote.saveCloth(cloth!);
+  }
 } 

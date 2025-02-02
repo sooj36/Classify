@@ -10,4 +10,6 @@ abstract class ClothRepository extends ChangeNotifier {
   Future<ClothModel> getImageFromGallery();
 
   Future<String> analyzeImage(Uint8List bytes);
+
+  Future<void> saveCloth(ClothModel cloth);
 } 

@@ -59,7 +59,7 @@ class _SettingScreenState extends State<SettingScreen> {
         
         // SharedPreferences 데이터 삭제
         await sharedPreferences?.clear();
-        
+
         // 로그아웃 처리 추가
         await firebaseAuth.signOut();
         
@@ -90,8 +90,8 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
                 _deleteAccount();
+                context.go(Routes.login);
               },
               child: const Text('탈퇴', style: TextStyle(color: Colors.red)),
             ),

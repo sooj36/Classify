@@ -21,14 +21,15 @@ class _ClothAddScreenState extends State<ClothAddScreen> {
           appBar: AppBar(title: const Text('옷 추가')),
           body: widget.viewModel.isLoading 
             ? const Center(child: CircularProgressIndicator())
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+            : ListView(
                 children: [
-                  if (widget.viewModel.cloth?.imagePath != null)  
+                  cameraButtonArea(),
+                  if (widget.viewModel.cloth?.imagePath != null)
                     imageArea(),
                   if (widget.viewModel.cloth?.response != null)
                     responseArea(),
-                  buttonArea(),
+                  if (widget.viewModel.cloth?.response != null)
+                    saveButtonArea(),
                   if (widget.viewModel.error != null)
                     errorArea(),
                 ],
@@ -38,7 +39,7 @@ class _ClothAddScreenState extends State<ClothAddScreen> {
     );
   }
 
-  Row buttonArea() {
+  Row cameraButtonArea() {
     return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -56,19 +57,26 @@ class _ClothAddScreenState extends State<ClothAddScreen> {
                 );
   }
 
-  Expanded imageArea() {
-    return Expanded(
-                    child: Image.file(
-                      File(widget.viewModel.cloth!.imagePath),
-                      fit: BoxFit.contain,
-                    ),
-                  );
+  Widget imageArea() {
+    return Image.file(
+      File(widget.viewModel.cloth!.imagePath),
+      fit: BoxFit.contain,
+    );
   }
 
   Text responseArea() {
     return Text(
       widget.viewModel.cloth!.response!,
       style: const TextStyle(color: Colors.blue),
+    );
+  }
+
+  ElevatedButton saveButtonArea() {
+    return ElevatedButton(
+      onPressed: () {
+        widget.viewModel.saveCloth();
+      },
+      child: const Text('저장'),
     );
   }
 

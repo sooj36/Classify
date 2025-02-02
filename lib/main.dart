@@ -54,6 +54,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider<ClothRepositoryRemote>(
           create: (context) => ClothRepositoryRemote(
             geminiService: context.read<GeminiService>(),
+            firestoreService: context.read<FirestoreService>(),
           ),
         ),
       ],

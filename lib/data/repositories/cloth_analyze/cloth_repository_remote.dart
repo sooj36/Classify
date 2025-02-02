@@ -4,15 +4,19 @@ import 'package:weathercloset/data/repositories/cloth_analyze/cloth_repository.d
 import 'package:weathercloset/data/services/gemini_service.dart';
 import 'package:weathercloset/domain/models/cloth/cloth_model.dart';
 import 'dart:typed_data';
+import 'dart:convert';
+import 'package:weathercloset/data/services/firestore_service.dart';
 
 class ClothRepositoryRemote extends ClothRepository {
   final GeminiService _geminiService;
   final ImagePicker _picker;
-
+  final FirestoreService _firestoreService;
   ClothRepositoryRemote({
     required GeminiService geminiService,
+    required FirestoreService firestoreService,
   }) : _geminiService = geminiService,
-       _picker = ImagePicker();
+       _picker = ImagePicker(),
+       _firestoreService = firestoreService;
 
   @override
   Future<bool> requestPermissions() async {
@@ -40,5 +44,17 @@ class ClothRepositoryRemote extends ClothRepository {
   @override
   Future<String> analyzeImage(Uint8List? bytes) async {
     return await _geminiService.analyzeImage(bytes);
+  }
+
+  @override
+  Future<void> saveCloth(ClothModel cloth) async {
+    //clothmodel의 response json을 dart map 형태로 파싱
+
+    String cleanJson = cloth.response!
+    .replaceAll("```json", "")
+    .replaceAll("```", "");
+    final responseMap = jsonDecode(cleanJson);
+    //firestore에 저장
+    await _firestoreService.saveCloth(responseMap);
   }
 } 

@@ -23,6 +23,16 @@ class FirestoreService {
     await _firestore.collection("users").doc(firebaseAuth.currentUser!.uid).delete();
   }
 
+  Future<void> saveCloth(Map<String, dynamic> cloth) async {
+    await _firestore
+    .collection("users")
+    .doc(firebaseAuth.currentUser!.uid)
+    .collection("cloths")
+    .doc("major_category")
+    .collection("minor_category")
+    .add(cloth);
+  }
+
   // Future<UserModel> getUser({required UserModel user}) async {
   //   final userData = await _firestore.collection("users").doc(user.uid).get();
   //   return UserModel(
