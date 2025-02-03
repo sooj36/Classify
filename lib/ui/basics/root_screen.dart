@@ -3,28 +3,35 @@ import 'package:go_router/go_router.dart';
 import 'package:weathercloset/ui/closet/closet_view/widgets/closet_screen.dart';
 import 'package:weathercloset/ui/basics/home_screen.dart';
 import 'package:weathercloset/routing/routes.dart';
+import 'package:weathercloset/routing/router.dart';
 
 class RootScreen extends StatefulWidget {
-  const RootScreen({super.key});
-
+const RootScreen({super.key, required this.child});
+  final Widget child;
   @override
   State<RootScreen> createState() => _RootScreenState();
 }
 
 class _RootScreenState extends State<RootScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
-  // 각 탭에 해당하는 화면들
-  final List<Widget> _screens = [
-    const ClosetScreen(),    // 옷장 화면
-    const CoordinatorScreen(),  // 홈 화면
-    const Center(child: Text('프로필')), // 임시 프로필 화면
-  ];
+  @override
+  void initState() {
+    super.initState();
+    debugPrint("✅ 루트 스크린 초기화");
+  }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      debugPrint("선택된 인덱스: $_selectedIndex");
+      switch (index) {
+        case 0:
+          context.go(Routes.closet);
+        case 1:
+          context.go(Routes.home);
+        case 2:
+          context.go(Routes.profile);
+      }
     });
   }
 
@@ -43,7 +50,7 @@ class _RootScreenState extends State<RootScreen> {
           ),
         ],
       ),
-      body: _screens[_selectedIndex],  // 선택된 인덱스에 해당하는 화면 표시
+      body: widget.child,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.shifting,
         items: const <BottomNavigationBarItem>[

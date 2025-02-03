@@ -46,11 +46,19 @@ class _ClothAddScreenState extends State<ClothAddScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.blue,
+                      ),
                       onPressed: widget.viewModel.takePhoto,
                       icon: const Icon(Icons.camera_alt),
                       label: const Text('카메라'),
                     ),
                     ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.blue,
+                      ),
                       onPressed: widget.viewModel.pickFromGallery,
                       icon: const Icon(Icons.photo_library),
                       label: const Text('갤러리'),
@@ -61,7 +69,7 @@ class _ClothAddScreenState extends State<ClothAddScreen> {
 
   Widget imageArea() {
     return Image.file(
-      File(widget.viewModel.cloth!.imagePath),
+      File(widget.viewModel.cloth!.imagePath!),
       fit: BoxFit.contain,
     );
   }
@@ -75,6 +83,9 @@ class _ClothAddScreenState extends State<ClothAddScreen> {
 
   ElevatedButton saveButtonArea() {
     return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.blue,
+      ),
       onPressed: () {
         widget.viewModel.saveCloth();
         context.pop();

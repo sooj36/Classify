@@ -28,9 +28,15 @@ class FirestoreService {
     .collection("users")
     .doc(firebaseAuth.currentUser!.uid)
     .collection("cloths")
-    .doc("major_category")
-    .collection("minor_category")
     .add(cloth);
+  }
+
+  Stream<QuerySnapshot> watchCloth() {
+    return _firestore
+    .collection("users")
+    .doc(firebaseAuth.currentUser!.uid)
+    .collection("cloths")
+    .snapshots();
   }
 
   // Future<UserModel> getUser({required UserModel user}) async {

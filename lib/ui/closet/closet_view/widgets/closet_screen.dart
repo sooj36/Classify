@@ -1,74 +1,78 @@
 import 'package:flutter/material.dart';
 import '../../../../routing/router.dart';
 import '../../../../routing/routes.dart';
-
+import '../view_models/closet_view_model.dart';
 
 class ClosetScreen extends StatefulWidget {
-  const ClosetScreen({super.key});
+  final ClosetViewModel viewModel;
+  const ClosetScreen({super.key, required this.viewModel});
 
   @override
   State<ClosetScreen> createState() => _ClosetScreenState();
 }
 
 class _ClosetScreenState extends State<ClosetScreen> {
-  final List<Map<String, dynamic>> categories = [
-    {'name': '상의', 'icon': Icons.local_laundry_service},
-    {'name': '하의', 'icon': Icons.layers},
-    {'name': '아우터', 'icon': Icons.dry_cleaning},
-    {'name': '신발', 'icon': Icons.hiking},
-    {'name': '모자', 'icon': Icons.face},
-    {'name': '액세서리', 'icon': Icons.watch},
-  ];
+  @override
+  void initState() {
+    super.initState();
+    widget.viewModel.fetchClothes();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('내 옷장', style: TextStyle(fontWeight: FontWeight.bold),),
-      ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(16),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-        ),
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          return Card(
-            elevation: 2,
-            child: InkWell(
-              // onTap: () {
-              //   // TODO: 카테고리 탭 처리
-              // },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    categories[index]['icon'],
-                    size: 48,
-                    color: Colors.blue,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    categories[index]['name'],
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+      body: StreamBuilder(
+        stream: widget.viewModel.clothes,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('에러 발생: ${snapshot.error}'));
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('옷장이 비어있습니다'));
+          }
+
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              final cloth = snapshot.data![index];
+              return ListTile(
+                title: Text(cloth.major ?? ""),
+                subtitle: Text(cloth.minor ?? ""),
+                trailing: Text(cloth.color ?? ""),
+              );
+            },
           );
-        },
+        }
       ),
-      floatingActionButton: FloatingActionButton(
+       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.blue,
         onPressed: () {
           router.push(Routes.clothAdd);
         },
         child: const Icon(Icons.add),
       ),
+
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

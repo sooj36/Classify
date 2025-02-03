@@ -2,20 +2,24 @@
 
 class ClothModel {
   final String? id;          // 옷 고유 ID
-  final String imagePath;    // 이미지 경로
-  final String? category;    // 카테고리 (상의, 하의 등)
+  final String? imagePath;    // 이미지 경로
   final String? color;       // 색상
+  final String? major;       // 대분류
+  final String? minor;       // 소분류
+  final String? material;    // 소재
   final String? season;      // 계절
   final DateTime createdAt;  // 생성일
   final String? response;    // 응답
   
   ClothModel({
     this.id,
-    required this.imagePath,
-    this.category,
+    this.imagePath,
     this.color,
+    this.major,
+    this.minor,
+    this.material,
     this.season,
-    required this.response,
+    this.response,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
@@ -52,8 +56,10 @@ class ClothModel {
   }) => ClothModel(
     id: id ?? this.id,
     imagePath: imagePath ?? this.imagePath,
-    category: category ?? this.category,
     color: color ?? this.color,
+    major: major ?? this.major,
+    minor: minor ?? this.minor,
+    material: material ?? this.material,
     season: season ?? this.season,
     response: response ?? response,
     createdAt: createdAt ?? this.createdAt,

@@ -48,7 +48,6 @@ class ClothRepositoryRemote extends ClothRepository {
 
   @override
   Future<void> saveCloth(ClothModel cloth) async {
-    //clothmodel의 response json을 dart map 형태로 파싱
 
     String cleanJson = cloth.response!
     .replaceAll("```json", "")
@@ -57,5 +56,30 @@ class ClothRepositoryRemote extends ClothRepository {
     //firestore에 저장
     await _firestoreService.saveCloth(responseMap);
     debugPrint("✅ 옷 저장 성공!");
+  }
+
+  @override
+  Stream<List<ClothModel>> watchCloth() {
+    final clothStream = _firestoreService.watchCloth();
+    
+    return clothStream.map(
+      (snapshot) {
+      return snapshot.docs.map(
+          (doc) {
+         Map<String, dynamic> data = doc.data() as Map<String, dynamic>; 
+        debugPrint("✅ 옷 데이터 체크! - clothrepositoryremote - ${data["대분류"]}");
+        debugPrint("✅ 옷 데이터 체크! - clothrepositoryremote - ${data["소분류"]}");
+        debugPrint("✅ 옷 데이터 체크! - clothrepositoryremote - ${data["색깔"]}");
+        debugPrint("✅ 옷 데이터 체크! - clothrepositoryremote - ${data["재질"]}");
+        return ClothModel(
+          major: data["대분류"] as String? ?? "",
+          minor: data["소분류"] as String? ?? "",
+          color: data["색깔"] as String? ?? "",
+          material: data["재질"] as String? ?? "",
+          );
+        }
+      )
+      .toList();
+    });
   }
 } 
