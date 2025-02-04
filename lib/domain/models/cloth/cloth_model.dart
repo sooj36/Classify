@@ -10,6 +10,7 @@ class ClothModel {
   final String? color;       // 색상
   final String? material;    // 소재
   final String? season;      // 계절
+  final String? imagePath;   // 이미지 경로
   ClothModel({
     this.id,
     this.file,
@@ -19,6 +20,7 @@ class ClothModel {
     this.color,
     this.material,
     this.season,
+    this.imagePath,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
@@ -52,15 +54,17 @@ class ClothModel {
     String? color,
     String? material,
     String? season,
+    String? imagePath,
     DateTime? createdAt,
   }) => ClothModel(
     id: id ?? this.id,
     file: file ?? this.file,
     major: major ?? this.major,
     minor: minor ?? this.minor,
-    color: color ?? this.color,
-    material: material ?? this.material,
+      color: color ?? this.color,
+      material: material ?? this.material,
     season: season ?? this.season,
     createdAt: createdAt ?? this.createdAt,
+    imagePath: imagePath ?? this.imagePath,
   );
 }

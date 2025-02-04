@@ -42,6 +42,7 @@ class _ClosetScreenState extends State<ClosetScreen> {
                 title: Text(cloth.major ?? ""),
                 subtitle: Text(cloth.minor ?? ""),
                 trailing: Text(cloth.color ?? ""),
+                leading: Image.network(cloth.imagePath ?? ""),
               );
             },
           );
@@ -55,7 +56,6 @@ class _ClosetScreenState extends State<ClosetScreen> {
         },
         child: const Icon(Icons.add),
       ),
-
     );
   }
 }

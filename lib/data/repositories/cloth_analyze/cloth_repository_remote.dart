@@ -72,12 +72,14 @@ class ClothRepositoryRemote extends ClothRepository {
         debugPrint("✅ 옷 데이터 체크! - clothrepositoryremote - ${data["소분류"]}");
         debugPrint("✅ 옷 데이터 체크! - clothrepositoryremote - ${data["색깔"]}");
         debugPrint("✅ 옷 데이터 체크! - clothrepositoryremote - ${data["재질"]}");
+        debugPrint("✅ 옷 데이터 체크! - clothrepositoryremote - ${data["imagePath"]}");
         return ClothModel(
           id: doc.id,
           major: data["대분류"] as String? ?? "",
           minor: data["소분류"] as String? ?? "",
           color: data["색깔"] as String? ?? "",
           material: data["재질"] as String? ?? "",
+          imagePath: data["imagePath"] as String? ?? "",
           );
         }
       )
