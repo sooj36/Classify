@@ -5,7 +5,6 @@ import 'package:weathercloset/data/services/gemini_service.dart';
 import 'package:weathercloset/domain/models/cloth/cloth_model.dart';
 import 'dart:typed_data';
 import 'dart:convert';
-import 'dart:io';
 import 'package:weathercloset/data/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 class ClothRepositoryRemote extends ClothRepository {
