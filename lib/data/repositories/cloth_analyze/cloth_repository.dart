@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weathercloset/domain/models/cloth/cloth_model.dart';
 import 'dart:typed_data';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 abstract class ClothRepository extends ChangeNotifier {
 

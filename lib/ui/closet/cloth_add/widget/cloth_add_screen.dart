@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import '../view_models/cloth_add_viewmodel.dart';
-import 'package:weathercloset/routing/routes.dart';
 import 'package:go_router/go_router.dart';
 
 class ClothAddScreen extends StatefulWidget {
@@ -48,7 +47,7 @@ class _ClothAddScreenState extends State<ClothAddScreen> {
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        foregroundColor: Colors.blue,
+                        foregroundColor: const Color.fromARGB(255, 185, 206, 223),
                       ),
                       onPressed: widget.viewModel.takePhoto,
                       icon: const Icon(Icons.camera_alt),

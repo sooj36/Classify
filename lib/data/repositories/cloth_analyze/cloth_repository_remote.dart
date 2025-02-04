@@ -5,6 +5,7 @@ import 'package:weathercloset/data/services/gemini_service.dart';
 import 'package:weathercloset/domain/models/cloth/cloth_model.dart';
 import 'dart:typed_data';
 import 'dart:convert';
+import 'dart:io';
 import 'package:weathercloset/data/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 class ClothRepositoryRemote extends ClothRepository {
@@ -48,7 +49,8 @@ class ClothRepositoryRemote extends ClothRepository {
 
   @override
   Future<void> saveCloth(ClothModel cloth) async {
-
+    final file = File(cloth.imagePath!);
+    // 옷 데이터 정리
     String cleanJson = cloth.response!
     .replaceAll("```json", "")
     .replaceAll("```", "");

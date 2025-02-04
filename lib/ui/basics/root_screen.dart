@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:weathercloset/ui/closet/closet_view/widgets/closet_screen.dart';
-import 'package:weathercloset/ui/basics/home_screen.dart';
 import 'package:weathercloset/routing/routes.dart';
-import 'package:weathercloset/routing/router.dart';
 
 class RootScreen extends StatefulWidget {
 const RootScreen({super.key, required this.child});
