@@ -1,25 +1,24 @@
-
+import 'package:cross_file/cross_file.dart';
 
 class ClothModel {
+  final XFile? file; // 원본 이미지 파일
   final String? id;          // 옷 고유 ID
-  final String? imagePath;    // 이미지 경로
-  final String? color;       // 색상
-  final String? major;       // 대분류
-  final String? minor;       // 소분류
-  final String? material;    // 소재
-  final String? season;      // 계절
   final DateTime createdAt;  // 생성일
   final String? response;    // 응답
-  
+  final String? major;       // 대분류
+  final String? minor;       // 소분류
+  final String? color;       // 색상
+  final String? material;    // 소재
+  final String? season;      // 계절
   ClothModel({
     this.id,
-    this.imagePath,
-    this.color,
+    this.file,
+    this.response,
     this.major,
     this.minor,
+    this.color,
     this.material,
     this.season,
-    this.response,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
@@ -47,21 +46,21 @@ class ClothModel {
   //객체의 일부 속성만 수정해서 새로운 객체를 반환하는 메서드
   ClothModel copyWith({
     String? id,
-    String? imagePath,
-    String? category,
+    XFile? file,
+    String? major,
+    String? minor,
     String? color,
+    String? material,
     String? season,
-    String? brand,
     DateTime? createdAt,
   }) => ClothModel(
     id: id ?? this.id,
-    imagePath: imagePath ?? this.imagePath,
+    file: file ?? this.file,
+    major: major ?? this.major,
+    minor: minor ?? this.minor,
     color: color ?? this.color,
-    major: major ?? major,
-    minor: minor ?? minor,
-    material: material ?? material,
+    material: material ?? this.material,
     season: season ?? this.season,
-    response: response ?? response,
     createdAt: createdAt ?? this.createdAt,
   );
 }

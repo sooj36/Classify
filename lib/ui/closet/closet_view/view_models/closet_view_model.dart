@@ -21,9 +21,16 @@ class ClosetViewModel extends ChangeNotifier {
 
   Future<void> fetchClothes() async {
     try {
+      debugPrint("✅ 옷 데이터 로드 시작!");
       _isLoading = true;
       _clothes = _clothRepositoryRemote.watchCloth();
       _clothes.listen((cloth) {
+        if (cloth.isEmpty) {
+          debugPrint("❌ 옷 데이터 로드 실패!");
+          _isLoading = false;
+          notifyListeners();
+          return;
+        }
         debugPrint("✅ 옷 데이터 로드 성공! - closetviewmodel - ${cloth[0].major}");
         debugPrint("✅ 옷 데이터 로드 성공! - closetviewmodel - ${cloth[0].minor}");
         debugPrint("✅ 옷 데이터 로드 성공! - closetviewmodel - ${cloth[0].color}");

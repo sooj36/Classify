@@ -27,11 +27,9 @@ class _ClosetScreenState extends State<ClosetScreen> {
           if (snapshot.hasError) {
             return Center(child: Text('에러 발생: ${snapshot.error}'));
           }
-
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('옷장이 비어있습니다'));
           }

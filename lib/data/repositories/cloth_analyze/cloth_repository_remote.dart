@@ -31,7 +31,7 @@ class ClothRepositoryRemote extends ClothRepository {
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
     final bytes = await image?.readAsBytes();
     final response = await analyzeImage(bytes);
-    return ClothModel(imagePath: image?.path ?? '', response: response);
+    return ClothModel(file: image, response: response);
   }
 
   @override
@@ -39,7 +39,7 @@ class ClothRepositoryRemote extends ClothRepository {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     final bytes = await image?.readAsBytes();
     final response = await analyzeImage(bytes);
-    return ClothModel(imagePath: image?.path ?? '', response: response);
+    return ClothModel(file: image, response: response);
   }
 
   @override
@@ -49,14 +49,13 @@ class ClothRepositoryRemote extends ClothRepository {
 
   @override
   Future<void> saveCloth(ClothModel cloth) async {
-    final file = File(cloth.imagePath!);
     // 옷 데이터 정리
     String cleanJson = cloth.response!
     .replaceAll("```json", "")
     .replaceAll("```", "");
     final responseMap = jsonDecode(cleanJson);
     //firestore에 저장
-    await _firestoreService.saveCloth(responseMap);
+    await _firestoreService.saveCloth(responseMap, cloth.file!);
     debugPrint("✅ 옷 저장 성공!");
   }
 
@@ -74,6 +73,7 @@ class ClothRepositoryRemote extends ClothRepository {
         debugPrint("✅ 옷 데이터 체크! - clothrepositoryremote - ${data["색깔"]}");
         debugPrint("✅ 옷 데이터 체크! - clothrepositoryremote - ${data["재질"]}");
         return ClothModel(
+          id: doc.id,
           major: data["대분류"] as String? ?? "",
           minor: data["소분류"] as String? ?? "",
           color: data["색깔"] as String? ?? "",

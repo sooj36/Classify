@@ -25,7 +25,7 @@ class _ClothAddScreenState extends State<ClothAddScreen> {
             : ListView(
                 children: [
                   cameraButtonArea(),
-                  if (widget.viewModel.cloth?.imagePath != null)
+                  if (widget.viewModel.cloth?.file != null)
                     imageArea(),
                   if (widget.viewModel.cloth?.response != null)
                     responseArea(),
@@ -68,7 +68,7 @@ class _ClothAddScreenState extends State<ClothAddScreen> {
 
   Widget imageArea() {
     return Image.file(
-      File(widget.viewModel.cloth!.imagePath!),
+      File(widget.viewModel.cloth!.file!.path),
       fit: BoxFit.contain,
     );
   }

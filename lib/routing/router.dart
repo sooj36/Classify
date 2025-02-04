@@ -15,8 +15,10 @@ import '../ui/closet/closet_view/view_models/closet_view_model.dart';
 import '../ui/closet/closet_view/widgets/closet_screen.dart';
 import '../ui/basics/home_screen.dart';
 import '../ui/basics/profile_screen.dart';
+import '../global/global.dart';
+
 final router = GoRouter(
-  initialLocation: Routes.home,
+  initialLocation: firebaseAuth.currentUser != null ? Routes.home : Routes.login,
   routes: [
     ShellRoute(
       builder: (context, state, child) => RootScreen(child: child),

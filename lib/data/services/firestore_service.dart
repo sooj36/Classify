@@ -1,6 +1,13 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:weathercloset/domain/models/auth/signup_user_model.dart';
 import 'package:weathercloset/global/global.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
+
+import 'package:cross_file/cross_file.dart';
+
+
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -23,12 +30,62 @@ class FirestoreService {
     await _firestore.collection("users").doc(firebaseAuth.currentUser!.uid).delete();
   }
 
-  Future<void> saveCloth(Map<String, dynamic> cloth) async {
-    await _firestore
-    .collection("users")
-    .doc(firebaseAuth.currentUser!.uid)
-    .collection("cloths")
-    .add(cloth);
+  Future<void> saveCloth(Map<String, dynamic> cloth, XFile file) async {
+    final localFile = File(file.path);
+    // Check if the file exists
+    if (!await localFile.exists()) {
+      debugPrint("❌ File not found at: ${file.path}");
+      throw Exception("File not found");
+    }
+    
+    // Create metadata for the file
+    final metadata = SettableMetadata(contentType: "image/jpeg");
+    
+    // Generate a unique storage path
+    final storagePath = "cloth_images/${DateTime.now().millisecondsSinceEpoch}.jpg";
+    final storageRef = FirebaseStorage.instance.ref().child(storagePath);
+    
+    // Start the upload task
+    final uploadTask = storageRef.putFile(localFile, metadata);
+    
+    // Listen for state changes using snapshotEvents
+    uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+      switch (snapshot.state) {
+        case TaskState.running:
+          final progress = 100.0 * (snapshot.bytesTransferred / snapshot.totalBytes);
+          debugPrint("Upload is ${progress.toStringAsFixed(2)}% complete.");
+          break;
+        case TaskState.paused:
+          debugPrint("Upload is paused.");
+          break;
+        case TaskState.canceled:
+          debugPrint("Upload was canceled.");
+          break;
+        case TaskState.error:
+          debugPrint("Upload encountered an error.");
+          break;
+        case TaskState.success:
+          debugPrint("Upload succeeded.");
+          break;
+      }
+    });
+    
+    // Await for the upload task to complete
+    final snapshot = await uploadTask;
+    if (snapshot.state == TaskState.success) {
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+      cloth["imagePath"] = downloadUrl;
+    
+      await _firestore
+        .collection("users")
+        .doc(firebaseAuth.currentUser!.uid)
+        .collection("cloths")
+        .add(cloth);
+      debugPrint("✅ Cloth saved successfully!");
+    } else {
+      debugPrint("❌ Upload failed with state: ${snapshot.state}");
+      throw Exception("Upload failed");
+    }
   }
 
   Stream<QuerySnapshot> watchCloth() {
