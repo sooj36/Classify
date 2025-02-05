@@ -23,7 +23,7 @@ class ClosetViewModel extends ChangeNotifier {
     try {
       debugPrint("✅ 옷 데이터 로드 시작!");
       _isLoading = true;
-      _clothes = _clothRepositoryRemote.watchCloth();
+      _clothes = _clothRepositoryRemote.watchCloth(); //어라 이거 중복 아니야?
       _clothes.listen((cloth) {
         if (cloth.isEmpty) {
           debugPrint("❌ 옷 데이터 로드 실패!");

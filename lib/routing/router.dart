@@ -13,9 +13,11 @@ import '../ui/closet/cloth_add/view_models/cloth_add_viewmodel.dart';
 import '../data/repositories/cloth_analyze/cloth_repository_remote.dart';
 import '../ui/closet/closet_view/view_models/closet_view_model.dart';
 import '../ui/closet/closet_view/widgets/closet_screen.dart';
-import '../ui/basics/home_screen.dart';
+import '../ui/coordi/widgets/coordi_screen.dart';
 import '../ui/basics/profile_screen.dart';
 import '../global/global.dart';
+import '../ui/coordi/view_models/coordi_viewmodel.dart';
+import '../data/repositories/weather/weather_repository_remote.dart';
 
 final router = GoRouter(
   initialLocation: firebaseAuth.currentUser != null ? Routes.home : Routes.login,
@@ -33,7 +35,11 @@ final router = GoRouter(
         ),
         GoRoute(
           path: Routes.home,
-          builder: (context, state) => const CoordinatorScreen(),
+          builder: (context, state) => CoordinatorScreen(
+            coordiViewModel: CoordiViewModel(
+              weatherRepositoryRemote: context.read<WeatherRepositoryRemote>(),
+            ),
+          ),
         ),
         GoRoute(
           path: Routes.profile,

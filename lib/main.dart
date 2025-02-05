@@ -11,6 +11,11 @@ import 'data/services/firebase_auth_service.dart';
 import 'data/services/firestore_service.dart';
 import 'data/services/gemini_service.dart';
 import 'data/repositories/cloth_analyze/cloth_repository_remote.dart';
+import 'data/repositories/weather/weather_repository_remote.dart';
+import 'data/services/weatherapi_service.dart';
+import 'data/services/geolocator_service.dart';
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //flutter engine과 app 연결
   try {
@@ -45,6 +50,12 @@ class MainApp extends StatelessWidget {
         Provider<GeminiService>(
           create: (_) => GeminiService(),
         ),
+        Provider<WeatherApiService>(
+          create: (_) => WeatherApiService(),
+        ),
+        Provider<GeolocatorService>(
+          create: (_) => GeolocatorService(),
+        ),
         ChangeNotifierProvider<AuthRepositoryRemote>(
           create: (context) => AuthRepositoryRemote(
             firebaseAuthService: context.read<FirebaseAuthService>(),
@@ -55,6 +66,12 @@ class MainApp extends StatelessWidget {
           create: (context) => ClothRepositoryRemote(
             geminiService: context.read<GeminiService>(),
             firestoreService: context.read<FirestoreService>(),
+          ),
+        ),
+        ChangeNotifierProvider<WeatherRepositoryRemote>(
+          create: (context) => WeatherRepositoryRemote(
+            weatherApiService: context.read<WeatherApiService>(),
+            geolocatorService: context.read<GeolocatorService>(),
           ),
         ),
       ],
