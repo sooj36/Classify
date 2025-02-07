@@ -66,7 +66,7 @@ class ClothRepositoryRemote extends ClothRepository {
       (snapshot) {
       return snapshot.docs.map(
           (doc) {
-         Map<String, dynamic> data = doc.data() as Map<String, dynamic>; 
+         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         debugPrint("✅ 옷 데이터 체크! - clothrepositoryremote - ${data["대분류"]}");
         debugPrint("✅ 옷 데이터 체크! - clothrepositoryremote - ${data["소분류"]}");
         debugPrint("✅ 옷 데이터 체크! - clothrepositoryremote - ${data["색깔"]}");

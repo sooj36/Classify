@@ -37,17 +37,156 @@ class _CoordinatorScreenState extends State<CoordinatorScreen> {
           }
           final weather = snapshot.data!;
           return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("현재 온도: ${weather.weatherData['current']['temperature_2m']}"),
-                Text("현재 바람: ${weather.weatherData['current']['windspeed_10m']}"),
-                Text("현재 날씨: ${weather.weatherData['current']['weathercode']}"),
-              ],
-            ),
+            child: weatherDataArea(weather),
           );
         },
       ),
     );
+  }
+
+  Column weatherDataArea(WeatherModel weather) {
+    return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 1,
+                      blurRadius: 6,
+                    ),
+                  ],
+                ),
+                child: Table(
+                  border: TableBorder.all(
+                    color: Colors.grey.withOpacity(0.2),
+                    width: 1,
+                  ),
+                  children: [
+                    TableRow(
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withOpacity(0.1),
+                      ),
+                      children: const [
+                        Padding(
+                          padding: EdgeInsets.all(12),
+                          child: Text(
+                            '구분',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(12),
+                          child: Text(
+                            '현재 날씨',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                    TableRow(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(12),
+                          child: Text(
+                            '온도',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Text(
+                            '${weather.weatherData['current']['temperature_2m']}°C',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                    TableRow(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(12),
+                          child: Text(
+                            '풍속',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Text(
+                            '${weather.weatherData['current']['windspeed_10m']}m/s',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                    TableRow(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(12),
+                          child: Text(
+                            '날씨',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Text(
+                            _getWeatherDescription(weather.weatherData['current']['weathercode']),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+  }
+
+  String _getWeatherDescription(int code) {
+    switch (code) {
+      case 0:
+        return '맑음';
+      case 1:
+      case 2:
+      case 3:
+        return '구름 있음';
+      case 45:
+      case 48:
+        return '안개';
+      case 51:
+      case 53:
+      case 55:
+        return '이슬비';
+      case 61:
+      case 63:
+      case 65:
+        return '비';
+      case 71:
+      case 73:
+      case 75:
+        return '눈';
+      case 77:
+        return '싸락눈';
+      case 80:
+      case 81:
+      case 82:
+        return '소나기';
+      case 85:
+      case 86:
+        return '눈소나기';
+      case 95:
+        return '천둥번개';
+      default:
+        return '알 수 없음';
+    }
   }
 }

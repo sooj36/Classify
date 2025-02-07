@@ -46,8 +46,4 @@ class ClosetViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-
-
-  
 }
