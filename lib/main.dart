@@ -15,7 +15,6 @@ import 'data/repositories/weather/weather_repository_remote.dart';
 import 'data/services/weatherapi_service.dart';
 import 'data/services/geolocator_service.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //flutter engine과 app 연결
   try {

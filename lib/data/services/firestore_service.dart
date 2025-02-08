@@ -10,7 +10,29 @@ import 'package:cross_file/cross_file.dart';
 
 
 class FirestoreService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late FirebaseFirestore _firestore;
+
+    FirestoreService() {
+
+    _firestore = FirebaseFirestore.instance;
+
+    _firestore.settings = const Settings(
+      persistenceEnabled: true,
+      webExperimentalForceLongPolling: true,
+    );
+
+      _firestore.enableNetwork().then((_) {
+    debugPrint("✅ Firestore network enabled");
+  }).catchError((error) {
+    debugPrint("❌ Failed to enable network: $error");
+  });
+
+    if (firebaseAuth.currentUser == null) {
+      debugPrint("❌ No authenticated user!");
+    } else {
+      debugPrint("✅ User is authenticated: ${firebaseAuth.currentUser!.uid}");
+    }
+  }
 
   Future<void> createUser({required UserModel user}) async {
     await _firestore.collection("users").doc(user.uid).set({

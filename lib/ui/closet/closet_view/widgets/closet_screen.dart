@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../../routing/router.dart';
 import '../../../../routing/routes.dart';
 import '../view_models/closet_view_model.dart';
-
 // class ClosetScreen extends StatefulWidget {
 
 
@@ -131,9 +130,10 @@ class _ClosetScreenState extends State<ClosetScreen> {
         )
       : Container(
           color: Colors.grey[200],
-          child: const Icon(Icons.image, size: 40),
-        );
+            child: const Icon(Icons.image, size: 40),
+          );
   }
+
 }
 
 
