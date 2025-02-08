@@ -20,7 +20,7 @@ class HiveService {
   }
 
   Stream<Map<dynamic, dynamic>> watchCloths() {
-  final box = Hive.box("clothes");
+  final box = Hive.box<ClothModel>("clothes");
   return box
       .watch()
       .map((_) => box.toMap())

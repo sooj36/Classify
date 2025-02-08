@@ -32,8 +32,7 @@ void main() async {
     final dir = await getApplicationDocumentsDirectory();
     Hive.init(dir.path);
     Hive.registerAdapter(ClothModelAdapter());
-    await Hive.openBox("clothes");
-    // Hive.box("clothes").clear();
+    await Hive.openBox<ClothModel>("clothes");
 
     debugPrint("✅ Hive 초기화 성공!");
 
