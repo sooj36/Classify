@@ -52,7 +52,7 @@ class FirestoreService {
     await _firestore.collection("users").doc(firebaseAuth.currentUser!.uid).delete();
   }
 
-  Future<void> saveCloth(Map<String, dynamic> cloth, XFile file) async {
+  Future<void> saveCloth(Map<String, dynamic> cloth, XFile file, String uuid) async {
     final localFile = File(file.path);
     // Check if the file exists
     if (!await localFile.exists()) {
@@ -102,7 +102,8 @@ class FirestoreService {
         .collection("users")
         .doc(firebaseAuth.currentUser!.uid)
         .collection("cloths")
-        .add(cloth);
+        .doc(uuid)
+        .set(cloth);
       debugPrint("✅ Cloth saved successfully!");
     } else {
       debugPrint("❌ Upload failed with state: ${snapshot.state}");

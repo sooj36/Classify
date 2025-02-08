@@ -7,16 +7,22 @@ import 'dart:typed_data';
 import 'dart:convert';
 import 'package:weathercloset/data/services/firestore_service.dart';
 import 'package:flutter/material.dart';
+import 'package:weathercloset/data/services/hive_service.dart';
+import 'package:uuid/uuid.dart';
+
 class ClothRepositoryRemote extends ClothRepository {
   final GeminiService _geminiService;
   final ImagePicker _picker;
   final FirestoreService _firestoreService;
+  final HiveService _hiveService;
   ClothRepositoryRemote({
     required GeminiService geminiService,
     required FirestoreService firestoreService,
+    required HiveService hiveService,
   }) : _geminiService = geminiService,
        _picker = ImagePicker(),
-       _firestoreService = firestoreService;
+       _firestoreService = firestoreService,
+       _hiveService = hiveService;
 
   @override
   Future<bool> requestPermissions() async {
@@ -53,13 +59,29 @@ class ClothRepositoryRemote extends ClothRepository {
     .replaceAll("```json", "")
     .replaceAll("```", "");
     final responseMap = jsonDecode(cleanJson);
+
+    final hiveCloth = ClothModel(
+      id: cloth.id,
+      major: responseMap["대분류"],
+      minor: responseMap["소분류"],
+      color: responseMap["색깔"],
+      material: responseMap["재질"],
+      localImagePath: cloth.file?.path,
+    );
+
+    final uuid = const Uuid().v4();
+
+    //hive에 저장(hive에는 직접적인 이미지 파일 저장은 불가하기 때문에 이미지 경로만 저장)
+    _hiveService.saveCloth(hiveCloth, uuid);
+    debugPrint("✅ hive 옷 저장 성공!");
+
     //firestore에 저장
-    await _firestoreService.saveCloth(responseMap, cloth.file!);
-    debugPrint("✅ 옷 저장 성공!");
+    await _firestoreService.saveCloth(responseMap, cloth.file!, uuid);
+    debugPrint("✅ firestore 옷 저장 성공!");
   }
 
   @override
-  Stream<List<ClothModel>> watchCloth() {
+  Stream<List<ClothModel>> watchClothRemote() {
     final clothStream = _firestoreService.watchCloth();
     
     return clothStream.map(
@@ -78,11 +100,31 @@ class ClothRepositoryRemote extends ClothRepository {
           minor: data["소분류"] as String? ?? "",
           color: data["색깔"] as String? ?? "",
           material: data["재질"] as String? ?? "",
-          imagePath: data["imagePath"] as String? ?? "",
+          remoteImagePath: data["imagePath"] as String? ?? "",
           );
         }
       )
       .toList();
     });
   }
+
+  @override
+  Stream<Map<String, ClothModel>> watchClothLocal() {
+    return _hiveService
+          .watchCloths()
+          .map(
+            (map) {
+              
+              return Map.fromEntries(
+                map.entries.map((e) => MapEntry(
+                  e.key.toString(),
+                  e.value as ClothModel,
+                )),
+              );
+            }
+          );
+  }
+
+
+  
 } 

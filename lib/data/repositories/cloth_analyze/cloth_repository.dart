@@ -14,5 +14,7 @@ abstract class ClothRepository extends ChangeNotifier {
 
   Future<void> saveCloth(ClothModel cloth);
 
-  Stream<List<ClothModel>> watchCloth();
+  Stream<List<ClothModel>> watchClothRemote();
+
+  Stream<Map<String, ClothModel>> watchClothLocal();
 } 

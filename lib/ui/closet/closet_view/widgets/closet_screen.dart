@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../../../routing/router.dart';
 import '../../../../routing/routes.dart';
+import '../../../../domain/models/cloth/cloth_model.dart';
 import '../view_models/closet_view_model.dart';
 // class ClosetScreen extends StatefulWidget {
 
@@ -23,7 +25,7 @@ class _ClosetScreenState extends State<ClosetScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<List>(
+      body: StreamBuilder<Map<String, ClothModel>>(
         stream: widget.viewModel.clothes,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -36,9 +38,10 @@ class _ClosetScreenState extends State<ClosetScreen> {
             return const Center(child: Text('옷장이 비어있습니다'));
           }
 
+          // 데이터 형식 변환
           final clothes = snapshot.data!;
-          // major 값들의 중복을 제거하여 유니크한 리스트 생성
-          final uniqueMajors = clothes.map((c) => c.major).toSet().toList();
+          // clothmodel의 major 값들의 중복을 제거하여 유니크한 리스트 생성
+          final uniqueMajors = clothes.values.map((c) => c.major).toSet().toList();
           
           return DefaultTabController(
             length: uniqueMajors.length,  // 유니크한 major 개수로 변경
@@ -55,7 +58,7 @@ class _ClosetScreenState extends State<ClosetScreen> {
                 Expanded(
                   child: TabBarView(
                     children: uniqueMajors.map((major) {
-                      final majorClothes = clothes.where((c) => c.major == major).toList();
+                      final majorClothes = clothes.values.where((c) => c.major == major).toList();
                       return GridView.builder(
                         padding: const EdgeInsets.all(16.0),
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -123,9 +126,9 @@ class _ClosetScreenState extends State<ClosetScreen> {
   }
 
   Widget _buildClothImage(cloth) {
-    return cloth.imagePath != null
-      ? Image.network(
-          cloth.imagePath!,
+    return cloth.localImagePath != null
+      ? Image.file(
+          File(cloth.localImagePath!),
           fit: BoxFit.cover,
         )
       : Container(

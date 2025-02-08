@@ -14,7 +14,10 @@ import 'data/repositories/cloth_analyze/cloth_repository_remote.dart';
 import 'data/repositories/weather/weather_repository_remote.dart';
 import 'data/services/weatherapi_service.dart';
 import 'data/services/geolocator_service.dart';
-
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
+import 'data/services/hive_service.dart';
+import 'domain/models/cloth/cloth_model.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //flutter engine과 app 연결
   try {
@@ -26,6 +29,14 @@ void main() async {
     debugPrint('✅ SharedPreferences 초기화 성공!');
     initGemini();
     debugPrint('✅ Gemini 초기화 성공!');
+    final dir = await getApplicationDocumentsDirectory();
+    Hive.init(dir.path);
+    Hive.registerAdapter(ClothModelAdapter());
+    await Hive.openBox("clothes");
+    // Hive.box("clothes").clear();
+
+    debugPrint("✅ Hive 초기화 성공!");
+
   } catch (e) {
     debugPrint('❌ 앱 초기화 실패: $e');
   }
@@ -55,6 +66,9 @@ class MainApp extends StatelessWidget {
         Provider<GeolocatorService>(
           create: (_) => GeolocatorService(),
         ),
+        Provider<HiveService>(
+          create: (_) => HiveService(),
+        ),
         ChangeNotifierProvider<AuthRepositoryRemote>(
           create: (context) => AuthRepositoryRemote(
             firebaseAuthService: context.read<FirebaseAuthService>(),
@@ -65,6 +79,7 @@ class MainApp extends StatelessWidget {
           create: (context) => ClothRepositoryRemote(
             geminiService: context.read<GeminiService>(),
             firestoreService: context.read<FirestoreService>(),
+            hiveService: context.read<HiveService>(),
           ),
         ),
         ChangeNotifierProvider<WeatherRepositoryRemote>(
