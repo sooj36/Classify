@@ -17,7 +17,7 @@ class _CoordinatorScreenState extends State<CoordinatorScreen> {
   @override
   void initState() {
     super.initState();
-    widget._coordiViewModel.fetchWeather();
+    widget._coordiViewModel.fetchWeatherAndClothes();
   }
 
   @override
@@ -37,7 +37,13 @@ class _CoordinatorScreenState extends State<CoordinatorScreen> {
           }
           final weather = snapshot.data!;
           return Center(
-            child: weatherDataArea(weather),
+            child: Column(
+              children: [
+                weatherDataArea(weather),
+                coordiResponseArea(widget._coordiViewModel),
+                requestCoordiButton(widget._coordiViewModel),
+              ]
+            ),
           );
         },
       ),
@@ -188,5 +194,20 @@ class _CoordinatorScreenState extends State<CoordinatorScreen> {
       default:
         return '알 수 없음';
     }
+  }
+
+  Text coordiResponseArea(CoordiViewModel viewModel) {
+    return Text(viewModel.coordiResponse);
+  }
+
+  ElevatedButton requestCoordiButton(CoordiViewModel viewModel) {
+    return ElevatedButton(
+      onPressed: () {
+        debugPrint('✅ 코디 요청 버튼 클릭');
+        viewModel.requestCoordi();
+        debugPrint('✅ 코디 요청 완료');
+      },
+      child: const Text('코디 요청', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+    );
   }
 }

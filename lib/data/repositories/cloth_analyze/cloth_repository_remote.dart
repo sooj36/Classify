@@ -125,6 +125,9 @@ class ClothRepositoryRemote extends ClothRepository {
           );
   }
 
-
+  @override
+  Future<String> requestCoordi(Map<String, dynamic> request) async {
+    return await _geminiService.requestCoordi(request);
+  }
   
 } 

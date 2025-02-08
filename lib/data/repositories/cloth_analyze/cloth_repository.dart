@@ -17,4 +17,6 @@ abstract class ClothRepository extends ChangeNotifier {
   Stream<List<ClothModel>> watchClothRemote();
 
   Stream<Map<String, ClothModel>> watchClothLocal();
+
+  Future<String> requestCoordi(Map<String, dynamic> request);
 } 

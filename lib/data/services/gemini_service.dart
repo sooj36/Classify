@@ -19,5 +19,17 @@ class GeminiService {
       return text ?? '';
   }
 
+  Future<String> requestCoordi(Map<String, dynamic> request) async {
+    final content = [
+      Content.multi([
+        TextPart(request.toString()),
+      ])
+    ];
+    var response = await model!.generateContent(content);
+    var text = response.text;
+    debugPrint('✅ 코디 분석 완료');
+    return text ?? '';
+  }
+
 
 }

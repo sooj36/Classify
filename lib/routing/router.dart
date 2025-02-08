@@ -38,6 +38,7 @@ final router = GoRouter(
           builder: (context, state) => CoordinatorScreen(
             coordiViewModel: CoordiViewModel(
               weatherRepositoryRemote: context.read<WeatherRepositoryRemote>(),
+              clothRepositoryRemote: context.read<ClothRepositoryRemote>(),
             ),
           ),
         ),
