@@ -1,37 +1,39 @@
 import 'package:hive/hive.dart';
 import '../../../domain/models/cloth/cloth_model.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:flutter/material.dart';
+
 
 class HiveService {
+  late final Box<ClothModel> _box;
+
+  // 생성자에서 box 초기화
+  HiveService() {
+    _box = Hive.box<ClothModel>("clothes");
+  }
 
   void saveCloth(ClothModel cloth, String uuid) {
-    Box box = Hive.box("clothes");
-
-    box.put(uuid, cloth);
+    _box.put(uuid, cloth);
   }
 
   Map<String, ClothModel> getCloths() {
-    final map = Hive.box("clothes").toMap();
+    final map = _box.toMap();
     return map.map(
-      (key, value) => 
-      MapEntry(key.toString(), value as ClothModel) //dynamic, dynamic을 타입 캐스팅
-      );
+      (key, value) => MapEntry(key.toString(), value as ClothModel)
+    );
   }
 
   Stream<Map<dynamic, dynamic>> watchCloths() {
-  final box = Hive.box<ClothModel>("clothes");
-  return box
-      .watch()
-      .map((_) => box.toMap())
-      .startWith(box.toMap());
-}
+    return _box
+        .watch()
+        .map((_) => _box.toMap())
+        .startWith(_box.toMap());
+  }
 
   void deleteCloth(String id) {
-    Hive.box("clothes").delete(id);
+    _box.delete(id);
   }
 
   void clear() {
-    Hive.box("clothes").clear();
+    _box.clear();
   }
 }

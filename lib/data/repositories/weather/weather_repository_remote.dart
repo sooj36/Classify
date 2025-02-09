@@ -27,7 +27,7 @@ class WeatherRepositoryRemote extends WeatherRepository {
       final weatherData = jsonDecode(response.body);
       _debugWeatherData(weatherData);
       return WeatherModel(weatherData);
-    });
+    }).asBroadcastStream();
 }
 
   @override

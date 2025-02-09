@@ -122,7 +122,7 @@ class ClothRepositoryRemote extends ClothRepository {
                 )),
               );
             }
-          );
+          ).asBroadcastStream();
   }
 
   @override
