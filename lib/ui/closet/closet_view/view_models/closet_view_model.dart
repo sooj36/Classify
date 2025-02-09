@@ -2,73 +2,31 @@ import 'package:flutter/material.dart';
 import '../../../../data/repositories/cloth_analyze/cloth_repository_remote.dart';
 import '../../../../domain/models/cloth/cloth_model.dart';
 
-// class ClosetViewModel extends ChangeNotifier {
-//   final ClothRepositoryRemote _clothRepositoryRemote;
-//   Stream<Map<String, ClothModel>> _clothes;
-//   bool _isLoading;
-//   String? _error;
 
-//   ClosetViewModel({
-//     required ClothRepositoryRemote clothRepositoryRemote,
-//   }) : _clothRepositoryRemote = clothRepositoryRemote,
-//   _clothes = clothRepositoryRemote.watchClothLocal(), //얘를 처음에 초기화시켜 주지 않고 const empty로 초기화해서 문제생겼었음왜일까
-//   _isLoading = false,
-//   _error = null;
-
-//   Stream<Map<String, ClothModel>> get clothes => _clothes;
-//   bool get isLoading => _isLoading;
-//   String? get error => _error;
-
-//   Future<void> fetchClothes() async {
-//     try {
-//       debugPrint("✅ 옷 데이터 로드 시작!");
-//       _isLoading = true;
-//       _clothes = _clothRepositoryRemote.watchClothLocal();
-//       final firstData = await (await _clothes.first).isEmpty;
-//       if (firstData) {
-//         debugPrint("❌ 옷 데이터 로드 실패!");
-//         _isLoading = false;
-//         notifyListeners();
-//         return;
-//       }
-//       _clothes.listen((cloth) {
-//         if (cloth.isEmpty) {
-//           debugPrint("❌ 옷 데이터 로드 실패!");
-//           _isLoading = false;
-//           notifyListeners();
-//           return;
-//         }
-//         debugPrint("✅ 옷 데이터 로드 성공! - closetviewmodel");
-//       });
-//       _isLoading = false;
-//       notifyListeners();
-//     } catch (e) {
-//       _error = e.toString();
-//       notifyListeners();
-//     } finally {
-//       _isLoading = false;
-//       notifyListeners();
-//     }
-//   }
-// }
-
+//StreamBuilder를 사용하지 않고 데이터를 캐시하여 사용하였음
+//화면을 전환하면 Stream으로부터 새 데이터가 오기 전까지는 데이터를 표시하지 않기 때문
 class ClosetViewModel extends ChangeNotifier {
   final ClothRepositoryRemote _clothRepositoryRemote;
-  late final Stream<Map<String, ClothModel>> _clothes;
+  late  Stream<Map<String, ClothModel>> _clothes;
+  Map<String, ClothModel> _cachedClothes;
   bool _isLoading = false;
   String? _error;
 
   ClosetViewModel({
     required ClothRepositoryRemote clothRepositoryRemote,
-  }) : _clothRepositoryRemote = clothRepositoryRemote {
+  }) : _clothRepositoryRemote = clothRepositoryRemote,
+  _cachedClothes = {},
+  _isLoading = false,
+  _error = null {
     _clothes = _clothRepositoryRemote.watchClothLocal();
   }
 
   Stream<Map<String, ClothModel>> get clothes => _clothes;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  Map<String, ClothModel> get cachedClothes => _cachedClothes;
 
-Future<void> fetchClothes() async {
+  Future<void> fetchClothes() async {
   try {
     debugPrint("⭐ 1. fetchClothes 시작");
     _isLoading = true;
@@ -82,14 +40,16 @@ Future<void> fetchClothes() async {
       debugPrint("⭐ 4. 데이터 받음: ${data.length}개");
       data.forEach((key, cloth) {
         debugPrint("""
-🧥 Cloth[$key]:
-  - id: ${cloth.id}
-  - major: ${cloth.major}
-  - minor: ${cloth.minor}
-""");
+            🧥 Cloth[$key]:
+              - id: ${cloth.id}
+              - major: ${cloth.major}
+              - minor: ${cloth.minor}
+            """);
       });
+      _cachedClothes = data;
+      notifyListeners();
+      _isLoading = false;
     }).asFuture();
-    
   } catch (e) {
     debugPrint("❌ 에러 발생: $e");
     _error = e.toString();

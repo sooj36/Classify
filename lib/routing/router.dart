@@ -23,23 +23,34 @@ final router = GoRouter(
   initialLocation: firebaseAuth.currentUser != null ? Routes.home : Routes.login,
   routes: [
     ShellRoute(
-      builder: (context, state, child) => RootScreen(child: child),
+        builder: (context, state, child) => MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (context) => CoordiViewModel(
+          weatherRepositoryRemote: context.read<WeatherRepositoryRemote>(),
+          clothRepositoryRemote: context.read<ClothRepositoryRemote>(),
+        ),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => ClosetViewModel(
+          clothRepositoryRemote: context.read<ClothRepositoryRemote>(),
+        ),
+      ),
+      // ProfileViewModel도 필요하다면 여기에
+    ],
+    child: RootScreen(child: child),
+  ),
       routes: [
-        GoRoute(
+                GoRoute(
           path: Routes.closet,
           builder: (context, state) => ClosetScreen(
-            viewModel: ClosetViewModel(
-              clothRepositoryRemote: context.read<ClothRepositoryRemote>(),
-            ),
+            viewModel: context.read<ClosetViewModel>(),
           ),
         ),
         GoRoute(
           path: Routes.home,
           builder: (context, state) => CoordinatorScreen(
-            coordiViewModel: CoordiViewModel(
-              weatherRepositoryRemote: context.read<WeatherRepositoryRemote>(),
-              clothRepositoryRemote: context.read<ClothRepositoryRemote>(),
-            ),
+            coordiViewModel: context.read<CoordiViewModel>(),
           ),
         ),
         GoRoute(

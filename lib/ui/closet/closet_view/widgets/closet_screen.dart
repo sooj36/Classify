@@ -19,27 +19,32 @@ class _ClosetScreenState extends State<ClosetScreen> {
   @override
   void initState() {
     super.initState();
-    widget.viewModel.fetchClothes();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.viewModel.fetchClothes();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<Map<String, ClothModel>>(
-        stream: widget.viewModel.clothes,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(child: Text('에러 발생: ${snapshot.error}'));
+      body: ListenableBuilder(
+        listenable: widget.viewModel,
+        builder: (context, _) {
+          if (widget.viewModel.error != null) {
+            return Center(child: Text('에러 발생: ${widget.viewModel.error}'));
           }
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (widget.viewModel.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          if (widget.viewModel.cachedClothes == null) {
+            return const Center(child: Text('옷장이 비어있습니다'));
+          }
+          if (widget.viewModel.cachedClothes.isEmpty) {
             return const Center(child: Text('옷장이 비어있습니다'));
           }
 
           // 데이터 형식 변환
-          final clothes = snapshot.data!;
+          final clothes = widget.viewModel.cachedClothes;
           // clothmodel의 major 값들의 중복을 제거하여 유니크한 리스트 생성
           final uniqueMajors = clothes.values.map((c) => c.major).toSet().toList();
           

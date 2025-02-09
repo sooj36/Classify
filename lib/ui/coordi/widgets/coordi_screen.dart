@@ -17,40 +17,47 @@ class _CoordinatorScreenState extends State<CoordinatorScreen> {
   @override
   void initState() {
     super.initState();
-    widget._coordiViewModel.fetchWeatherAndClothes();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget._coordiViewModel.fetchWeatherAndClothes();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<WeatherModel>(
-        stream: widget._coordiViewModel.weatherStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(child: Text('에러 발생: ${snapshot.error}'));
+      body: ListenableBuilder(
+        listenable: widget._coordiViewModel,
+        builder: (context, _) {
+          if (widget._coordiViewModel.error != null) {
+            return Center(child: Text('에러 발생: ${widget._coordiViewModel.error}'));
           }
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (widget._coordiViewModel.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (!snapshot.hasData) {
-            return const Center(child: Text('데이터가 없습니다'));
+          if (widget._coordiViewModel.cachedWeather == null) {
+            return const Center(child: Text('날씨 데이터가 없습니다'));
           }
-          final weather = snapshot.data!;
-          return Center(
-            child: Column(
+          return Column(
               children: [
-                weatherDataArea(weather),
+                weatherDataArea(widget._coordiViewModel.cachedWeather),
                 coordiResponseArea(widget._coordiViewModel),
                 requestCoordiButton(widget._coordiViewModel),
               ]
-            ),
-          );
+            );
         },
       ),
     );
   }
 
-  Column weatherDataArea(WeatherModel weather) {
+  Column weatherDataArea(WeatherModel? weather) {
+    if (weather == null) {
+      return const Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('날씨 데이터가 없습니다'),
+        ],
+      );
+    }
     return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -210,4 +217,6 @@ class _CoordinatorScreenState extends State<CoordinatorScreen> {
       child: const Text('코디 요청', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
     );
   }
+
+  
 }
