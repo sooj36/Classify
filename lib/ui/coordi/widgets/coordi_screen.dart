@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../view_models/coordi_viewmodel.dart';
 import '../../../../domain/models/weather/weather_model.dart';
+import 'dart:io';
+import '../../../../domain/models/cloth/cloth_model.dart';
 
 class CoordinatorScreen extends StatefulWidget {
   final CoordiViewModel _coordiViewModel;
@@ -37,13 +39,18 @@ class _CoordinatorScreenState extends State<CoordinatorScreen> {
           if (widget._coordiViewModel.cachedWeather == null) {
             return const Center(child: Text('날씨 데이터가 없습니다'));
           }
-          return Column(
+          debugPrint('👕 코디 텍스트: ${widget._coordiViewModel.coordiTexts}');
+          return SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: Column(
               children: [
                 weatherDataArea(widget._coordiViewModel.cachedWeather),
                 coordiResponseArea(widget._coordiViewModel),
+                coordiTextArea(widget._coordiViewModel),
                 requestCoordiButton(widget._coordiViewModel),
-              ]
-            );
+              ],
+            ),
+          );
         },
       ),
     );
@@ -203,8 +210,21 @@ class _CoordinatorScreenState extends State<CoordinatorScreen> {
     }
   }
 
-  Text coordiResponseArea(CoordiViewModel viewModel) {
-    return Text(viewModel.coordiResponse);
+  Expanded coordiResponseArea(CoordiViewModel viewModel) {
+    return Expanded(
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: viewModel.coordiClothes!.length,
+          itemBuilder: (context, index) {
+          debugPrint('👕 코디 옷 리스트 작성 시작: ${viewModel.coordiClothes!.map((cloth) => '\n${cloth.major}').join()}');
+          final cloth = viewModel.coordiClothes![index];
+          return SizedBox(
+            width: 130,
+            child: individualCards(cloth),
+          );
+        },
+      ),
+    );  
   }
 
   ElevatedButton requestCoordiButton(CoordiViewModel viewModel) {
@@ -218,5 +238,99 @@ class _CoordinatorScreenState extends State<CoordinatorScreen> {
     );
   }
 
-  
+  Card individualCards(cloth) {
+  debugPrint('👕 개별 카드 작성 시작: ${cloth.major}');
+  return Card(
+    clipBehavior: Clip.antiAlias,
+    child: SizedBox(  // 고정된 크기 지정
+      height: 70,    // 카드의 높이 지정
+      child: Column(
+  crossAxisAlignment: CrossAxisAlignment.stretch,
+  children: [
+    Expanded(   
+      flex: 3,  // 이미지 영역이 더 크게
+      child: _buildClothImage(cloth),
+    ),
+    Expanded(   
+      flex: 1,  // 텍스트 영역이 더 작게
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Text(
+              cloth.minor ?? '',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+            const Spacer(),
+          ],
+        ),
+      ),
+    ),
+  ],
+),
+    ),
+  );
+}
+
+  Widget _buildClothImage(ClothModel cloth) {
+    return cloth.localImagePath != null
+      ? Image.file(
+          File(cloth.localImagePath!),
+          fit: BoxFit.cover,
+        )
+      : Container(
+          color: Colors.grey[200],
+            child: const Icon(Icons.image, size: 40),
+          );
+  }
+
+  Widget coordiTextArea(CoordiViewModel viewModel) {
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 500),
+      opacity: viewModel.coordiTexts.isEmpty ? 0.0 : 1.0,
+      child: Container(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 8,
+            ),
+          ],
+          border: Border.all(
+            color: Colors.grey.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
+        child: Column(
+          children: [
+            const Icon(Icons.auto_awesome, color: Colors.amber),
+            const SizedBox(height: 8),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 500),
+              child: Text(
+                viewModel.coordiTexts,
+                key: ValueKey(viewModel.coordiTexts),
+                style: const TextStyle(
+                  fontSize: 16,
+                  height: 1.5,
+                  letterSpacing: 0.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
 }

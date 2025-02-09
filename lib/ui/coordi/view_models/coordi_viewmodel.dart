@@ -13,8 +13,10 @@ class CoordiViewModel extends ChangeNotifier {
   late Stream<Map<String, ClothModel>> _clothesStream;
   WeatherModel? _cachedWeather;
   Map<String, ClothModel>? _cachedClothes;
+  List<ClothModel>? _coordiClothes;
   bool _isLoading;
   String _coordiResponse;
+  String _coordiTexts;
 
   String? _error;
 
@@ -25,6 +27,8 @@ class CoordiViewModel extends ChangeNotifier {
   _clothRepositoryRemote = clothRepositoryRemote,
   _isLoading = false,
   _coordiResponse = "",
+  _coordiClothes = [],
+  _coordiTexts = "",
   _error = null;
 
   bool get isLoading => _isLoading;
@@ -33,7 +37,8 @@ class CoordiViewModel extends ChangeNotifier {
   String get coordiResponse => _coordiResponse;
   WeatherModel? get cachedWeather => _cachedWeather;
   Map<String, ClothModel>? get cachedClothes => _cachedClothes;
-
+  List<ClothModel>? get coordiClothes => _coordiClothes;
+  String get coordiTexts => _coordiTexts;
   Future<void> fetchWeatherAndClothes() async {
     try {
       _isLoading = true;
@@ -82,10 +87,12 @@ class CoordiViewModel extends ChangeNotifier {
           "windpseed": _cachedWeather!.weatherData["current"]["windspeed_10m"],
         },
         "옷장": clothesList,
-        "요청": "오늘 날씨에 어떤 옷을 입을지 너무 고민됩니다. 그래서 세계 최고의 코디네이터인 당신에게 묻습니다. 당신은 특히나 여러 코디 배색 법칙을 활용한 색깔의 마술사라고도 불리는 천재입니다. 아래의 json 형식으로 입어야 할 옷들의 uuid와 왜 그렇게 입어야 하는지 이유를 50자 이내로 반환해주세요. 만약 내가 당신에게 보낸 옷 리스트만으로 최고의 코디를 만들 수 없다면 솔직하게 말해주고 어떤 옷이 있으면 좋을지 추천해주세요 그리고 적절한 이모티콘을 딱 하나만 활용해서 친절한 느낌으로 답변해주세요",
+        "요청": "오늘 날씨에 어떤 옷을 입을지 너무 고민됩니다. 그래서 세계 최고의 코디네이터인 당신에게 묻습니다. 당신은 특히나 여러 코디 배색 법칙을 활용한 색깔의 마술사라고도 불리는 천재입니다. 아래의 json 형식으로 입어야 할 옷들의 uuid와 왜 그렇게 입어야 하는지 이유를 50자 이내로 반환해주세요. 만약 내가 당신에게 보낸 옷 리스트만으로 최고의 코디를 만들 수 없다면 솔직하게 말해주고 어떤 옷이 있으면 좋을지 추천해주세요 그리고 적절한 이모티콘을 딱 하나만 활용해서 친절한 느낌으로 답변해주세요 그리고 json 형식이므로 모든 key와 모든 value가 각각 큰따옴표로 감싼 응답을 줘야 합니다. 마크다운의 코드블록으로 감싸지지 않은 순수한 문자열로 주세요.",
         "형식": {
           "uuid": {
-            "uuid": "string, string, string, string",
+            "id1": "string",
+            "id2": "string",
+            "id3": "string",
           },
           "이유": "string"
         }
@@ -102,11 +109,16 @@ class CoordiViewModel extends ChangeNotifier {
       final request = await _createCoordiRequest();
       debugPrint('✅ 코디 요청 데이터 생성 완료 - viewmodel');
       _coordiResponse = await _clothRepositoryRemote.requestCoordi(request);
+      debugPrint('👕 코디 요청 결과: $_coordiResponse');
+      _coordiClothes = _clothRepositoryRemote.getCoordiClothes(_coordiResponse, _cachedClothes!);
+      _coordiTexts = _clothRepositoryRemote.getCoordiTexts(_coordiResponse);
+      debugPrint('👕 코디 옷 리스트: ${_coordiClothes!.map((cloth) => '\n${cloth.major}').join()}');
       debugPrint("코디 요청 결과: $_coordiResponse");
       debugPrint('✅ 코디 요청 완료 - viewmodel');
+      _isLoading = false;
       notifyListeners();
     } catch (e) {
-      _error = e.toString();
+      _error = "${e.toString()} $_coordiResponse";
       notifyListeners();
     } finally {
       _isLoading = false;

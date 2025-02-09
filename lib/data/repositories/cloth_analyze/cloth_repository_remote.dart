@@ -127,7 +127,30 @@ class ClothRepositoryRemote extends ClothRepository {
 
   @override
   Future<String> requestCoordi(Map<String, dynamic> request) async {
-    return await _geminiService.requestCoordi(request);
+    final response = await _geminiService.requestCoordi(request);
+    response.replaceAll("```json", "");
+    response.replaceAll("```", "");
+    return response;
   }
-  
+
+  @override
+  List<ClothModel> getCoordiClothes(String response, Map<String, ClothModel> cachedClothes) {
+    response.replaceAll("```json", "");
+    response.replaceAll("```", "");
+    final responseMap = jsonDecode(response);
+
+    final uuidMap = responseMap["uuid"] as Map<String, dynamic>;
+    final uuidList = uuidMap.values.toList();
+
+    // 단순히 말해 map 메서드는 iterable을 대상으로 foreach를 돌리는 것이라고 생각하면 됨
+    final coordiClothes = uuidList.map((e) => cachedClothes[e]!).toList();
+    return coordiClothes;
+  }
+
+  @override
+  String getCoordiTexts(String response) {
+    final responseMap = jsonDecode(response);
+    final reason = responseMap["이유"] as String? ?? "";
+    return reason;
+  }
 } 
