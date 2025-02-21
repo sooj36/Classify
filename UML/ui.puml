@@ -1,0 +1,259 @@
+@startuml
+skinparam linetype ortho
+set namespaceSeparator ::
+
+class "weathercloset::ui::basics::root_screen.dart::RootScreen" {
+  +Widget child
+  +State<RootScreen> createState()
+}
+
+"weathercloset::ui::basics::root_screen.dart::RootScreen" o-- "flutter::src::widgets::framework.dart::Widget"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "weathercloset::ui::basics::root_screen.dart::RootScreen"
+
+class "weathercloset::ui::basics::root_screen.dart::_RootScreenState" {
+  -int _selectedIndex
+  +void initState()
+  -void _onItemTapped()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "weathercloset::ui::basics::root_screen.dart::_RootScreenState"
+
+class "weathercloset::ui::basics::profile_screen.dart::ProfileScreen" {
+  +State<ProfileScreen> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "weathercloset::ui::basics::profile_screen.dart::ProfileScreen"
+
+class "weathercloset::ui::basics::profile_screen.dart::_ProfileScreenState" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "weathercloset::ui::basics::profile_screen.dart::_ProfileScreenState"
+
+class "weathercloset::ui::basics::initial_loading_screen.dart::InitialLoadingScreen" {
+  +State<InitialLoadingScreen> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "weathercloset::ui::basics::initial_loading_screen.dart::InitialLoadingScreen"
+
+class "weathercloset::ui::basics::initial_loading_screen.dart::_InitialLoadingScreenState" {
+  +void initState()
+  +Widget build()
+  +dynamic startTimer()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "weathercloset::ui::basics::initial_loading_screen.dart::_InitialLoadingScreenState"
+
+class "weathercloset::ui::auth::signup::view_models::signup_viewmodel.dart::SignUpViewModel" {
+  -AuthRepositoryRemote _repository
+  -bool _isLoading
+  -String? _error
+  +bool isLoading
+  +String? error
+  +dynamic signUp()
+  -bool _validateInputs()
+}
+
+"weathercloset::ui::auth::signup::view_models::signup_viewmodel.dart::SignUpViewModel" o-- "weathercloset::data::repositories::auth::auth_repository_remote.dart::AuthRepositoryRemote"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "weathercloset::ui::auth::signup::view_models::signup_viewmodel.dart::SignUpViewModel"
+
+class "weathercloset::ui::auth::signup::widgets::signup_screen.dart::SignupScreen" {
+  +TextEditingController nameController
+  +TextEditingController emailController
+  +TextEditingController passwordController
+  +TextEditingController confirmPasswordController
+  +TextEditingController phoneController
+  -SignUpViewModel _viewModel
+  +Widget build()
+  +Form signUpForm()
+  +ElevatedButton signUpButton()
+}
+
+"weathercloset::ui::auth::signup::widgets::signup_screen.dart::SignupScreen" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"weathercloset::ui::auth::signup::widgets::signup_screen.dart::SignupScreen" o-- "weathercloset::ui::auth::signup::view_models::signup_viewmodel.dart::SignUpViewModel"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "weathercloset::ui::auth::signup::widgets::signup_screen.dart::SignupScreen"
+
+class "weathercloset::ui::auth::login::view_models::login_viewmodel.dart::LoginViewModel" {
+  -AuthRepositoryRemote _authRepositoryRemote
+  -bool _isLoading
+  -String? _error
+  -bool _rememberMe
+  -String? _savedEmail
+  +bool isLoading
+  +String? error
+  +bool rememberMe
+  +String? savedEmail
+  -void _initializeEmail()
+  +void setRememberMe()
+  +dynamic login()
+  -bool _validateInputs()
+}
+
+"weathercloset::ui::auth::login::view_models::login_viewmodel.dart::LoginViewModel" o-- "weathercloset::data::repositories::auth::auth_repository_remote.dart::AuthRepositoryRemote"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "weathercloset::ui::auth::login::view_models::login_viewmodel.dart::LoginViewModel"
+
+class "weathercloset::ui::auth::login::widgets::login_screen.dart::LoginScreen" {
+  +LoginViewModel viewModel
+  +State<LoginScreen> createState()
+}
+
+"weathercloset::ui::auth::login::widgets::login_screen.dart::LoginScreen" o-- "weathercloset::ui::auth::login::view_models::login_viewmodel.dart::LoginViewModel"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "weathercloset::ui::auth::login::widgets::login_screen.dart::LoginScreen"
+
+class "weathercloset::ui::auth::login::widgets::login_screen.dart::_LoginScreenState" {
+  +TextEditingController emailController
+  +TextEditingController passwordController
+  +Widget build()
+  +Form loginForm()
+  +Widget buildButtons()
+}
+
+"weathercloset::ui::auth::login::widgets::login_screen.dart::_LoginScreenState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "weathercloset::ui::auth::login::widgets::login_screen.dart::_LoginScreenState"
+
+class "weathercloset::ui::setting::widgets::setting_screen.dart::SettingScreen" {
+  +State<SettingScreen> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "weathercloset::ui::setting::widgets::setting_screen.dart::SettingScreen"
+
+class "weathercloset::ui::setting::widgets::setting_screen.dart::_SettingScreenState" {
+  +Widget build()
+  -dynamic _logout()
+  -dynamic _deleteAccount()
+  -dynamic _showDeleteConfirmDialog()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "weathercloset::ui::setting::widgets::setting_screen.dart::_SettingScreenState"
+
+class "weathercloset::ui::coordi::view_models::coordi_viewmodel.dart::CoordiViewModel" {
+  -WeatherRepositoryRemote _weatherRepositoryRemote
+  -ClothRepositoryRemote _clothRepositoryRemote
+  -Stream<WeatherModel> _weatherStream
+  -Stream<Map<String, ClothModel>> _clothesStream
+  -WeatherModel? _cachedWeather
+  -Map<String, ClothModel>? _cachedClothes
+  -List<ClothModel>? _coordiClothes
+  -bool _isLoading
+  -String _coordiResponse
+  -String _coordiTexts
+  -String _image
+  -String? _error
+  +bool isLoading
+  +String? error
+  +Stream<WeatherModel> weatherStream
+  +String coordiResponse
+  +WeatherModel? cachedWeather
+  +Map<String, ClothModel>? cachedClothes
+  +List<ClothModel>? coordiClothes
+  +String coordiTexts
+  +dynamic fetchWeatherAndClothes()
+  -dynamic _createCoordiRequest()
+  +dynamic requestCoordi()
+}
+
+"weathercloset::ui::coordi::view_models::coordi_viewmodel.dart::CoordiViewModel" o-- "weathercloset::data::repositories::weather::weather_repository_remote.dart::WeatherRepositoryRemote"
+"weathercloset::ui::coordi::view_models::coordi_viewmodel.dart::CoordiViewModel" o-- "weathercloset::data::repositories::cloth_analyze::cloth_repository_remote.dart::ClothRepositoryRemote"
+"weathercloset::ui::coordi::view_models::coordi_viewmodel.dart::CoordiViewModel" o-- "dart::async::Stream<WeatherModel>"
+"weathercloset::ui::coordi::view_models::coordi_viewmodel.dart::CoordiViewModel" o-- "dart::async::Stream<Map<String, ClothModel>>"
+"weathercloset::ui::coordi::view_models::coordi_viewmodel.dart::CoordiViewModel" o-- "weathercloset::domain::models::weather::weather_model.dart::WeatherModel"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "weathercloset::ui::coordi::view_models::coordi_viewmodel.dart::CoordiViewModel"
+
+class "weathercloset::ui::coordi::widgets::coordi_screen.dart::CoordinatorScreen" {
+  -CoordiViewModel _coordiViewModel
+  +State<CoordinatorScreen> createState()
+}
+
+"weathercloset::ui::coordi::widgets::coordi_screen.dart::CoordinatorScreen" o-- "weathercloset::ui::coordi::view_models::coordi_viewmodel.dart::CoordiViewModel"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "weathercloset::ui::coordi::widgets::coordi_screen.dart::CoordinatorScreen"
+
+class "weathercloset::ui::coordi::widgets::coordi_screen.dart::_CoordinatorScreenState" {
+  +void initState()
+  +Widget build()
+  +Column weatherDataArea()
+  -String _getWeatherDescription()
+  +Expanded coordiResponseArea()
+  +ElevatedButton requestCoordiButton()
+  +Card individualCards()
+  -Widget _buildClothImage()
+  +Widget coordiTextArea()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "weathercloset::ui::coordi::widgets::coordi_screen.dart::_CoordinatorScreenState"
+
+class "weathercloset::ui::closet::cloth_add::widget::cloth_add_screen.dart::ClothAddScreen" {
+  +ClothAddViewModel viewModel
+  +State<ClothAddScreen> createState()
+}
+
+"weathercloset::ui::closet::cloth_add::widget::cloth_add_screen.dart::ClothAddScreen" o-- "weathercloset::ui::closet::cloth_add::view_models::cloth_add_viewmodel.dart::ClothAddViewModel"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "weathercloset::ui::closet::cloth_add::widget::cloth_add_screen.dart::ClothAddScreen"
+
+class "weathercloset::ui::closet::cloth_add::widget::cloth_add_screen.dart::_ClothAddScreenState" {
+  +Widget build()
+  +Row cameraButtonArea()
+  +Widget imageArea()
+  +Text responseArea()
+  +ElevatedButton saveButtonArea()
+  +Text errorArea()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "weathercloset::ui::closet::cloth_add::widget::cloth_add_screen.dart::_ClothAddScreenState"
+
+class "weathercloset::ui::closet::cloth_add::view_models::cloth_add_viewmodel.dart::ClothAddViewModel" {
+  -ClothRepositoryRemote _clothRepositoryRemote
+  -ClothModel? _cloth
+  -String? _analyzeResult
+  -bool _isLoading
+  -String? _error
+  +ClothModel? cloth
+  +bool isLoading
+  +String? error
+  +String? analyzeResult
+  +dynamic takePhoto()
+  +dynamic pickFromGallery()
+  -void _setLoading()
+  +dynamic saveCloth()
+}
+
+"weathercloset::ui::closet::cloth_add::view_models::cloth_add_viewmodel.dart::ClothAddViewModel" o-- "weathercloset::data::repositories::cloth_analyze::cloth_repository_remote.dart::ClothRepositoryRemote"
+"weathercloset::ui::closet::cloth_add::view_models::cloth_add_viewmodel.dart::ClothAddViewModel" o-- "weathercloset::domain::models::cloth::cloth_model.dart::ClothModel"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "weathercloset::ui::closet::cloth_add::view_models::cloth_add_viewmodel.dart::ClothAddViewModel"
+
+class "weathercloset::ui::closet::closet_view::view_models::closet_view_model.dart::ClosetViewModel" {
+  -ClothRepositoryRemote _clothRepositoryRemote
+  -Stream<Map<String, ClothModel>> _clothes
+  -Map<String, ClothModel> _cachedClothes
+  -bool _isLoading
+  -String? _error
+  +Stream<Map<String, ClothModel>> clothes
+  +bool isLoading
+  +String? error
+  +Map<String, ClothModel> cachedClothes
+  +dynamic fetchClothes()
+}
+
+"weathercloset::ui::closet::closet_view::view_models::closet_view_model.dart::ClosetViewModel" o-- "weathercloset::data::repositories::cloth_analyze::cloth_repository_remote.dart::ClothRepositoryRemote"
+"weathercloset::ui::closet::closet_view::view_models::closet_view_model.dart::ClosetViewModel" o-- "dart::async::Stream<Map<String, ClothModel>>"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "weathercloset::ui::closet::closet_view::view_models::closet_view_model.dart::ClosetViewModel"
+
+class "weathercloset::ui::closet::closet_view::widgets::closet_screen.dart::ClosetScreen" {
+  +ClosetViewModel viewModel
+  +State<ClosetScreen> createState()
+}
+
+"weathercloset::ui::closet::closet_view::widgets::closet_screen.dart::ClosetScreen" o-- "weathercloset::ui::closet::closet_view::view_models::closet_view_model.dart::ClosetViewModel"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "weathercloset::ui::closet::closet_view::widgets::closet_screen.dart::ClosetScreen"
+
+class "weathercloset::ui::closet::closet_view::widgets::closet_screen.dart::_ClosetScreenState" {
+  +void initState()
+  +Widget build()
+  +Card individualCards()
+  -Widget _buildClothImage()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "weathercloset::ui::closet::closet_view::widgets::closet_screen.dart::_ClosetScreenState"
+
+
+@enduml

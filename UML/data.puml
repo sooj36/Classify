@@ -1,0 +1,128 @@
+@startuml
+skinparam linetype ortho
+set namespaceSeparator ::
+
+abstract class "weathercloset::data::repositories::auth::auth_repository.dart::AuthRepository" {
+  +dynamic login()
+  +dynamic logout()
+  +dynamic signUp()
+  +dynamic deleteAccount()
+}
+
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "weathercloset::data::repositories::auth::auth_repository.dart::AuthRepository"
+
+class "weathercloset::data::repositories::auth::auth_repository_remote.dart::AuthRepositoryRemote" {
+  -FirebaseAuthService _firebaseAuthService
+  -FirestoreService _firestoreService
+  +dynamic login()
+  +dynamic logout()
+  +dynamic signUp()
+  +dynamic deleteAccount()
+  +dynamic saveEmail()
+  +String? getSavedEmail()
+}
+
+"weathercloset::data::repositories::auth::auth_repository.dart::AuthRepository" <|-- "weathercloset::data::repositories::auth::auth_repository_remote.dart::AuthRepositoryRemote"
+
+class "weathercloset::data::repositories::weather::weather_repository_remote.dart::WeatherRepositoryRemote" {
+  -WeatherApiService _weatherApiService
+  -GeolocatorService _geolocatorService
+  +Stream<WeatherModel> watchWeather()
+  +dynamic getCurrentLocation()
+  -void _debugWeatherData()
+}
+
+"weathercloset::data::repositories::weather::weather_repository.dart::WeatherRepository" <|-- "weathercloset::data::repositories::weather::weather_repository_remote.dart::WeatherRepositoryRemote"
+
+abstract class "weathercloset::data::repositories::weather::weather_repository.dart::WeatherRepository" {
+  +Stream<WeatherModel> watchWeather()
+  +dynamic getCurrentLocation()
+}
+
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "weathercloset::data::repositories::weather::weather_repository.dart::WeatherRepository"
+
+class "weathercloset::data::repositories::cloth_analyze::cloth_repository_remote.dart::ClothRepositoryRemote" {
+  -GeminiService _geminiService
+  -ImagePicker _picker
+  -FirestoreService _firestoreService
+  -HiveService _hiveService
+  -RunwareService _runwareService
+  +dynamic requestPermissions()
+  +dynamic getImageFromCamera()
+  +dynamic getImageFromGallery()
+  +dynamic analyzeImage()
+  +dynamic saveCloth()
+  +Stream<List<ClothModel>> watchClothRemote()
+  +Stream<Map<String, ClothModel>> watchClothLocal()
+  +dynamic requestCoordi()
+  +List<ClothModel> getCoordiClothes()
+  +String getCoordiTexts()
+  +dynamic getFinalCoordiImage()
+}
+
+"weathercloset::data::repositories::cloth_analyze::cloth_repository.dart::ClothRepository" <|-- "weathercloset::data::repositories::cloth_analyze::cloth_repository_remote.dart::ClothRepositoryRemote"
+
+abstract class "weathercloset::data::repositories::cloth_analyze::cloth_repository.dart::ClothRepository" {
+  +dynamic requestPermissions()
+  +dynamic getImageFromCamera()
+  +dynamic getImageFromGallery()
+  +dynamic analyzeImage()
+  +dynamic saveCloth()
+  +Stream<List<ClothModel>> watchClothRemote()
+  +Stream<Map<String, ClothModel>> watchClothLocal()
+  +dynamic requestCoordi()
+  +List<ClothModel> getCoordiClothes()
+  +String getCoordiTexts()
+  +dynamic getFinalCoordiImage()
+}
+
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "weathercloset::data::repositories::cloth_analyze::cloth_repository.dart::ClothRepository"
+
+class "weathercloset::data::services::firestore_service.dart::FirestoreService" {
+  -FirebaseFirestore _firestore
+  +dynamic createUser()
+  +dynamic deleteUser()
+  +dynamic saveCloth()
+  +Stream<QuerySnapshot<Object?>> watchCloth()
+}
+
+class "weathercloset::data::services::firebase_auth_service.dart::FirebaseAuthService" {
+  -FirebaseAuth _auth
+  +dynamic signUp()
+  +dynamic login()
+  +dynamic logout()
+  +dynamic deleteAccount()
+}
+
+class "weathercloset::data::services::hive_service.dart::HiveService" {
+  -Box<ClothModel> _box
+  +void saveCloth()
+  +Map<String, ClothModel> getCloths()
+  +Stream<Map<dynamic, dynamic>> watchCloths()
+  +void deleteCloth()
+  +void clear()
+}
+
+class "weathercloset::data::services::weatherapi_service.dart::WeatherApiService" {
+  +dynamic fetchWeather()
+}
+
+class "weathercloset::data::services::geolocator_service.dart::GeolocatorService" {
+  +Stream<Position> watchLocation()
+  +dynamic getCurrentLocation()
+}
+
+class "weathercloset::data::services::gemini_service.dart::GeminiService" {
+  +dynamic analyzeImage()
+  +dynamic requestCoordi()
+}
+
+class "weathercloset::data::services::runware_service.dart::RunwareService" {
+  -String _apiKey
+  -String _apiUrl
+  -String _uuid
+  +dynamic generateImage()
+}
+
+
+@enduml
