@@ -23,4 +23,6 @@ abstract class ClothRepository extends ChangeNotifier {
   List<ClothModel> getCoordiClothes(String response, Map<String, ClothModel> cachedClothes);
 
   String getCoordiTexts(String response);
+
+  Future<String> getFinalCoordiImage(List<ClothModel> coordiClothes);
 } 

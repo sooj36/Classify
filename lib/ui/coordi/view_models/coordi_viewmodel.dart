@@ -17,6 +17,7 @@ class CoordiViewModel extends ChangeNotifier {
   bool _isLoading;
   String _coordiResponse;
   String _coordiTexts;
+  String _image;
 
   String? _error;
 
@@ -29,6 +30,7 @@ class CoordiViewModel extends ChangeNotifier {
   _coordiResponse = "",
   _coordiClothes = [],
   _coordiTexts = "",
+  _image = "",
   _error = null;
 
   bool get isLoading => _isLoading;
@@ -110,10 +112,11 @@ class CoordiViewModel extends ChangeNotifier {
       debugPrint('✅ 코디 요청 데이터 생성 완료 - viewmodel');
       _coordiResponse = await _clothRepositoryRemote.requestCoordi(request);
       debugPrint('👕 코디 요청 결과: $_coordiResponse');
+      //코디 옷 리스트, 코디 텍스트, 코디 이미지 생성(데이터 변환이므로 repository의 책임)
       _coordiClothes = _clothRepositoryRemote.getCoordiClothes(_coordiResponse, _cachedClothes!);
       _coordiTexts = _clothRepositoryRemote.getCoordiTexts(_coordiResponse);
+      _image = await _clothRepositoryRemote.getFinalCoordiImage(_coordiClothes!);
       debugPrint('👕 코디 옷 리스트: ${_coordiClothes!.map((cloth) => '\n${cloth.major}').join()}');
-      debugPrint("코디 요청 결과: $_coordiResponse");
       debugPrint('✅ 코디 요청 완료 - viewmodel');
       _isLoading = false;
       notifyListeners();
@@ -125,4 +128,8 @@ class CoordiViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  
+
+
 }

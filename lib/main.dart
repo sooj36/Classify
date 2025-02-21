@@ -18,6 +18,8 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'data/services/hive_service.dart';
 import 'domain/models/cloth/cloth_model.dart';
+import 'data/services/runware_service.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //flutter engine과 app 연결
   try {
@@ -79,6 +81,7 @@ class MainApp extends StatelessWidget {
             geminiService: context.read<GeminiService>(),
             firestoreService: context.read<FirestoreService>(),
             hiveService: context.read<HiveService>(),
+            runwareService: context.read<RunwareService>(),
           ),
         ),
         ChangeNotifierProvider<WeatherRepositoryRemote>(

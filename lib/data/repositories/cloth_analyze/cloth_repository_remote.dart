@@ -9,20 +9,23 @@ import 'package:weathercloset/data/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:weathercloset/data/services/hive_service.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:weathercloset/data/services/runware_service.dart';
 class ClothRepositoryRemote extends ClothRepository {
   final GeminiService _geminiService;
   final ImagePicker _picker;
   final FirestoreService _firestoreService;
   final HiveService _hiveService;
+  final RunwareService _runwareService;
   ClothRepositoryRemote({
     required GeminiService geminiService,
     required FirestoreService firestoreService,
     required HiveService hiveService,
+    required RunwareService runwareService,
   }) : _geminiService = geminiService,
        _picker = ImagePicker(),
        _firestoreService = firestoreService,
-       _hiveService = hiveService;
+       _hiveService = hiveService,
+       _runwareService = runwareService;
 
   @override
   Future<bool> requestPermissions() async {
@@ -153,5 +156,46 @@ class ClothRepositoryRemote extends ClothRepository {
     final responseMap = jsonDecode(response);
     final reason = responseMap["이유"] as String? ?? "";
     return reason;
+  }
+
+  //캐릭터가 코디를 실제로 입은 모습의 이미지를 생성하려면
+  //세 가지 정보를 합쳐서 보내야 함
+  //이미지 생성 템플릿 + 옷의 대분류 & 옷 묘사문 + seed값
+
+    @override
+    Future<String> getFinalCoordiImage(List<ClothModel> coordiClothes) async {
+    final Map<String, String> clothMap = {
+      for (var cloth in coordiClothes)
+        if (cloth.major != null && cloth.response != null)
+          cloth.major!: cloth.response!
+    };
+
+    // 1. entries로 MapEntry 반환
+    // [MapEntry(상의, 티셔츠), MapEntry(하의, 청바지)]
+
+    // 2. map으로 각각을 문자열로 변환
+    // ["{상의: 티셔츠}", "{하의: 청바지}"]
+
+    // 3. join(', ')으로 하나의 문자열로 합침
+    // "{상의: 티셔츠}, {하의: 청바지}"
+    final String clothesDetail = clothMap.entries
+        .map((e) => '{${e.key}: ${e.value}}')
+        .join(', ');
+    final positivePrompt = '''
+    [Base Character Template]
+    Young woman in her 20s, full body front view from head to toe. 
+    Natural standing pose with arms slightly away from body. 
+    Neutral face expression with shoulder-length black hair. 
+    Clean detailed style, neutral lighting. 
+    Complete figure with all body parts visible. 
+    Flat colour anime style.
+
+    [Outfit Description]
+    Wearing: {
+      $clothesDetail
+    }
+    ''';
+    final response = await _runwareService.generateImage(positivePrompt);
+    return response;
   }
 } 
