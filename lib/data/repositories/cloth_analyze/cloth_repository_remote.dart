@@ -67,6 +67,7 @@ class ClothRepositoryRemote extends ClothRepository {
       color: responseMap["색깔"],
       material: responseMap["재질"],
       localImagePath: cloth.file?.path,
+      response: cloth.response!
     );
 
     final uuid = const Uuid().v4();
