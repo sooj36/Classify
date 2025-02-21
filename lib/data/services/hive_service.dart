@@ -18,7 +18,7 @@ class HiveService {
   Map<String, ClothModel> getCloths() {
     final map = _box.toMap();
     return map.map(
-      (key, value) => MapEntry(key.toString(), value as ClothModel)
+      (key, value) => MapEntry(key.toString(), value)
     );
   }
 

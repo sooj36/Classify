@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../../../routing/router.dart';
 import '../../../../routing/routes.dart';
-import '../../../../domain/models/cloth/cloth_model.dart';
 import '../view_models/closet_view_model.dart';
 // class ClosetScreen extends StatefulWidget {
 
@@ -35,9 +34,6 @@ class _ClosetScreenState extends State<ClosetScreen> {
           }
           if (widget.viewModel.isLoading) {
             return const Center(child: CircularProgressIndicator());
-          }
-          if (widget.viewModel.cachedClothes == null) {
-            return const Center(child: Text('옷장이 비어있습니다'));
           }
           if (widget.viewModel.cachedClothes.isEmpty) {
             return const Center(child: Text('옷장이 비어있습니다'));
