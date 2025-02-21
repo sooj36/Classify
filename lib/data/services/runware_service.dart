@@ -27,7 +27,7 @@ class RunwareService {
         "steps": 28,
         "CFGScale": 3.5,
         "scheduler": "FlowMatchEulerDiscreteScheduler",
-        "outputType": ["URL"],
+        "outputType": "URL",
         "includeCost": false,
         "seed": 5533262550305924,
         "lora": [{
@@ -36,7 +36,8 @@ class RunwareService {
         }]
       }),
     );
-
+    int res = response.statusCode;
+    debugPrint("✅ 이미지 생성 프로세스! - $res");
     if (response.statusCode == 200) {
       debugPrint("✅ 이미지 생성 성공!");
       return response.body;
