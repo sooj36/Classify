@@ -70,6 +70,9 @@ class MainApp extends StatelessWidget {
         Provider<HiveService>(
           create: (_) => HiveService(),
         ),
+        Provider<RunwareService>(
+          create: (_) => RunwareService(),
+        ),
         ChangeNotifierProvider<AuthRepositoryRemote>(
           create: (context) => AuthRepositoryRemote(
             firebaseAuthService: context.read<FirebaseAuthService>(),
