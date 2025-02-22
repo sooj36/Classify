@@ -6,16 +6,11 @@ import 'package:flutter/material.dart';
 class RunwareService {
   final String _apiKey = 'mUupomybPRmwNrUjnb02Ch4wsbdvmTX4';
   final String _apiUrl = 'https://api.runware.ai/v1';
-  final String _uuid = Uuid().v4();
+  final String _uuid = const Uuid().v4();
 
   Future<String> generateImage(String positiveprompt) async {
-    final response = await http.post(
-      Uri.parse(_apiUrl),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $_apiKey',
-      },
-      body: jsonEncode({
+
+    final body = jsonEncode({
         "taskType": "imageInference",
         "taskUUID": _uuid,
         "positivePrompt": positiveprompt,
@@ -34,8 +29,21 @@ class RunwareService {
           "model": "civitai:180891@838667",
           "weight": 1
         }]
-      }),
+      });
+
+    final bodyBytes = utf8.encode(body);
+    final contentLength = bodyBytes.length;
+
+    final response = await http.post(
+      Uri.parse(_apiUrl),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $_apiKey',
+        'Content-Length': contentLength.toString(),
+      },
+      body: body,
     );
+    debugPrint('response.body: ${response.body}');
     int res = response.statusCode;
     debugPrint("✅ 이미지 생성 프로세스! - $res");
     if (response.statusCode == 200) {
