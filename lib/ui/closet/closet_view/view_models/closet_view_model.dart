@@ -27,35 +27,40 @@ class ClosetViewModel extends ChangeNotifier {
   Map<String, ClothModel> get cachedClothes => _cachedClothes;
 
   Future<void> fetchClothes() async {
-  try {
-    debugPrint("⭐ 1. fetchClothes 시작");
-    _isLoading = true;
-    notifyListeners();
-    
-    debugPrint("⭐ 2. Stream 접근 시도");
-    final stream = _clothRepositoryRemote.watchClothLocal();
-    
-    debugPrint("⭐ 3. Stream.first 대기 시작");
-    await stream.listen((data) {
-      debugPrint("⭐ 4. 데이터 받음: ${data.length}개");
-      data.forEach((key, cloth) {
-        debugPrint("""
+    try {
+      debugPrint("⭐ 1. fetchClothes 시작");
+      _isLoading = true;
+      notifyListeners();
+      
+      debugPrint("⭐ 2. Stream 접근 시도");
+      final stream = _clothRepositoryRemote.watchClothLocal();
+      
+      debugPrint("⭐ 3. Stream.first 대기 시작");
+      await stream.listen((data) {
+        debugPrint("⭐ 4. 데이터 받음: ${data.length}개");
+        data.forEach((key, cloth) {
+          debugPrint("""
             🧥 Cloth[$key]:
               - id: ${cloth.id}
               - major: ${cloth.major}
               - minor: ${cloth.minor}
             """);
-      });
-      _cachedClothes = data;
-      notifyListeners();
+        });
+        _cachedClothes = data;
+        notifyListeners();
+        _isLoading = false;
+      }).asFuture();
+    } catch (e) {
+      debugPrint("❌ 에러 발생: $e");
+      _error = e.toString();
+    } finally {
       _isLoading = false;
-    }).asFuture();
-  } catch (e) {
-    debugPrint("❌ 에러 발생: $e");
-    _error = e.toString();
-  } finally {
-    _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteCloth(String clothId) async {
+    await _clothRepositoryRemote.deleteCloth(clothId);
     notifyListeners();
   }
-}
 }

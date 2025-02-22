@@ -25,4 +25,6 @@ abstract class ClothRepository extends ChangeNotifier {
   String getCoordiTexts(String response);
 
   Future<String> getFinalCoordiImage(List<ClothModel> coordiClothes);
+
+  Future<void> deleteCloth(String clothId);
 } 

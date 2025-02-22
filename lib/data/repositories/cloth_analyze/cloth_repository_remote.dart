@@ -10,6 +10,18 @@ import 'package:flutter/material.dart';
 import 'package:weathercloset/data/services/hive_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:weathercloset/data/services/runware_service.dart';
+
+/*
+  [기본 가이드]
+  ClothRepository에서는 데이터 변환이 빈번하게 발생하므로 아래 개념을 정확히 이해해야 함:
+   - Map: 키-값 쌍을 저장하는 자료구조
+   - map(): 데이터를 변환하는 메서드(원본 데이터는 유지되고 새로운 컬렉션 반환)
+   - Entry: Map의 각 키-값 쌍을 나타내는 단위
+   예: map.entries.map((e) => ...) 
+      => Map 자료구조의 각 Entry에 대해 map 메서드가 인자로 받는 변환 함수 적용
+*/
+
+
 class ClothRepositoryRemote extends ClothRepository {
   final GeminiService _geminiService;
   final ImagePicker _picker;
@@ -57,7 +69,6 @@ class ClothRepositoryRemote extends ClothRepository {
 
   @override
   Future<void> saveCloth(ClothModel cloth) async {
-    // 옷 데이터 정리
     String cleanJson = cloth.response!
     .replaceAll("```json", "")
     .replaceAll("```", "");
@@ -75,11 +86,9 @@ class ClothRepositoryRemote extends ClothRepository {
 
     final uuid = const Uuid().v4();
 
-    //hive에 저장(hive에는 직접적인 이미지 파일 저장은 불가하기 때문에 이미지 경로만 저장)
     _hiveService.saveCloth(hiveCloth, uuid);
     debugPrint("✅ hive 옷 저장 성공!");
 
-    //firestore에 저장
     await _firestoreService.saveCloth(responseMap, cloth.file!, uuid);
     debugPrint("✅ firestore 옷 저장 성공!");
   }
@@ -115,18 +124,18 @@ class ClothRepositoryRemote extends ClothRepository {
   @override
   Stream<Map<String, ClothModel>> watchClothLocal() {
     return _hiveService
-          .watchCloths()
-          .map(
-            (map) {
-              
-              return Map.fromEntries(
-                map.entries.map((e) => MapEntry(
-                  e.key.toString(),
-                  e.value as ClothModel,
-                )),
-              );
-            }
-          ).asBroadcastStream();
+      .watchCloths()
+      .map((map) {
+        return Map.fromEntries(
+          map.entries.map((e) {
+            final cloth = e.value as ClothModel; // Hive에서 가져온 value를 ClothModel로 캐스팅
+            return MapEntry(
+              e.key.toString(),
+              cloth.copyWith(id: e.key.toString()),
+            );
+          }),
+        );
+      }).asBroadcastStream();
   }
 
   @override
@@ -146,7 +155,6 @@ class ClothRepositoryRemote extends ClothRepository {
     final uuidMap = responseMap["uuid"] as Map<String, dynamic>;
     final uuidList = uuidMap.values.toList();
 
-    // 단순히 말해 map 메서드는 iterable을 대상으로 foreach를 돌리는 것이라고 생각하면 됨
     final coordiClothes = uuidList.map((e) => cachedClothes[e]!).toList();
     return coordiClothes;
   }
@@ -170,14 +178,7 @@ class ClothRepositoryRemote extends ClothRepository {
           cloth.major!: cloth.response!
     };
 
-    // 1. entries로 MapEntry 반환
-    // [MapEntry(상의, 티셔츠), MapEntry(하의, 청바지)]
 
-    // 2. map으로 각각을 문자열로 변환
-    // ["{상의: 티셔츠}", "{하의: 청바지}"]
-
-    // 3. join(', ')으로 하나의 문자열로 합침
-    // "{상의: 티셔츠}, {하의: 청바지}"
     final String clothesDetail = clothMap.entries
         .map((e) => '{${e.key}: ${e.value}}')
         .join(', ');
@@ -197,5 +198,13 @@ class ClothRepositoryRemote extends ClothRepository {
     ''';
     final response = await _runwareService.generateImage(positivePrompt);
     return response;
+  }
+
+  @override
+  Future<void> deleteCloth(String clothId) async {
+    _hiveService.deleteCloth(clothId);
+    debugPrint("✅ hive 옷 삭제 성공!");
+    await _firestoreService.deleteCloth(clothId);
+    debugPrint("✅ firestore 옷 삭제 성공!");
   }
 } 

@@ -119,6 +119,10 @@ class FirestoreService {
     .snapshots();
   }
 
+  Future<void> deleteCloth(String clothId) async {
+    await _firestore.collection("users").doc(firebaseAuth.currentUser!.uid).collection("cloths").doc(clothId).delete();
+  }
+
   // Future<UserModel> getUser({required UserModel user}) async {
   //   final userData = await _firestore.collection("users").doc(user.uid).get();
   //   return UserModel(
