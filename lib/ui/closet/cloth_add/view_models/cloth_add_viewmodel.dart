@@ -21,10 +21,10 @@ class ClothAddViewModel extends ChangeNotifier {
   Future<void> takePhoto() async {
     try {
       _setLoading(true);
-      final hasPermission = await _clothRepositoryRemote.requestPermissions();
-      if (!hasPermission) {
-        throw '카메라 및 저장소 권한이 필요합니다.';
-      }
+      // final hasPermission = await _clothRepositoryRemote.requestPermissions();
+      // if (!hasPermission) {
+      //   throw '카메라 및 저장소 권한이 필요합니다.';
+      // }
       final clothModel = await _clothRepositoryRemote.getImageFromCamera();
       _cloth = clothModel;
       notifyListeners();

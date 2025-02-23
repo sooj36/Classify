@@ -51,7 +51,7 @@ class _ClothAddScreenState extends State<ClothAddScreen> {
                       ),
                       onPressed: widget.viewModel.takePhoto,
                       icon: const Icon(Icons.camera_alt),
-                      label: const Text('카메라'),
+                      label: const Text('카메라', style: TextStyle(color: Colors.black),),
                     ),
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
@@ -60,7 +60,7 @@ class _ClothAddScreenState extends State<ClothAddScreen> {
                       ),
                       onPressed: widget.viewModel.pickFromGallery,
                       icon: const Icon(Icons.photo_library),
-                      label: const Text('갤러리'),
+                      label: const Text('갤러리', style: TextStyle(color: Colors.black),),
                     ),
                   ],
                 );
