@@ -5,6 +5,8 @@ import 'package:weathercloset/data/services/geolocator_service.dart';
 import 'package:weathercloset/domain/models/weather/location_model.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+
+
 class WeatherRepositoryRemote extends WeatherRepository {
   final WeatherApiService _weatherApiService;
   final GeolocatorService _geolocatorService;
@@ -19,7 +21,7 @@ class WeatherRepositoryRemote extends WeatherRepository {
   Stream<WeatherModel> watchWeather() {
   return _geolocatorService
     .watchLocation()
-    .asyncMap((position) async {  // asyncMap 사용하여 
+    .asyncMap((position) async {
       final response = await _weatherApiService.fetchWeather(
         position.latitude,
         position.longitude

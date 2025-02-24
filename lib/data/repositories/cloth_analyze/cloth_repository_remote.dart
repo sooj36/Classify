@@ -13,7 +13,7 @@ import 'package:weathercloset/data/services/runware_service.dart';
 
 /*
   [기본 가이드]
-  ClothRepository에서는 데이터 변환이 빈번하게 발생하므로 아래 개념을 정확히 이해해야 함:
+  ClothRepository에서는 [데이터 변환이 빈번하게 발생]하므로 아래 개념을 정확히 이해해야 함:
    - Map: 키-값 쌍을 저장하는 자료구조
    - map(): 데이터를 변환하는 메서드(원본 데이터는 유지되고 새로운 컬렉션 반환)
    - Entry: Map의 각 키-값 쌍을 나타내는 단위
@@ -166,10 +166,6 @@ class ClothRepositoryRemote extends ClothRepository {
     return reason;
   }
 
-  //캐릭터가 코디를 실제로 입은 모습의 이미지를 생성하려면
-  //세 가지 정보를 합쳐서 보내야 함
-  //이미지 생성 템플릿 + 옷의 대분류 & 옷 묘사문 + seed값
-
     @override
     Future<String> getFinalCoordiImage(List<ClothModel> coordiClothes) async {
     final Map<String, String> clothMap = {
@@ -178,10 +174,12 @@ class ClothRepositoryRemote extends ClothRepository {
           cloth.major!: cloth.response!
     };
 
-
     final String clothesDetail = clothMap.entries
         .map((e) => '{${e.key}: ${e.value}}')
         .join(', ');
+
+    //캐릭터가 코디를 실제로 입은 모습의 이미지를 생성하려면 세 가지 정보를 positivePrompt에 합쳐서 보내야 함
+    //이미지 생성 프롬프트 템플릿 + 옷의 대분류 & 옷 묘사문 + seed값(나중에 추가할 예정)
     final positivePrompt = '''
     [Base Character Template]
     Young woman in her 20s, full body front view from head to toe. 
