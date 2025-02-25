@@ -24,11 +24,11 @@ class FirestoreService {
       _firestore.enableNetwork().then((_) {
     debugPrint("✅ Firestore network enabled");
   }).catchError((error) {
-    debugPrint("❌ Failed to enable network: $error");
+    debugPrint("❌ Failed to enable network: $error in [firestore_service]");
   });
 
     if (firebaseAuth.currentUser == null) {
-      debugPrint("❌ No authenticated user!");
+      debugPrint("❌ No authenticated user! in [firestore_service]");
     } else {
       debugPrint("✅ User is authenticated: ${firebaseAuth.currentUser!.uid}");
     }
@@ -56,7 +56,7 @@ class FirestoreService {
     final localFile = File(file.path);
     // Check if the file exists
     if (!await localFile.exists()) {
-      debugPrint("❌ File not found at: ${file.path}");
+      debugPrint("❌ File not found at: ${file.path} in [saveCloth method] in [firestore_service]");
       throw Exception("File not found");
     }
     
@@ -106,7 +106,7 @@ class FirestoreService {
         .set(cloth);
       debugPrint("✅ Cloth saved successfully!");
     } else {
-      debugPrint("❌ Upload failed with state: ${snapshot.state}");
+      debugPrint("❌ Upload failed with state: ${snapshot.state} in [saveCloth method] in [firestore_service]");
       throw Exception("Upload failed");
     }
   }

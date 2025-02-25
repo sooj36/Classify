@@ -37,7 +37,7 @@ class LoginViewModel extends ChangeNotifier {
 
   Future<bool> login(String email, String password) async {
     if (!_validateInputs(email, password)) {
-      debugPrint("❌ 입력값 검증 실패");
+      debugPrint("❌ 입력값 검증 실패 in [login method] in [login_viewmodel]");
       return false;
     }
     _isLoading = true;

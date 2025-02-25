@@ -51,7 +51,7 @@ class ClosetViewModel extends ChangeNotifier {
         _isLoading = false;
       }).asFuture();
     } catch (e) {
-      debugPrint("❌ 에러 발생: $e");
+      debugPrint("❌ 에러 발생: $e in [fetchClothes method] in [closet_view_model]");
       _error = e.toString();
     } finally {
       _isLoading = false;

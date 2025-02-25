@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:weathercloset/global/global.dart';
+import 'package:flutter/foundation.dart';
 
 class FirebaseAuthService {
   final FirebaseAuth _auth = firebaseAuth;
@@ -36,6 +37,7 @@ class FirebaseAuthService {
       if (user == null) return;
       await user.delete();
     } catch (e) {
+      debugPrint("❌ 계정 삭제 실패 in [deleteAccount method] in [firebase_auth_service]: $e");
       rethrow;
     }
   }

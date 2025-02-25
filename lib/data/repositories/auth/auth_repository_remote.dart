@@ -25,7 +25,7 @@ class AuthRepositoryRemote extends AuthRepository {
       debugPrint("✅ 로그인 성공: ${userCredential.user!.uid}");
       return true;
     } catch (e) {
-      debugPrint("❌ 로그인 실패: $e");
+      debugPrint("❌ 로그인 실패 in [login method] in [auth_repository_remote]: $e");
       return false;
     }
   }
@@ -37,7 +37,7 @@ class AuthRepositoryRemote extends AuthRepository {
       debugPrint("✅ 로그아웃 성공");
       return true;
     } catch (e) {
-      debugPrint("❌ 로그아웃 실패: $e");
+      debugPrint("❌ 로그아웃 실패 in [logout method] in [auth_repository_remote]: $e");
       return false;
     }
   }
@@ -65,7 +65,7 @@ class AuthRepositoryRemote extends AuthRepository {
       debugPrint("✅ 회원가입 성공: ${user.uid}");
       return true;
     } catch (e) {
-      debugPrint("❌ 회원가입 실패: $e");
+      debugPrint("❌ 회원가입 실패 in [signUp method] in [auth_repository_remote]: $e");
       return false;
     }
   }
@@ -78,7 +78,7 @@ class AuthRepositoryRemote extends AuthRepository {
       debugPrint("✅ 계정 삭제 성공");
       return true;
     } catch (e) {
-      debugPrint("❌ 계정 삭제 실패: $e");
+      debugPrint("❌ 계정 삭제 실패 in [deleteAccount method] in [auth_repository_remote]: $e");
       return false;
     }
   }
