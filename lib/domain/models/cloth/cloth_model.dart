@@ -38,6 +38,9 @@ class ClothModel extends HiveObject {
   @HiveField(10)
   final XFile? file;
 
+  @HiveField(11)
+  final String? imageUrl;
+
 
   ClothModel({
     this.id,
@@ -50,6 +53,7 @@ class ClothModel extends HiveObject {
     this.season,
     this.localImagePath,
     this.remoteImagePath,
+    this.imageUrl,
     DateTime? createdAt,
   }) : 
     createdAt = createdAt ?? DateTime.now();
@@ -64,6 +68,7 @@ class ClothModel extends HiveObject {
     String? season,
     String? localImagePath,
     String? remoteImagePath,
+    String? imageUrl,
     DateTime? createdAt,
   }) => ClothModel(
     id: id ?? this.id,
@@ -76,5 +81,6 @@ class ClothModel extends HiveObject {
     createdAt: createdAt ?? this.createdAt,
     localImagePath: localImagePath ?? this.localImagePath,
     remoteImagePath: remoteImagePath ?? this.remoteImagePath,
+    imageUrl: imageUrl ?? this.imageUrl,
   );
 }

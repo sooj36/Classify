@@ -27,6 +27,7 @@ class ClothModelAdapter extends TypeAdapter<ClothModel> {
       season: fields[7] as String?,
       localImagePath: fields[8] as String?,
       remoteImagePath: fields[9] as String?,
+      imageUrl: fields[11] as String?,
       createdAt: fields[1] as DateTime?,
     );
   }
@@ -34,7 +35,7 @@ class ClothModelAdapter extends TypeAdapter<ClothModel> {
   @override
   void write(BinaryWriter writer, ClothModel obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -56,7 +57,9 @@ class ClothModelAdapter extends TypeAdapter<ClothModel> {
       ..writeByte(9)
       ..write(obj.remoteImagePath)
       ..writeByte(10)
-      ..write(obj.file);
+      ..write(obj.file)
+      ..writeByte(11)
+      ..write(obj.imageUrl);
   }
 
   @override

@@ -32,6 +32,7 @@ class KlingService {
     return jwt.sign(SecretKey(secretKey));
   }
 
+  //kling이 리턴한 image URL을 반환하는 함수
   Future<String> virtualTryOn({
     required String humanImageBase64,
     required String clothImageBase64,

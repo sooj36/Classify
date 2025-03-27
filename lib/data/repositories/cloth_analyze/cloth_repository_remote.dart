@@ -3,14 +3,14 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:weathercloset/data/repositories/cloth_analyze/cloth_repository.dart';
 import 'package:weathercloset/data/services/gemini_service.dart';
 import 'package:weathercloset/domain/models/cloth/cloth_model.dart';
-import 'dart:typed_data';
 import 'dart:convert';
 import 'package:weathercloset/data/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:weathercloset/data/services/hive_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:weathercloset/data/services/runware_service.dart';
-
+import 'package:weathercloset/data/services/klingai_service.dart';
+import 'package:flutter/services.dart';
 /*
   [기본 가이드]
   ClothRepository에서는 [데이터 변환이 빈번하게 발생]하므로 아래 개념을 정확히 이해해야 함:
@@ -28,16 +28,20 @@ class ClothRepositoryRemote extends ClothRepository {
   final FirestoreService _firestoreService;
   final HiveService _hiveService;
   final RunwareService _runwareService;
+  final KlingService _klingService;
+
   ClothRepositoryRemote({
     required GeminiService geminiService,
     required FirestoreService firestoreService,
     required HiveService hiveService,
     required RunwareService runwareService,
+    required KlingService klingService,
   }) : _geminiService = geminiService,
        _picker = ImagePicker(),
        _firestoreService = firestoreService,
        _hiveService = hiveService,
-       _runwareService = runwareService;
+       _runwareService = runwareService,
+       _klingService = klingService;
 
   @override
   Future<bool> requestPermissions() async {
@@ -59,7 +63,25 @@ class ClothRepositoryRemote extends ClothRepository {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     final bytes = await image?.readAsBytes();
     final response = await analyzeImage(bytes);
-    return ClothModel(file: image, response: response);
+
+    // 인물 모델 이미지 로드
+    final ByteData humanBytes = await rootBundle.load('assets/woman_model.jpg');
+    final humanBase64 = base64Encode(humanBytes.buffer.asUint8List());
+    
+    // 선택된 의류 이미지를 base64로 변환
+    final clothBase64 = base64Encode(bytes!);
+
+    // 가상 피팅 API 호출
+    final imageURL = await _klingService.virtualTryOn(
+      humanImageBase64: humanBase64,
+      clothImageBase64: clothBase64,
+    );
+
+    return ClothModel(
+      file: image, 
+      response: response,
+      imageUrl: imageURL,
+    );
   }
 
   @override

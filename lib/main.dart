@@ -19,7 +19,7 @@ import 'package:path_provider/path_provider.dart';
 import 'data/services/hive_service.dart';
 import 'domain/models/cloth/cloth_model.dart';
 import 'data/services/runware_service.dart';
-
+import 'data/services/klingai_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //flutter engine과 app 연결
   try {
@@ -73,6 +73,9 @@ class MainApp extends StatelessWidget {
         Provider<RunwareService>(
           create: (_) => RunwareService(),
         ),
+        Provider<KlingService>(
+          create: (_) => KlingService(),
+        ),
         ChangeNotifierProvider<AuthRepositoryRemote>(
           create: (context) => AuthRepositoryRemote(
             firebaseAuthService: context.read<FirebaseAuthService>(),
@@ -85,6 +88,7 @@ class MainApp extends StatelessWidget {
             firestoreService: context.read<FirestoreService>(),
             hiveService: context.read<HiveService>(),
             runwareService: context.read<RunwareService>(),
+            klingService: context.read<KlingService>(),
           ),
         ),
         ChangeNotifierProvider<WeatherRepositoryRemote>(

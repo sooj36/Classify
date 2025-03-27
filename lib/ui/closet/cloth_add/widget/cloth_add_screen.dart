@@ -67,6 +67,44 @@ class _ClothAddScreenState extends State<ClothAddScreen> {
   }
 
   Widget imageArea() {
+    // 가상 피팅 이미지가 있으면 먼저 보여줌
+    if (widget.viewModel.cloth?.imageUrl != null && widget.viewModel.cloth!.imageUrl!.isNotEmpty) {
+      return Column(
+        children: [
+          Image.network(
+            widget.viewModel.cloth!.imageUrl!,
+            fit: BoxFit.contain,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Center(
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null 
+                    ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                    : null,
+                ),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return const Center(
+                child: Text('이미지 로딩 실패', style: TextStyle(color: Colors.red)),
+              );
+            },
+          ),
+          const SizedBox(height: 10),
+          const Text('가상 피팅 이미지', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 20),
+          // 원본 이미지
+          Image.file(
+            File(widget.viewModel.cloth!.file!.path),
+            fit: BoxFit.contain,
+          ),
+          const SizedBox(height: 10),
+          const Text('원본 이미지', style: TextStyle(fontWeight: FontWeight.bold)),
+        ],
+      );
+    }
+    
+    // 원본 이미지만 표시
     return Image.file(
       File(widget.viewModel.cloth!.file!.path),
       fit: BoxFit.contain,
