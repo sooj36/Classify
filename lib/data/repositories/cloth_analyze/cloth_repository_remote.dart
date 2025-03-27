@@ -10,6 +10,7 @@ import 'package:weathercloset/data/services/hive_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:weathercloset/data/services/runware_service.dart';
 import 'package:weathercloset/data/services/klingai_service.dart';
+import 'package:weathercloset/data/services/comfyicu_service.dart';
 import 'package:flutter/services.dart';
 /*
   [기본 가이드]
@@ -29,19 +30,21 @@ class ClothRepositoryRemote extends ClothRepository {
   final HiveService _hiveService;
   final RunwareService _runwareService;
   final KlingService _klingService;
-
+  final ComfyICUService _comfyICUService;
   ClothRepositoryRemote({
     required GeminiService geminiService,
     required FirestoreService firestoreService,
     required HiveService hiveService,
     required RunwareService runwareService,
     required KlingService klingService,
+    required ComfyICUService comfyICUService,
   }) : _geminiService = geminiService,
        _picker = ImagePicker(),
        _firestoreService = firestoreService,
        _hiveService = hiveService,
        _runwareService = runwareService,
-       _klingService = klingService;
+       _klingService = klingService,
+       _comfyICUService = comfyICUService;
 
   @override
   Future<bool> requestPermissions() async {
@@ -77,10 +80,13 @@ class ClothRepositoryRemote extends ClothRepository {
       clothImageBase64: clothBase64,
     );
 
+    // 가상 피팅 이미지에서 옷 이미지"만" 추출
+    final resultURL = await _comfyICUService.processImage(imageURL);
+
     return ClothModel(
       file: image, 
       response: response,
-      imageUrl: imageURL,
+      imageUrl: resultURL,
     );
   }
 
