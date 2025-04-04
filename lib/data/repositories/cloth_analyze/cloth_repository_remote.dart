@@ -12,6 +12,8 @@ import 'package:weathercloset/data/services/runware_service.dart';
 import 'package:weathercloset/data/services/klingai_service.dart';
 import 'package:weathercloset/data/services/comfyicu_service.dart';
 import 'package:flutter/services.dart';
+import 'package:weathercloset/data/services/image_storage_service.dart';
+
 /*
   [기본 가이드]
   ClothRepository에서는 [데이터 변환이 빈번하게 발생]하므로 아래 개념을 정확히 이해해야 함:
@@ -31,6 +33,7 @@ class ClothRepositoryRemote extends ClothRepository {
   final RunwareService _runwareService;
   final KlingService _klingService;
   final ComfyICUService _comfyICUService;
+  final ImageStorageService _imageStorageService;
   ClothRepositoryRemote({
     required GeminiService geminiService,
     required FirestoreService firestoreService,
@@ -38,13 +41,15 @@ class ClothRepositoryRemote extends ClothRepository {
     required RunwareService runwareService,
     required KlingService klingService,
     required ComfyICUService comfyICUService,
+    required ImageStorageService imageStorageService,
   }) : _geminiService = geminiService,
        _picker = ImagePicker(),
        _firestoreService = firestoreService,
        _hiveService = hiveService,
        _runwareService = runwareService,
        _klingService = klingService,
-       _comfyICUService = comfyICUService;
+       _comfyICUService = comfyICUService,
+       _imageStorageService = imageStorageService;
 
   @override
   Future<bool> requestPermissions() async {
@@ -100,24 +105,33 @@ class ClothRepositoryRemote extends ClothRepository {
     String cleanJson = cloth.response!
     .replaceAll("```json", "")
     .replaceAll("```", "");
+
     final responseMap = jsonDecode(cleanJson);
 
+    final uuid = const Uuid().v4();
+
+    // comfyicu에서 다운로드받은 최종 옷 이미지를 로컬(앱 내부)에 저장
+    final localImagePath = await _imageStorageService.downloadAndSaveImage(cloth.imageUrl!);
+
+    // 로컬에 저장된 최종 옷 이미지의 경로를 포함한 cloth 객체를 다시 생성
     final hiveCloth = ClothModel(
       id: cloth.id,
       major: responseMap["대분류"],
       minor: responseMap["소분류"],
       color: responseMap["색깔"],
       material: responseMap["재질"],
-      localImagePath: cloth.file?.path,
+      localImagePath: localImagePath,
       response: cloth.response!
     );
 
-    final uuid = const Uuid().v4();
+    // localimagepath를 추가한 새 cloth 객체 생성(객체의 불변성 유지를 위해) 
+    // final clothWithLocalPath = cloth.copyWith(localImagePath: localImagePath);
+
 
     _hiveService.saveCloth(hiveCloth, uuid);
     debugPrint("✅ hive 옷 저장 성공!");
 
-    await _firestoreService.saveCloth(responseMap, cloth.file!, uuid);
+    await _firestoreService.saveCloth(responseMap, XFile(localImagePath), uuid);
     debugPrint("✅ firestore 옷 저장 성공!");
   }
 

@@ -17,6 +17,7 @@ class ComfyICUService {
       ));
 
   Future<String> processImage(String inputImageUrl) async {
+    debugPrint('[ComfyICU] 이미지 처리 시작');
     const String workflowId = 'dpX4u7m7g9HUEEJMFLBSi';
 
         final Map<String, dynamic> prompt = {
@@ -39,7 +40,7 @@ class ComfyICUService {
         "_meta": {"title": "GroundingDinoSAMSegment (segment anything)"},
         "inputs": {
           "image": ["3", 0],
-          "prompt": "long sleeve shirt",
+          "prompt": "upper garment",
           "sam_model": ["2", 0],
           "threshold": 0.3,
           "grounding_dino_model": ["1", 0]

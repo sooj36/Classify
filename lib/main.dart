@@ -21,6 +21,7 @@ import 'domain/models/cloth/cloth_model.dart';
 import 'data/services/runware_service.dart';
 import 'data/services/klingai_service.dart';
 import 'data/services/comfyicu_service.dart';
+import 'data/services/image_storage_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //flutter engine과 app 연결
@@ -81,6 +82,9 @@ class MainApp extends StatelessWidget {
         Provider<ComfyICUService>(
           create: (_) => ComfyICUService(),
         ),
+        Provider<ImageStorageService>(
+          create: (_) => ImageStorageService(),
+        ),
         ChangeNotifierProvider<AuthRepositoryRemote>(
           create: (context) => AuthRepositoryRemote(
             firebaseAuthService: context.read<FirebaseAuthService>(),
@@ -95,6 +99,7 @@ class MainApp extends StatelessWidget {
             runwareService: context.read<RunwareService>(),
             klingService: context.read<KlingService>(),
             comfyICUService: context.read<ComfyICUService>(),
+            imageStorageService: context.read<ImageStorageService>(),
           ),
         ),
         ChangeNotifierProvider<WeatherRepositoryRemote>(
