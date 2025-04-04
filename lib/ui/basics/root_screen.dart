@@ -28,6 +28,8 @@ class _RootScreenState extends State<RootScreen> {
           context.go(Routes.home);
         case 2:
           context.go(Routes.profile);
+        case 3:
+          context.go(Routes.selfFitting);
       }
     });
   }
@@ -54,6 +56,7 @@ class _RootScreenState extends State<RootScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.add_a_photo), label: '옷장'),
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: '프로필'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_2), label: '셀프피팅'),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,

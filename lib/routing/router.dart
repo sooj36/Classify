@@ -18,6 +18,8 @@ import '../ui/basics/profile_screen.dart';
 import '../global/global.dart';
 import '../ui/coordi/view_models/coordi_viewmodel.dart';
 import '../data/repositories/weather/weather_repository_remote.dart';
+import '../ui/self_fitting_room/view_model/self_fitting_room_view_model.dart';
+import '../ui/self_fitting_room/view/self_fittng_room_screen.dart';
 
 final router = GoRouter(
   initialLocation: firebaseAuth.currentUser != null ? Routes.home : Routes.login,
@@ -36,7 +38,11 @@ final router = GoRouter(
           clothRepositoryRemote: context.read<ClothRepositoryRemote>(),
         ),
       ),
-      // ProfileViewModel도 필요하다면 여기에
+      ChangeNotifierProvider(
+        create: (context) => SelfFittingRoomViewModel(
+          clothRepositoryRemote: context.read<ClothRepositoryRemote>(),
+        ),
+      ),
     ],
     child: RootScreen(child: child),
   ),
@@ -45,6 +51,12 @@ final router = GoRouter(
           path: Routes.closet,
           builder: (context, state) => ClosetScreen(
             viewModel: context.read<ClosetViewModel>(),
+          ),
+        ),
+        GoRoute(
+          path: Routes.selfFitting,
+          builder: (context, state) => SelfFittingRoomScreen(
+            viewModel: context.read<SelfFittingRoomViewModel>(),
           ),
         ),
         GoRoute(

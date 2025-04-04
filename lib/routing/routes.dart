@@ -12,4 +12,5 @@ final class Routes {
   static const setting = '/setting';
   static const clothAdd = '/clothAdd';
   static const closet = '/closet';
+  static const selfFitting = '/self_fitting';
 }
