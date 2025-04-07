@@ -5,12 +5,11 @@
   // static const search = '/$searchRelative';
 
 final class Routes {
-  static const home = '/';
+  static const sendMemo = '/sendMemo';
   static const profile = '/profile';
   static const login = '/login';
   static const signup = '/signup';
   static const setting = '/setting';
-  static const clothAdd = '/clothAdd';
-  static const closet = '/closet';
-  static const selfFitting = '/self_fitting';
+  static const archiveAdd = '/archiveAdd';
+  static const archive = '/archive';
 }

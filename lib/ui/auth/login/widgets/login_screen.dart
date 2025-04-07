@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     );
                     
                     if (success && context.mounted) {
-                      context.go(Routes.home);
+                      context.go(Routes.sendMemo);
                     }
                   },
               child: widget.viewModel.isLoading

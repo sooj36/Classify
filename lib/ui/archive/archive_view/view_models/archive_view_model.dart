@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
-import '../../../../data/repositories/cloth_analyze/cloth_repository_remote.dart';
+import '../../../../data/repositories/memo_analyze/memo_analyze_repository_remote.dart';
 import '../../../../domain/models/cloth/cloth_model.dart';
 
 
 //StreamBuilder를 사용하지 않고 데이터를 캐시하여 사용하였음
 //화면을 전환하면 Stream으로부터 새 데이터가 오기 전까지는 데이터를 표시하지 않기 때문
-class SelfFittingRoomViewModel extends ChangeNotifier {
-  final ClothRepositoryRemote _clothRepositoryRemote;
+class ArchiveViewModel extends ChangeNotifier {
+  final MemoAnalyzeRepositoryRemote _memoAnalyzeRepositoryRemote;
   late  Stream<Map<String, ClothModel>> _clothes;
   Map<String, ClothModel> _cachedClothes;
   bool _isLoading = false;
   String? _error;
 
-  SelfFittingRoomViewModel({
-    required ClothRepositoryRemote clothRepositoryRemote,
-  }) : _clothRepositoryRemote = clothRepositoryRemote,
+  ArchiveViewModel({
+    required MemoAnalyzeRepositoryRemote memoAnalyzeRepositoryRemote,
+  }) : _memoAnalyzeRepositoryRemote = memoAnalyzeRepositoryRemote,
   _cachedClothes = {},
   _isLoading = false,
   _error = null {
-    _clothes = _clothRepositoryRemote.watchClothLocal();
+    _clothes = _memoAnalyzeRepositoryRemote.watchClothLocal();
   }
 
   Stream<Map<String, ClothModel>> get clothes => _clothes;
@@ -33,7 +33,7 @@ class SelfFittingRoomViewModel extends ChangeNotifier {
       notifyListeners();
       
       debugPrint("⭐ 2. Stream 접근 시도");
-      final stream = _clothRepositoryRemote.watchClothLocal();
+      final stream = _memoAnalyzeRepositoryRemote.watchClothLocal();
       
       debugPrint("⭐ 3. Stream.first 대기 시작");
       await stream.listen((data) {
@@ -60,7 +60,7 @@ class SelfFittingRoomViewModel extends ChangeNotifier {
   }
 
   Future<void> deleteCloth(String clothId) async {
-    await _clothRepositoryRemote.deleteCloth(clothId);
+    await _memoAnalyzeRepositoryRemote.deleteCloth(clothId);
     notifyListeners();
   }
 }

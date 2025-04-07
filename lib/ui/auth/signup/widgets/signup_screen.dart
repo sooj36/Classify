@@ -97,7 +97,7 @@ class SignupScreen extends StatelessWidget {
               );
               
               if (success && context.mounted) {
-                context.go(Routes.home);
+                context.go(Routes.sendMemo);
               }
             },
       child: viewModel.isLoading

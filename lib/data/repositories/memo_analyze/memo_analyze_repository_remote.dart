@@ -1,6 +1,6 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:weathercloset/data/repositories/cloth_analyze/cloth_repository.dart';
+import 'package:weathercloset/data/repositories/memo_analyze/memo_analyze_repository.dart';
 import 'package:weathercloset/data/services/gemini_service.dart';
 import 'package:weathercloset/domain/models/cloth/cloth_model.dart';
 import 'dart:convert';
@@ -8,9 +8,6 @@ import 'package:weathercloset/data/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:weathercloset/data/services/hive_service.dart';
 import 'package:uuid/uuid.dart';
-import 'package:weathercloset/data/services/runware_service.dart';
-import 'package:weathercloset/data/services/klingai_service.dart';
-import 'package:weathercloset/data/services/comfyicu_service.dart';
 import 'package:flutter/services.dart';
 import 'package:weathercloset/data/services/image_storage_service.dart';
 
@@ -25,30 +22,21 @@ import 'package:weathercloset/data/services/image_storage_service.dart';
 */
 
 
-class ClothRepositoryRemote extends ClothRepository {
+class MemoAnalyzeRepositoryRemote extends MemoAnalyzeRepository {
   final GeminiService _geminiService;
   final ImagePicker _picker;
   final FirestoreService _firestoreService;
   final HiveService _hiveService;
-  final RunwareService _runwareService;
-  final KlingService _klingService;
-  final ComfyICUService _comfyICUService;
   final ImageStorageService _imageStorageService;
-  ClothRepositoryRemote({
+  MemoAnalyzeRepositoryRemote({
     required GeminiService geminiService,
     required FirestoreService firestoreService,
     required HiveService hiveService,
-    required RunwareService runwareService,
-    required KlingService klingService,
-    required ComfyICUService comfyICUService,
     required ImageStorageService imageStorageService,
   }) : _geminiService = geminiService,
        _picker = ImagePicker(),
        _firestoreService = firestoreService,
        _hiveService = hiveService,
-       _runwareService = runwareService,
-       _klingService = klingService,
-       _comfyICUService = comfyICUService,
        _imageStorageService = imageStorageService;
 
   @override
@@ -80,18 +68,12 @@ class ClothRepositoryRemote extends ClothRepository {
     final clothBase64 = base64Encode(bytes!);
 
     // 가상 피팅 API 호출
-    final imageURL = await _klingService.virtualTryOn(
-      humanImageBase64: humanBase64,
-      clothImageBase64: clothBase64,
-    );
 
     // 가상 피팅 이미지에서 옷 이미지"만" 추출
-    final resultURL = await _comfyICUService.processImage(imageURL);
 
     return ClothModel(
       file: image, 
       response: response,
-      imageUrl: resultURL,
     );
   }
 
@@ -236,8 +218,7 @@ class ClothRepositoryRemote extends ClothRepository {
       $clothesDetail
     }
     ''';
-    final response = await _runwareService.generateImage(positivePrompt);
-    return response;
+    return positivePrompt;
   }
 
   @override

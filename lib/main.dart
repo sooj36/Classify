@@ -10,17 +10,11 @@ import 'data/repositories/auth/auth_repository_remote.dart';
 import 'data/services/firebase_auth_service.dart';
 import 'data/services/firestore_service.dart';
 import 'data/services/gemini_service.dart';
-import 'data/repositories/cloth_analyze/cloth_repository_remote.dart';
-import 'data/repositories/weather/weather_repository_remote.dart';
-import 'data/services/weatherapi_service.dart';
-import 'data/services/geolocator_service.dart';
+import 'data/repositories/memo_analyze/memo_analyze_repository_remote.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'data/services/hive_service.dart';
 import 'domain/models/cloth/cloth_model.dart';
-import 'data/services/runware_service.dart';
-import 'data/services/klingai_service.dart';
-import 'data/services/comfyicu_service.dart';
 import 'data/services/image_storage_service.dart';
 
 void main() async {
@@ -38,7 +32,6 @@ void main() async {
     Hive.init(dir.path);
     Hive.registerAdapter(ClothModelAdapter());
     await Hive.openBox<ClothModel>("clothes");
-
     debugPrint("✅ Hive 초기화 성공!");
 
   } catch (e) {
@@ -64,23 +57,8 @@ class MainApp extends StatelessWidget {
         Provider<GeminiService>(
           create: (_) => GeminiService(),
         ),
-        Provider<WeatherApiService>(
-          create: (_) => WeatherApiService(),
-        ),
-        Provider<GeolocatorService>(
-          create: (_) => GeolocatorService(),
-        ),
         Provider<HiveService>(
           create: (_) => HiveService(),
-        ),
-        Provider<RunwareService>(
-          create: (_) => RunwareService(),
-        ),
-        Provider<KlingService>(
-          create: (_) => KlingService(),
-        ),
-        Provider<ComfyICUService>(
-          create: (_) => ComfyICUService(),
         ),
         Provider<ImageStorageService>(
           create: (_) => ImageStorageService(),
@@ -91,23 +69,15 @@ class MainApp extends StatelessWidget {
             firestoreService: context.read<FirestoreService>(),
           ),
         ),
-        ChangeNotifierProvider<ClothRepositoryRemote>(
-          create: (context) => ClothRepositoryRemote(
+        ChangeNotifierProvider<MemoAnalyzeRepositoryRemote>(
+          create: (context) => MemoAnalyzeRepositoryRemote(
             geminiService: context.read<GeminiService>(),
             firestoreService: context.read<FirestoreService>(),
             hiveService: context.read<HiveService>(),
-            runwareService: context.read<RunwareService>(),
-            klingService: context.read<KlingService>(),
-            comfyICUService: context.read<ComfyICUService>(),
             imageStorageService: context.read<ImageStorageService>(),
           ),
         ),
-        ChangeNotifierProvider<WeatherRepositoryRemote>(
-          create: (context) => WeatherRepositoryRemote(
-            weatherApiService: context.read<WeatherApiService>(),
-            geolocatorService: context.read<GeolocatorService>(),
-          ),
-        ),
+
       ],
       child: MaterialApp.router(
         theme: AppTheme.lightTheme,

@@ -48,7 +48,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
     Timer(const Duration(seconds: 1), () async {
       //한 번 로그인 해놓으면 firebaseAuth에서 알아서 자동 로그인 시켜줌
       if (firebaseAuth.currentUser != null) {
-        context.go(Routes.home);
+        context.go(Routes.sendMemo);
       } else {
         context.go(Routes.login);
       }

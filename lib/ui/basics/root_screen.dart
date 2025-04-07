@@ -23,13 +23,9 @@ class _RootScreenState extends State<RootScreen> {
       _selectedIndex = index;
       switch (index) {
         case 0:
-          context.go(Routes.closet);
+          context.go(Routes.archive);
         case 1:
-          context.go(Routes.home);
-        case 2:
-          context.go(Routes.profile);
-        case 3:
-          context.go(Routes.selfFitting);
+          context.go(Routes.sendMemo);
       }
     });
   }

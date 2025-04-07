@@ -8,39 +8,30 @@ import '../ui/auth/login/view_models/login_viewmodel.dart';
 import '../ui/auth/signup/view_models/signup_viewmodel.dart';
 import '../data/repositories/auth/auth_repository_remote.dart';
 import 'package:provider/provider.dart';
-import '../ui/closet/cloth_add/widget/cloth_add_screen.dart';
-import '../ui/closet/cloth_add/view_models/cloth_add_viewmodel.dart';
-import '../data/repositories/cloth_analyze/cloth_repository_remote.dart';
-import '../ui/closet/closet_view/view_models/closet_view_model.dart';
-import '../ui/closet/closet_view/widgets/closet_screen.dart';
-import '../ui/coordi/widgets/coordi_screen.dart';
+import '../ui/archive/archive_add/widget/archive_add_screen.dart';
+import '../ui/archive/archive_add/view_models/archive_add_viewmodel.dart';
+import '../data/repositories/memo_analyze/memo_analyze_repository_remote.dart';
+import '../ui/archive/archive_view/view_models/archive_view_model.dart';
+import '../ui/archive/archive_view/widgets/archive_view_screen.dart';
+import '../ui/send_memo_to_ai/widgets/send_memo_to_ai_screen.dart';
 import '../ui/basics/profile_screen.dart';
 import '../global/global.dart';
-import '../ui/coordi/view_models/coordi_viewmodel.dart';
-import '../data/repositories/weather/weather_repository_remote.dart';
-import '../ui/self_fitting_room/view_model/self_fitting_room_view_model.dart';
-import '../ui/self_fitting_room/view/self_fittng_room_screen.dart';
+import '../ui/send_memo_to_ai/view_models/send_memo_to_ai_viewmodel.dart';
 
 final router = GoRouter(
-  initialLocation: firebaseAuth.currentUser != null ? Routes.home : Routes.login,
+  initialLocation: firebaseAuth.currentUser != null ? Routes.sendMemo : Routes.login,
   routes: [
     ShellRoute(
         builder: (context, state, child) => MultiProvider(
     providers: [
       ChangeNotifierProvider(
-        create: (context) => CoordiViewModel(
-          weatherRepositoryRemote: context.read<WeatherRepositoryRemote>(),
-          clothRepositoryRemote: context.read<ClothRepositoryRemote>(),
+        create: (context) => SendMemoToAiViewModel(
+          memoAnalyzeRepositoryRemote: context.read<MemoAnalyzeRepositoryRemote>(),
         ),
       ),
       ChangeNotifierProvider(
-        create: (context) => ClosetViewModel(
-          clothRepositoryRemote: context.read<ClothRepositoryRemote>(),
-        ),
-      ),
-      ChangeNotifierProvider(
-        create: (context) => SelfFittingRoomViewModel(
-          clothRepositoryRemote: context.read<ClothRepositoryRemote>(),
+        create: (context) => ArchiveViewModel(
+          memoAnalyzeRepositoryRemote: context.read<MemoAnalyzeRepositoryRemote>(),
         ),
       ),
     ],
@@ -48,21 +39,15 @@ final router = GoRouter(
   ),
       routes: [
                 GoRoute(
-          path: Routes.closet,
-          builder: (context, state) => ClosetScreen(
-            viewModel: context.read<ClosetViewModel>(),
+          path: Routes.archive,
+          builder: (context, state) => ArchiveScreen(
+            viewModel: context.read<ArchiveViewModel>(),
           ),
         ),
         GoRoute(
-          path: Routes.selfFitting,
-          builder: (context, state) => SelfFittingRoomScreen(
-            viewModel: context.read<SelfFittingRoomViewModel>(),
-          ),
-        ),
-        GoRoute(
-          path: Routes.home,
-          builder: (context, state) => CoordinatorScreen(
-            coordiViewModel: context.read<CoordiViewModel>(),
+          path: Routes.sendMemo,
+          builder: (context, state) => SendMemoToAiScreen(
+            sendMemoToAiViewModel: context.read<SendMemoToAiViewModel>(),
           ),
         ),
         GoRoute(
@@ -93,10 +78,10 @@ final router = GoRouter(
       ),
     ),
     GoRoute(
-      path: Routes.clothAdd,
-      builder: (context, state) => ClothAddScreen(
-        viewModel: ClothAddViewModel(
-          clothRepositoryRemote: context.read<ClothRepositoryRemote>(),
+      path: Routes.archiveAdd,
+      builder: (context, state) => ArchiveAddScreen(
+        viewModel: ArchiveAddViewModel(
+          memoAnalyzeRepositoryRemote: context.read<MemoAnalyzeRepositoryRemote>(),
         ),
       ),
     ),

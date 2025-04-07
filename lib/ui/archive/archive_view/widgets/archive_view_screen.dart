@@ -2,19 +2,19 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../../../routing/router.dart';
 import '../../../../routing/routes.dart';
-import '../view_models/closet_view_model.dart';
+import '../view_models/archive_view_model.dart';
 // class ClosetScreen extends StatefulWidget {
 
 
-class ClosetScreen extends StatefulWidget {
-  final ClosetViewModel viewModel;
-  const ClosetScreen({super.key, required this.viewModel});
+class ArchiveScreen extends StatefulWidget {
+  final ArchiveViewModel viewModel;
+  const ArchiveScreen({super.key, required this.viewModel});
 
   @override
-  State<ClosetScreen> createState() => _ClosetScreenState();
+  State<ArchiveScreen> createState() => _ArchiveScreenState();
 }
 
-class _ClosetScreenState extends State<ClosetScreen> {
+class _ArchiveScreenState extends State<ArchiveScreen> {
   @override
   void initState() {
     super.initState();
@@ -86,7 +86,7 @@ class _ClosetScreenState extends State<ClosetScreen> {
         backgroundColor: Colors.white,
         foregroundColor: Colors.blue,
         onPressed: () {
-          router.push(Routes.clothAdd);
+          router.push(Routes.archiveAdd);
         },
         child: const Icon(Icons.add),
       ),

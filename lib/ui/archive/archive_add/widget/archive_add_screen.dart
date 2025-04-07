@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import '../view_models/cloth_add_viewmodel.dart';
+import '../view_models/archive_add_viewmodel.dart';
 import 'package:go_router/go_router.dart';
 
-class ClothAddScreen extends StatefulWidget {
-  final ClothAddViewModel viewModel;
+class ArchiveAddScreen extends StatefulWidget {
+  final ArchiveAddViewModel viewModel;
 
-  const ClothAddScreen({super.key, required this.viewModel});
+  const ArchiveAddScreen({super.key, required this.viewModel});
 
   @override
-  State<ClothAddScreen> createState() => _ClothAddScreenState();
+  State<ArchiveAddScreen> createState() => _ArchiveAddScreenState();
 }
 
-class _ClothAddScreenState extends State<ClothAddScreen> {
+class _ArchiveAddScreenState extends State<ArchiveAddScreen> {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(

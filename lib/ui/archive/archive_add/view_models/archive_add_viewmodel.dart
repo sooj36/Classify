@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import '../../../../data/repositories/cloth_analyze/cloth_repository_remote.dart';
+import '../../../../data/repositories/memo_analyze/memo_analyze_repository_remote.dart';
 import '../../../../domain/models/cloth/cloth_model.dart';
 
-class ClothAddViewModel extends ChangeNotifier {
-  final ClothRepositoryRemote _clothRepositoryRemote;
+class ArchiveAddViewModel extends ChangeNotifier {
+  final MemoAnalyzeRepositoryRemote _memoAnalyzeRepositoryRemote;
   ClothModel? _cloth;
   String? _analyzeResult;
   bool _isLoading = false;
   String? _error;
 
-  ClothAddViewModel({
-    required ClothRepositoryRemote clothRepositoryRemote,
-  }) : _clothRepositoryRemote = clothRepositoryRemote;
+  ArchiveAddViewModel({
+    required MemoAnalyzeRepositoryRemote memoAnalyzeRepositoryRemote,
+  }) : _memoAnalyzeRepositoryRemote = memoAnalyzeRepositoryRemote;
 
   ClothModel? get cloth => _cloth;
   bool get isLoading => _isLoading;
@@ -25,7 +25,7 @@ class ClothAddViewModel extends ChangeNotifier {
       // if (!hasPermission) {
       //   throw '카메라 및 저장소 권한이 필요합니다.';
       // }
-      final clothModel = await _clothRepositoryRemote.getImageFromCamera();
+      final clothModel = await _memoAnalyzeRepositoryRemote.getImageFromCamera();
       _cloth = clothModel;
       notifyListeners();
     } catch (e) {
@@ -38,7 +38,7 @@ class ClothAddViewModel extends ChangeNotifier {
   Future<void> pickFromGallery() async {
     try {
       _setLoading(true);
-      final clothModel = await _clothRepositoryRemote.getImageFromGallery();
+      final clothModel = await _memoAnalyzeRepositoryRemote.getImageFromGallery();
       _cloth = clothModel;
       notifyListeners();
     } catch (e) {
@@ -54,6 +54,6 @@ class ClothAddViewModel extends ChangeNotifier {
   }
 
   Future<void> saveCloth() async {
-    await _clothRepositoryRemote.saveCloth(cloth!);
+    await _memoAnalyzeRepositoryRemote.saveCloth(cloth!);
   }
 } 
