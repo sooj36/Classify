@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import '../../global/global.dart';
+import 'package:weathercloset/global/global.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 class GeminiService {

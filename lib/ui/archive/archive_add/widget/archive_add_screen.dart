@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
-import '../view_models/archive_add_viewmodel.dart';
+import 'package:weathercloset/ui/archive/archive_add/view_models/archive_add_viewmodel.dart';
 import 'package:go_router/go_router.dart';
 
 class ArchiveAddScreen extends StatefulWidget {

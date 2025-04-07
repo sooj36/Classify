@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import '../../../domain/models/cloth/cloth_model.dart';
+import 'package:weathercloset/domain/models/cloth/cloth_model.dart';
 import 'package:rxdart/rxdart.dart';
 
 

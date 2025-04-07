@@ -4,9 +4,7 @@ import 'package:weathercloset/domain/models/auth/signup_user_model.dart';
 import 'package:weathercloset/global/global.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
-
-import 'package:cross_file/cross_file.dart';
-
+import 'package:image_picker/image_picker.dart';
 
 
 class FirestoreService {

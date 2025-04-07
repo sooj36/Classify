@@ -1,9 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import '../../../../routing/router.dart';
-import '../../../../routing/routes.dart';
-import '../view_models/archive_view_model.dart';
-// class ClosetScreen extends StatefulWidget {
+import 'package:weathercloset/routing/router.dart';
+import 'package:weathercloset/routing/routes.dart';
+import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_model.dart';
 
 
 class ArchiveScreen extends StatefulWidget {

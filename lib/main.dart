@@ -6,16 +6,16 @@ import 'utils/top_level_setting.dart';
 import 'global/global.dart';
 import 'routing/router.dart';
 import 'package:provider/provider.dart';
-import 'data/repositories/auth/auth_repository_remote.dart';
-import 'data/services/firebase_auth_service.dart';
-import 'data/services/firestore_service.dart';
-import 'data/services/gemini_service.dart';
-import 'data/repositories/memo_analyze/memo_analyze_repository_remote.dart';
+import 'package:weathercloset/data/repositories/auth/auth_repository_remote.dart';
+import 'package:weathercloset/data/services/firebase_auth_service.dart';
+import 'package:weathercloset/data/services/firestore_service.dart';
+import 'package:weathercloset/data/services/gemini_service.dart';
+import 'package:weathercloset/data/repositories/memo_analyze/memo_analyze_repository_remote.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
-import 'data/services/hive_service.dart';
-import 'domain/models/cloth/cloth_model.dart';
-import 'data/services/image_storage_service.dart';
+import 'package:weathercloset/data/services/hive_service.dart';
+import 'package:weathercloset/domain/models/cloth/cloth_model.dart';
+import 'package:weathercloset/data/services/image_storage_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //flutter engine과 app 연결

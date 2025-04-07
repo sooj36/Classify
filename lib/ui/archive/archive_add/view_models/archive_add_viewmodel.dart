@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../data/repositories/memo_analyze/memo_analyze_repository_remote.dart';
-import '../../../../domain/models/cloth/cloth_model.dart';
+import 'package:weathercloset/data/repositories/memo_analyze/memo_analyze_repository_remote.dart';
+import 'package:weathercloset/domain/models/cloth/cloth_model.dart';
 
 class ArchiveAddViewModel extends ChangeNotifier {
   final MemoAnalyzeRepositoryRemote _memoAnalyzeRepositoryRemote;
