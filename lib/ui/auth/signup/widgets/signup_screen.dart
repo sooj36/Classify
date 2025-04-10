@@ -95,7 +95,6 @@ class SignupScreen extends StatelessWidget {
                 name: nameController.text,
                 phone: phoneController.text,
               );
-              
               if (success && context.mounted) {
                 context.go(Routes.sendMemo);
               }

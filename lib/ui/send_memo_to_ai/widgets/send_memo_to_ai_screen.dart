@@ -93,7 +93,7 @@ class _SendMemoToAiScreenState extends State<SendMemoToAiScreen> {
           ElevatedButton(
             onPressed: () {
               if (_memoController.text.trim().isNotEmpty) {
-                // widget._sendMemoToAiViewModel.sendMemoToAi(_memoController.text);
+                widget._sendMemoToAiViewModel.sendMemoToAi(_memoController.text);
               }
             },
             style: ElevatedButton.styleFrom(

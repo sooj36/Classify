@@ -4,19 +4,20 @@ import 'package:weathercloset/data/repositories/auth/auth_repository.dart';
 import 'package:weathercloset/domain/models/auth/signup_user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:weathercloset/global/global.dart';
+import 'package:weathercloset/data/services/hive_service.dart';
 
 class AuthRepositoryRemote extends AuthRepository {
   AuthRepositoryRemote({
     required FirebaseAuthService firebaseAuthService,
     required FirestoreService firestoreService,
+    required HiveService hiveService,
   }) : _firebaseAuthService = firebaseAuthService,
-       _firestoreService = firestoreService;
+       _firestoreService = firestoreService,
+       _hiveService = hiveService;
 
   final FirebaseAuthService _firebaseAuthService;
   final FirestoreService _firestoreService;
-
-  // @override
-  // Future<bool> get isAuthenticated => Future.value(_firebaseAuthService.isAuthenticated);
+  final HiveService _hiveService;
 
   @override
   Future<bool> login({required String email, required String password}) async {
@@ -63,6 +64,10 @@ class AuthRepositoryRemote extends AuthRepository {
       );
       await _firestoreService.createUser(user: user);
       debugPrint("✅ 회원가입 성공: ${user.uid}");
+      await _firestoreService.createCategoryWhenSignup();
+      debugPrint("✅ 서버 측에 카테고리 생성 성공");
+      _hiveService.createCategoryWhenSignup();
+      debugPrint("✅ 로컬 측에 카테고리 생성 성공");
       return true;
     } catch (e) {
       debugPrint("❌ 회원가입 실패 in [signUp method] in [auth_repository_remote]: $e");

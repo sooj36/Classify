@@ -10,11 +10,11 @@ import 'package:weathercloset/data/repositories/auth/auth_repository_remote.dart
 import 'package:weathercloset/data/services/firebase_auth_service.dart';
 import 'package:weathercloset/data/services/firestore_service.dart';
 import 'package:weathercloset/data/services/gemini_service.dart';
-import 'package:weathercloset/data/repositories/memo_analyze/memo_analyze_repository_remote.dart';
+import 'package:weathercloset/data/repositories/memo/memo_repository_remote.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:weathercloset/data/services/hive_service.dart';
-import 'package:weathercloset/domain/models/cloth/cloth_model.dart';
+import 'package:weathercloset/domain/models/memo/memo_model.dart';
 import 'package:weathercloset/data/services/image_storage_service.dart';
 
 void main() async {
@@ -30,10 +30,10 @@ void main() async {
     debugPrint('✅ Gemini 초기화 성공!');
     final dir = await getApplicationDocumentsDirectory();
     Hive.init(dir.path);
-    Hive.registerAdapter(ClothModelAdapter());
-    await Hive.openBox<ClothModel>("clothes");
+    Hive.registerAdapter(MemoModelAdapter());
+    await Hive.openBox<MemoModel>("memo");
+    await Hive.openBox<List<String>>("category");
     debugPrint("✅ Hive 초기화 성공!");
-
   } catch (e) {
     debugPrint('❌ 앱 초기화 실패: $e');
   }
@@ -67,17 +67,17 @@ class MainApp extends StatelessWidget {
           create: (context) => AuthRepositoryRemote(
             firebaseAuthService: context.read<FirebaseAuthService>(),
             firestoreService: context.read<FirestoreService>(),
+            hiveService: context.read<HiveService>(),
           ),
         ),
-        ChangeNotifierProvider<MemoAnalyzeRepositoryRemote>(
-          create: (context) => MemoAnalyzeRepositoryRemote(
+        ChangeNotifierProvider<MemoRepositoryRemote>(
+          create: (context) => MemoRepositoryRemote(
             geminiService: context.read<GeminiService>(),
             firestoreService: context.read<FirestoreService>(),
             hiveService: context.read<HiveService>(),
             imageStorageService: context.read<ImageStorageService>(),
           ),
         ),
-
       ],
       child: MaterialApp.router(
         theme: AppTheme.lightTheme,

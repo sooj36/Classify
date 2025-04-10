@@ -11,7 +11,6 @@ class FirestoreService {
   late FirebaseFirestore _firestore;
 
     FirestoreService() {
-
     _firestore = FirebaseFirestore.instance;
 
     _firestore.settings = const Settings(
@@ -42,14 +41,13 @@ class FirestoreService {
     });
   }
 
-  // Future<void> updateUser({required UserModel user}) async {
-  //   await _firestore.collection("users").doc(user.uid).update();
-  // }
-
   Future<void> deleteUser() async {
     await _firestore.collection("users").doc(firebaseAuth.currentUser!.uid).delete();
+    debugPrint("✅ 회원 탈퇴 성공");
   }
 
+
+  // 이미지 저장 기능이 아까워 일단은 살려놓았음
   Future<void> saveCloth(Map<String, dynamic> cloth, XFile file, String uuid) async {
     final localFile = File(file.path);
     // Check if the file exists
@@ -109,26 +107,21 @@ class FirestoreService {
     }
   }
 
-  Stream<QuerySnapshot> watchCloth() {
+  Stream<QuerySnapshot> watchMemo() {
     return _firestore
     .collection("users")
     .doc(firebaseAuth.currentUser!.uid)
-    .collection("cloths")
+    .collection("memo")
     .snapshots();
   }
 
-  Future<void> deleteCloth(String clothId) async {
-    await _firestore.collection("users").doc(firebaseAuth.currentUser!.uid).collection("cloths").doc(clothId).delete();
+  Future<void> deleteMemo(String memoId) async {
+    await _firestore.collection("users").doc(firebaseAuth.currentUser!.uid).collection("memo").doc(memoId).delete();
   }
 
-  // Future<UserModel> getUser({required UserModel user}) async {
-  //   final userData = await _firestore.collection("users").doc(user.uid).get();
-  //   return UserModel(
-  //     uid: userData.data()?["userUID"],
-  //     email: userData.data()?["userEmail"],
-  //     name: userData.data()?["userName"],
-  //     phone: userData.data()?["phone"],
-  //     status: userData.data()?["status"],
-  //   );
-  // }
+  Future<void> createCategoryWhenSignup() async {
+    await _firestore.collection("users").doc(firebaseAuth.currentUser!.uid).collection("categories").add({
+      "categories": ["아이디어", "공부", "할 일", "업무", "스크랩"],
+    });
+  }
 }
