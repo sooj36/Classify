@@ -22,7 +22,6 @@ class SendMemoToAiViewModel extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     await _memoRepositoryRemote.analyzeAndSaveMemo(memo);
-    
     _isLoading = false;
     notifyListeners();
   }

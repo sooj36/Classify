@@ -97,7 +97,7 @@ class _SendMemoToAiScreenState extends State<SendMemoToAiScreen> {
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue.shade600,
+              backgroundColor: const Color.fromARGB(255, 234, 238, 241),
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),

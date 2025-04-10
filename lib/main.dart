@@ -15,7 +15,6 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:weathercloset/data/services/hive_service.dart';
 import 'package:weathercloset/domain/models/memo/memo_model.dart';
-import 'package:weathercloset/data/services/image_storage_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //flutter engine과 app 연결
@@ -60,9 +59,6 @@ class MainApp extends StatelessWidget {
         Provider<HiveService>(
           create: (_) => HiveService(),
         ),
-        Provider<ImageStorageService>(
-          create: (_) => ImageStorageService(),
-        ),
         ChangeNotifierProvider<AuthRepositoryRemote>(
           create: (context) => AuthRepositoryRemote(
             firebaseAuthService: context.read<FirebaseAuthService>(),
@@ -75,7 +71,6 @@ class MainApp extends StatelessWidget {
             geminiService: context.read<GeminiService>(),
             firestoreService: context.read<FirestoreService>(),
             hiveService: context.read<HiveService>(),
-            imageStorageService: context.read<ImageStorageService>(),
           ),
         ),
       ],

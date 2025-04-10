@@ -2,9 +2,9 @@ import 'package:weathercloset/data/repositories/memo/memo_repository.dart';
 import 'package:weathercloset/data/services/gemini_service.dart';
 import 'package:weathercloset/data/services/firestore_service.dart';
 import 'package:weathercloset/data/services/hive_service.dart';
-import 'package:weathercloset/data/services/image_storage_service.dart';
 import 'package:weathercloset/domain/models/memo/memo_model.dart';
 import 'package:flutter/foundation.dart';
+import 'package:uuid/uuid.dart';
 
 /*
   [기본 가이드]
@@ -21,18 +21,15 @@ class MemoRepositoryRemote extends MemoRepository {
   final GeminiService _geminiService;
   final FirestoreService _firestoreService;
   final HiveService _hiveService;
-  final ImageStorageService _imageStorageService;
   List<String> _categories = [];
 
   MemoRepositoryRemote({
     required GeminiService geminiService,
     required FirestoreService firestoreService,
     required HiveService hiveService,
-    required ImageStorageService imageStorageService,
   }) : _geminiService = geminiService,
        _firestoreService = firestoreService,
-       _hiveService = hiveService,
-       _imageStorageService = imageStorageService {
+       _hiveService = hiveService {
         _initCategories();
        }
 
@@ -47,9 +44,13 @@ class MemoRepositoryRemote extends MemoRepository {
     debugPrint('🔍 분류된 메모: ${analyzedMemo.title}');
     debugPrint('🔍 분류된 메모: ${analyzedMemo.content}');
 
-    // await _hiveService.saveMemo(analyzedMemo);
-    // await _firestoreService.saveMemo(analyzedMemo);
-  }
+    String uuid = const Uuid().v4();
+
+    _hiveService.saveMemo(analyzedMemo, uuid);
+    debugPrint('✅ 하이브 저장 완료');
+    _firestoreService.saveMemo(analyzedMemo, uuid);
+    debugPrint('✅ 파이어스토어 저장 완료');
+  } 
 
   @override
   Stream<Map<String, MemoModel>> watchMemoLocal() {
