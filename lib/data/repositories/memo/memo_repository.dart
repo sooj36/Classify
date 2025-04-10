@@ -3,7 +3,7 @@ import 'package:weathercloset/domain/models/memo/memo_model.dart';
 
 abstract class MemoRepository extends ChangeNotifier {
 
-  Future<void> analyzeAndSaveMemo(String memo);
+  Future<String?> analyzeAndSaveMemo(String memo);
 
   Stream<Map<String, MemoModel>> watchMemoLocal();
 

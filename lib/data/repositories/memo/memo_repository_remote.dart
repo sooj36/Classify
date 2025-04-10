@@ -38,19 +38,25 @@ class MemoRepositoryRemote extends MemoRepository {
   }
 
   @override
-  Future<void> analyzeAndSaveMemo(String memo) async {
-    MemoModel analyzedMemo = await _geminiService.analyzeMemo(memo, _categories);
-    debugPrint('🔍 분류된 메모: ${analyzedMemo.category}');
-    debugPrint('🔍 분류된 메모: ${analyzedMemo.title}');
-    debugPrint('🔍 분류된 메모: ${analyzedMemo.content}');
+  Future<String?> analyzeAndSaveMemo(String memo) async {
+    try {
+      MemoModel analyzedMemo = await _geminiService.analyzeMemo(memo, _categories);
+      debugPrint('🔍 분류된 메모: ${analyzedMemo.category}');
+      debugPrint('🔍 분류된 메모: ${analyzedMemo.title}');
+      debugPrint('🔍 분류된 메모: ${analyzedMemo.content}');
 
-    String uuid = const Uuid().v4();
+      String uuid = const Uuid().v4();
 
-    _hiveService.saveMemo(analyzedMemo, uuid);
-    debugPrint('✅ 하이브 저장 완료');
-    _firestoreService.saveMemo(analyzedMemo, uuid);
-    debugPrint('✅ 파이어스토어 저장 완료');
-  } 
+      _hiveService.saveMemo(analyzedMemo, uuid);
+      debugPrint('✅ 하이브 저장 완료');
+      _firestoreService.saveMemo(analyzedMemo, uuid);
+      debugPrint('✅ 파이어스토어 저장 완료');
+      return null;
+    } catch (e) {
+      debugPrint('❌ 메모 분석 및 저장 중 오류: $e');
+      return e.toString();
+    }
+  }
 
   @override
   Stream<Map<String, MemoModel>> watchMemoLocal() {

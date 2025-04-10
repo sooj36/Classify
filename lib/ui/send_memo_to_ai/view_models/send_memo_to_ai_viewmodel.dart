@@ -7,7 +7,7 @@ class SendMemoToAiViewModel extends ChangeNotifier {
   final MemoRepositoryRemote _memoRepositoryRemote;
   bool _isLoading;
 
-  final String? _error;
+  String? _error;
 
   SendMemoToAiViewModel({
     required MemoRepositoryRemote memoRepositoryRemote,
@@ -21,7 +21,11 @@ class SendMemoToAiViewModel extends ChangeNotifier {
   Future<void> sendMemoToAi(String memo) async {
     _isLoading = true;
     notifyListeners();
-    await _memoRepositoryRemote.analyzeAndSaveMemo(memo);
+    final result = await _memoRepositoryRemote.analyzeAndSaveMemo(memo);
+    if (result != null) {
+      _error = result;
+      notifyListeners();
+    }
     _isLoading = false;
     notifyListeners();
   }

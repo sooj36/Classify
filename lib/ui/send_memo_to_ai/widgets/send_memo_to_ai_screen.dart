@@ -15,6 +15,7 @@ class SendMemoToAiScreen extends StatefulWidget {
 
 class _SendMemoToAiScreenState extends State<SendMemoToAiScreen> {
   final TextEditingController _memoController = TextEditingController();
+  bool _showSuccess = false;
 
   @override
   void initState() {
@@ -90,26 +91,81 @@ class _SendMemoToAiScreenState extends State<SendMemoToAiScreen> {
           ),
           const SizedBox(height: 24),
           // 정리하기 버튼
-          ElevatedButton(
-            onPressed: () {
-              if (_memoController.text.trim().isNotEmpty) {
-                widget._sendMemoToAiViewModel.sendMemoToAi(_memoController.text);
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 234, 238, 241),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              //버튼이 성공 상태를 표시하고 있거나 로딩 중일 때는 버튼을 비활성화하기 위해 삼항 연산자 사용
+              onPressed: _showSuccess || widget._sendMemoToAiViewModel.isLoading
+                ? null
+                : () async {
+                    if (_memoController.text.trim().isNotEmpty) {
+                      await widget._sendMemoToAiViewModel.sendMemoToAi(_memoController.text);
+                      
+                      // 작업 완료 후 에러가 없으면 성공 처리
+                      if (widget._sendMemoToAiViewModel.error == null && mounted) {
+                        _memoController.clear();
+                        setState(() {
+                          _showSuccess = true;
+                        });
+                        
+                        Future.delayed(const Duration(milliseconds: 1500), () {
+                          if (mounted) {
+                            setState(() {
+                              _showSuccess = false;
+                            });
+                          }
+                        });
+                      }
+                    }
+                  },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _showSuccess ? Colors.green : Colors.blue,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                disabledBackgroundColor: _showSuccess 
+                  ? Colors.green
+                  : Colors.blue.withOpacity(0.6),
               ),
-            ),
-            child: const Text(
-              '정리하기',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+              // 아이콘들을 굳이 sizedbox로 감싼 이유는 텍스트와 아이콘의 높이가 다르기 때문에 높이를 맞추기 위함
+              child: _showSuccess
+                ? const SizedBox(
+                    height: 24,
+                    width: double.infinity,
+                    child: Center(
+                      child: Icon(
+                        Icons.check,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                  )
+                : widget._sendMemoToAiViewModel.isLoading
+                  ? const SizedBox(
+                      height: 24,
+                      width: double.infinity,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    )
+                  : const SizedBox(
+                      height: 24,
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          '정리하기',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
             ),
           ),
         ],
