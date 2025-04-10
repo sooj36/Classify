@@ -34,7 +34,7 @@ class _RootScreenState extends State<RootScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("WeatherCloset", style: TextStyle(fontWeight: FontWeight.bold),),
+        title: const Text("Classify", style: TextStyle(fontWeight: FontWeight.bold),),
         backgroundColor: Colors.blue,
         actions: [
           IconButton(
@@ -49,10 +49,8 @@ class _RootScreenState extends State<RootScreen> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.shifting,
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.add_a_photo), label: '옷장'),
+          BottomNavigationBarItem(icon: Icon(Icons.note_add), label: '메모'),
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: '프로필'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_2), label: '셀프피팅'),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
