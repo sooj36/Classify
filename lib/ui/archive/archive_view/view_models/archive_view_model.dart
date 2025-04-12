@@ -56,4 +56,10 @@ class ArchiveViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+
+  void deleteMemo(String memoId) {
+    _memoRepositoryRemote.deleteMemo(memoId);
+    notifyListeners();
+  }
 }

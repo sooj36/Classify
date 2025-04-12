@@ -24,7 +24,7 @@ class MemoModel extends HiveObject {
   final String content;
   
   @HiveField(3)
-  final bool isImportant;
+  final bool? isImportant;
   
   @HiveField(4)
   final List<String>? tags;
@@ -35,6 +35,12 @@ class MemoModel extends HiveObject {
   @HiveField(6)
   final String category;
 
+  @HiveField(7)
+  final bool? isDone;
+
+  @HiveField(8)
+  final String memoId;
+
   MemoModel({
     required this.title,
     required this.content,
@@ -43,6 +49,8 @@ class MemoModel extends HiveObject {
     this.lastModified,
     DateTime? createdAt,
     required this.category,
+    this.isDone = false,
+    required this.memoId,
   }) : createdAt = createdAt ?? DateTime.now();
 
   MemoModel copyWith({
@@ -53,6 +61,8 @@ class MemoModel extends HiveObject {
     DateTime? lastModified,
     DateTime? createdAt,
     String? category,
+    bool? isDone,
+    String? memoId,
   }) => MemoModel(
     title: title ?? this.title,
     content: content ?? this.content,
@@ -61,5 +71,7 @@ class MemoModel extends HiveObject {
     lastModified: lastModified ?? this.lastModified,
     createdAt: createdAt ?? this.createdAt,
     category: category ?? this.category,
+    isDone: isDone ?? this.isDone,
+    memoId: memoId ?? this.memoId,
   );
 }

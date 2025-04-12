@@ -30,7 +30,7 @@ void main() async {
     final dir = await getApplicationDocumentsDirectory();
     Hive.init(dir.path);
     Hive.registerAdapter(MemoModelAdapter());
-    await Hive.openBox<MemoModel>("memo");
+    await Hive.openBox<MemoModel>('memo');
     await Hive.openBox<List<String>>("category");
     debugPrint("✅ Hive 초기화 성공!");
   } catch (e) {

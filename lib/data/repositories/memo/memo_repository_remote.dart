@@ -33,19 +33,34 @@ class MemoRepositoryRemote extends MemoRepository {
         _initCategories();
        }
 
-  void _initCategories() {
-    _categories = _hiveService.getCategories();
+  Future<void> _initCategories() async {
+    try {
+      _categories = _hiveService.getCategories();
+      
+      // 카테고리가 비어있을 경우 기본 카테고리 생성
+      if (_categories.isEmpty) {
+        debugPrint("⚠️ 카테고리가 비어있어 기본 카테고리를 생성합니다.");
+        _hiveService.createCategoryWhenSignup();
+        _categories = _hiveService.getCategories();
+      }
+      
+      debugPrint("📋 현재 카테고리 목록: $_categories");
+    } catch (e) {
+      debugPrint("❌ 카테고리 초기화 실패: $e");
+      // 기본 카테고리 설정
+      _categories = ["아이디어", "공부", "할 일", "업무", "스크랩"];
+    }
   }
 
   @override
   Future<String?> analyzeAndSaveMemo(String memo) async {
     try {
-      MemoModel analyzedMemo = await _geminiService.analyzeMemo(memo, _categories);
+      String uuid = const Uuid().v4();
+      MemoModel analyzedMemo = await _geminiService.analyzeMemo(memo, _categories, uuid);
       debugPrint('🔍 분류된 메모: ${analyzedMemo.category}');
       debugPrint('🔍 분류된 메모: ${analyzedMemo.title}');
       debugPrint('🔍 분류된 메모: ${analyzedMemo.content}');
 
-      String uuid = const Uuid().v4();
 
       _hiveService.saveMemo(analyzedMemo, uuid);
       debugPrint('✅ 하이브 저장 완료');
@@ -73,5 +88,11 @@ class MemoRepositoryRemote extends MemoRepository {
           }),
         );
       }).asBroadcastStream();
+  }
+
+  @override
+  Future<void> deleteMemo(String memoId) async {
+    await _firestoreService.deleteMemo(memoId);
+    _hiveService.deleteMemo(memoId);
   }
 } 

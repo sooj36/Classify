@@ -19,18 +19,20 @@ class MemoModelAdapter extends TypeAdapter<MemoModel> {
     return MemoModel(
       title: fields[1] as String,
       content: fields[2] as String,
-      isImportant: fields[3] as bool,
+      isImportant: fields[3] as bool?,
       tags: (fields[4] as List?)?.cast<String>(),
       lastModified: fields[5] as DateTime?,
       createdAt: fields[0] as DateTime?,
       category: fields[6] as String,
+      isDone: fields[7] as bool?,
+      memoId: fields[8] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, MemoModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.createdAt)
       ..writeByte(1)
@@ -44,7 +46,11 @@ class MemoModelAdapter extends TypeAdapter<MemoModel> {
       ..writeByte(5)
       ..write(obj.lastModified)
       ..writeByte(6)
-      ..write(obj.category);
+      ..write(obj.category)
+      ..writeByte(7)
+      ..write(obj.isDone)
+      ..writeByte(8)
+      ..write(obj.memoId);
   }
 
   @override

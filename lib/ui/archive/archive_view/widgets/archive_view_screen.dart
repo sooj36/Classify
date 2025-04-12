@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_model.dart';
 import 'package:weathercloset/domain/models/memo/memo_model.dart';
+import 'package:weathercloset/ui/archive/archive_view/widgets/buildTodoTabview.dart';
 
 class ArchiveScreen extends StatefulWidget {
   final ArchiveViewModel viewModel;
@@ -42,7 +43,7 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
           final uniqueCategories = memos.values.map((c) => c.category).toSet().toList();
           
           return DefaultTabController(
-            length: uniqueCategories.length,  // 유니크한 major 개수로 변경
+            length: uniqueCategories.length,
             child: Column(
               children: [
                 TabBar(
@@ -55,16 +56,18 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
                 ),
                 Expanded(
                   child: TabBarView(
-                    children: uniqueCategories.map((category) {
-                      final categories = memos.values.where((c) => c.category == category).toList();
-                      return ListView.builder(
-                        padding: const EdgeInsets.all(16.0),
-                        itemCount: categories.length,
-                        itemBuilder: (context, index) {
-                          final memo = categories[index];
-                          return individualCards(memo);
-                        },
-                      );
+                        children: uniqueCategories.map((category) {
+                      // 카테고리별로 다른 위젯 반환
+                      switch (category) {
+                        case '할 일':
+                          return buildTodoTabView(memos, widget.viewModel);
+                        case '공부':
+                          return Center(child: Text('공부 탭 더미 콘텐츠'));
+                        case '아이디어':
+                          return Center(child: Text('아이디어 탭 더미 콘텐츠'));
+                        default:
+                          return Center(child: Text('$category 탭 더미 콘텐츠'));
+                      }
                     }).toList(),
                   ),
                 ),
@@ -75,73 +78,6 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
       ),
     );
   }
-
-  Card individualCards(MemoModel memo) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12.0),
-      child: GestureDetector(
-        onLongPress: () {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: const Text('삭제 확인'),
-              content: const Text('정말로 삭제하시겠습니까?'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('취소'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('삭제'),
-                ),
-              ],
-            ),
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                memo.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                memo.content,
-                style: const TextStyle(fontSize: 14),
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    memo.category,
-                    style: const TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  if (memo.isImportant)
-                    const Icon(Icons.star, color: Colors.amber, size: 18),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
 }
 
 
