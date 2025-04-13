@@ -3,6 +3,7 @@ import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_m
 import 'package:weathercloset/domain/models/memo/memo_model.dart';
 import 'package:weathercloset/ui/archive/archive_view/widgets/buildTodoTabview.dart';
 import 'package:weathercloset/ui/archive/archive_view/widgets/buildIdeaTabview.dart';
+import 'package:weathercloset/ui/archive/archive_view/widgets/buildStudyTabview.dart';
 class ArchiveScreen extends StatefulWidget {
   final ArchiveViewModel viewModel;
   const ArchiveScreen({super.key, required this.viewModel});
@@ -62,8 +63,8 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
                       switch (category) {
                         case '할 일':
                           return buildTodoTabView(memos, widget.viewModel);
-                        case '공부':
-                          return const Center(child: Text('공부 탭 더미 콘텐츠'));
+                        case '공부':                   
+                          return buildStudyTabView(memos, widget.viewModel);
                         case '아이디어':
                           return buildIdeaTabView(memos, widget.viewModel);
                         default:
