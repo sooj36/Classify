@@ -8,6 +8,19 @@ Widget buildStudyTabView(Map<String, MemoModel> memos, ArchiveViewModel viewMode
       .where((memo) => memo.category == '공부')
       .toList();
   
+  // 메모가 없는 경우 처리
+  if (studyMemos.isEmpty) {
+    return const Center(
+      child: Text(
+        "작성된 메모가 없습니다",
+        style: TextStyle(
+          fontSize: 16,
+          color: Colors.grey,
+        ),
+      ),
+    );
+  }
+  
   // 최신순과 오래된순으로 정렬된 메모 리스트 생성
   final latestMemos = List<MemoModel>.from(studyMemos)
     ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
