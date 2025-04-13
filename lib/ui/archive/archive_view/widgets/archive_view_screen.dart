@@ -62,9 +62,9 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
                         case '할 일':
                           return buildTodoTabView(memos, widget.viewModel);
                         case '공부':
-                          return Center(child: Text('공부 탭 더미 콘텐츠'));
+                          return const Center(child: Text('공부 탭 더미 콘텐츠'));
                         case '아이디어':
-                          return Center(child: Text('아이디어 탭 더미 콘텐츠'));
+                          return const Center(child: Text('아이디어 탭 더미 콘텐츠'));
                         default:
                           return Center(child: Text('$category 탭 더미 콘텐츠'));
                       }
