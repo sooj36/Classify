@@ -5,6 +5,8 @@ import 'package:weathercloset/domain/models/memo/memo_model.dart';
 import 'dart:convert';
 class GeminiService {
 
+
+  // ${categories.join(', ')} 카테고리를 동적으로 조정하고 싶으면 이렇게 하면 됨.
   Future<MemoModel> analyzeMemo(String memoText, List<String> categories, String memoId) async {
     try {
       debugPrint('🔍 분류 기준: $categories');
@@ -12,7 +14,7 @@ class GeminiService {
         아래의 메모를 분류해줘
         $memoText
         분류할 수 있는 카테고리는 다음과 같아
-        ${categories.join(', ')}
+        할 일, 공부, 아이디어 중 하나로 분류해야 해.
         그리고 10자 이내의 적절한 제목도 붙여줘야 해.
         또한 메모 원문을 그대로 복사해서 붙여넣어야 해.
         마지막으로 1개에서 3개의 태그를 붙여야 해.

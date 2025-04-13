@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_model.dart';
 import 'package:weathercloset/domain/models/memo/memo_model.dart';
 import 'package:weathercloset/ui/archive/archive_view/widgets/buildTodoTabview.dart';
-
+import 'package:weathercloset/ui/archive/archive_view/widgets/buildIdeaTabview.dart';
 class ArchiveScreen extends StatefulWidget {
   final ArchiveViewModel viewModel;
   const ArchiveScreen({super.key, required this.viewModel});
@@ -40,8 +40,9 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
           // 데이터 형식 변환
           final memos = widget.viewModel.cachedMemos;
           // clothmodel의 major 값들의 중복을 제거하여 유니크한 리스트 생성
-          final uniqueCategories = memos.values.map((c) => c.category).toSet().toList();
-          
+          // final uniqueCategories = memos.values.map((c) => c.category).toSet().toList();
+          final uniqueCategories = ["할 일", "공부", "아이디어"];
+
           return DefaultTabController(
             length: uniqueCategories.length,
             child: Column(
@@ -64,7 +65,7 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
                         case '공부':
                           return const Center(child: Text('공부 탭 더미 콘텐츠'));
                         case '아이디어':
-                          return const Center(child: Text('아이디어 탭 더미 콘텐츠'));
+                          return buildIdeaTabView(memos, widget.viewModel);
                         default:
                           return Center(child: Text('$category 탭 더미 콘텐츠'));
                       }
