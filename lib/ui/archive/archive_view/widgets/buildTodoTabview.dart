@@ -140,21 +140,6 @@ Widget todoCards(BuildContext context, MemoModel memo, {required Function(String
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      memo.category,
-                      style: const TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    if (memo.isImportant == true)
-                      const Icon(Icons.star, color: Colors.amber, size: 18),
-                  ],
-                ),
               ],
             ),
           ),
