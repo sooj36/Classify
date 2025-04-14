@@ -95,4 +95,20 @@ class MemoRepositoryRemote extends MemoRepository {
     await _firestoreService.deleteMemo(memoId);
     _hiveService.deleteMemo(memoId);
   }
+
+  @override
+  Future<void> updateMemo(MemoModel memo) async {
+    try {
+      // Hive에 저장
+      _hiveService.saveMemo(memo, memo.memoId);
+      debugPrint('✅ 하이브 업데이트 완료');
+      
+      // Firestore에 저장
+      await _firestoreService.saveMemo(memo, memo.memoId);
+      debugPrint('✅ 파이어스토어 업데이트 완료');
+    } catch (e) {
+      debugPrint('❌ 메모 업데이트 중 오류: $e');
+      rethrow; // 에러를 상위로 전달
+    }
+  }
 } 

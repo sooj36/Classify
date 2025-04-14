@@ -8,6 +8,8 @@ abstract class MemoRepository extends ChangeNotifier {
   Stream<Map<String, MemoModel>> watchMemoLocal();
 
   Future<void> deleteMemo(String memoId);
+  
+  Future<void> updateMemo(MemoModel memo);
 
   // Future<void> saveMemo(MemoModel memo);
 } 

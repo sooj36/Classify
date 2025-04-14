@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_model.dart';
-import 'package:weathercloset/domain/models/memo/memo_model.dart';
 import 'package:weathercloset/ui/archive/archive_view/widgets/buildTodoTabview.dart';
 import 'package:weathercloset/ui/archive/archive_view/widgets/buildIdeaTabview.dart';
 import 'package:weathercloset/ui/archive/archive_view/widgets/buildStudyTabview.dart';

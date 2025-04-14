@@ -10,7 +10,7 @@ class ArchiveViewModel extends ChangeNotifier {
   late  Stream<Map<String, MemoModel>> _memos;
   Map<String, MemoModel> _cachedMemos = {};
   bool _isLoading = false;
-  String? _error = null;
+  String? _error;
 
   ArchiveViewModel({
     required MemoRepositoryRemote memoRepositoryRemote,
@@ -61,5 +61,22 @@ class ArchiveViewModel extends ChangeNotifier {
   void deleteMemo(String memoId) {
     _memoRepositoryRemote.deleteMemo(memoId);
     notifyListeners();
+  }
+  
+  Future<void> updateMemo(MemoModel memo) async {
+    try {
+      // 로컬 캐시 업데이트
+      _cachedMemos[memo.memoId] = memo;
+      notifyListeners();
+      
+      // MemoRepository를 통해 Hive와 Firestore에 저장
+      await _memoRepositoryRemote.updateMemo(memo);
+      
+      debugPrint("✅ 메모 업데이트 완료: ${memo.memoId}");
+    } catch (e) {
+      debugPrint("❌ 메모 업데이트 중 오류 발생: $e");
+      _error = e.toString();
+      notifyListeners();
+    }
   }
 }
