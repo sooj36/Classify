@@ -112,11 +112,11 @@ Widget _buildSortButton({
 
 Widget ideaCards(BuildContext context, MemoModel memo, ArchiveViewModel viewModel) {
   return InkWell(
-    onTap: () {
-      Navigator.push(
-        context,
+      onTap: () {
+      // GoRouter 대신 일반 Navigator 사용
+      Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
-          builder: (context) => IdeaDetailPage(
+          builder: (_) => IdeaDetailPage(
             memo: memo,
             viewModel: viewModel,
           ),
