@@ -158,7 +158,10 @@ class _IdeaDetailPageState extends State<IdeaDetailPage> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.tag, size: 18, color: Colors.grey),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4),
+                    child: Icon(Icons.tag, size: 18, color: Colors.grey),
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Column(
@@ -212,7 +215,7 @@ class _IdeaDetailPageState extends State<IdeaDetailPage> {
   Widget _buildTagChip(String tag) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.1),
+        color: Colors.blue.withAlpha(26),
         borderRadius: BorderRadius.circular(16),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
