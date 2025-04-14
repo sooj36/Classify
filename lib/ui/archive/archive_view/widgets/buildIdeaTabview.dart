@@ -47,20 +47,14 @@ Widget buildIdeaTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel
 
   return Padding(
     padding: const EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 16.0),
-    child: Column(
-      children: [
-        _buildRandomMemoList(randomMemosNotifier, viewModel, ideaMemos),
-        Expanded(
-          child: Column(
-            children: [
-              _buildSortButtons(isLatestSort, latestMemos, oldestMemos, currentMemos),
-              Expanded(
-                child: _buildMemoList(currentMemos, viewModel),
-              ),
-            ],
-          ),
-        ),
-      ],
+    child: SingleChildScrollView(
+      child: Column(
+        children: [
+          _buildRandomMemoList(randomMemosNotifier, viewModel, ideaMemos),
+          _buildSortButtons(isLatestSort, latestMemos, oldestMemos, currentMemos),
+          _buildMemoList(currentMemos, viewModel),
+        ],
+      ),
     ),
   );
 }
@@ -70,14 +64,13 @@ Widget _buildRandomMemoList(
   ArchiveViewModel viewModel,
   List<MemoModel> ideaMemos,
 ) {
-  debugPrint('randomMemos: $randomMemos');
   return Column(
     children: [
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text(
-            '랜덤 추천',
+            '랜덤 보기',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
@@ -88,8 +81,8 @@ Widget _buildRandomMemoList(
               // 랜덤 메모 리스트 갱신
               randomMemos.value = _getRandomMemos(ideaMemos, 2);
             },
-            icon: const Icon(Icons.refresh, size: 16),
-            label: const Text('새로고침'),
+            icon: const Icon(Icons.refresh, size: 16, color: Colors.blue),
+            label: const Text('새로고침', style: TextStyle(color: Colors.blue)),
             style: TextButton.styleFrom(
               backgroundColor: Colors.blue.withOpacity(0.1),
             ),
@@ -97,10 +90,7 @@ Widget _buildRandomMemoList(
         ],
       ),
       const SizedBox(height: 8),
-      SizedBox(
-        height: 180, // 고정 높이 설정
-        child: _buildMemoList(randomMemos, viewModel),
-      ),
+      _buildMemoList(randomMemos, viewModel),
       const Divider(height: 24),
     ],
   );
@@ -113,28 +103,39 @@ Widget _buildSortButtons(
   ValueNotifier<List<MemoModel>> currentMemos,
 ) {
   return Row(
-    mainAxisAlignment: MainAxisAlignment.end,
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      _buildSortButton(
-        isLatestSort: isLatestSort, 
-        isLatest: true, 
-        icon: Icons.arrow_downward, 
-        label: '최신순', 
-        onPressed: () {
-          currentMemos.value = latestMemos;
-          isLatestSort.value = true;
-        }
+      const Text(
+        '시간순 보기',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+        ),
       ),
-      const SizedBox(width: 4),
-      _buildSortButton(
-        isLatestSort: isLatestSort, 
-        isLatest: false, 
-        icon: Icons.arrow_upward, 
-        label: '오래된순', 
-        onPressed: () {
-          currentMemos.value = oldestMemos;
-          isLatestSort.value = false;
-        }
+      Row(
+        children: [
+          _buildSortButton(
+            isLatestSort: isLatestSort, 
+            isLatest: true, 
+            icon: Icons.arrow_downward, 
+            label: '최신순', 
+            onPressed: () {
+              currentMemos.value = latestMemos;
+              isLatestSort.value = true;
+            }
+          ),
+          const SizedBox(width: 4),
+          _buildSortButton(
+            isLatestSort: isLatestSort, 
+            isLatest: false, 
+            icon: Icons.arrow_upward, 
+            label: '오래된순', 
+            onPressed: () {
+              currentMemos.value = oldestMemos;
+              isLatestSort.value = false;
+            }
+          ),
+        ],
       ),
     ],
   );
@@ -149,7 +150,7 @@ Widget _buildMemoList(
     builder: (context, memosList, _) {
       return ListView.builder(
         shrinkWrap: true, // 내용에 맞게 크기 조정
-        physics: const AlwaysScrollableScrollPhysics(), // 항상 스크롤 가능하도록 설정
+        physics: const NeverScrollableScrollPhysics(), // 외부 SingleChildScrollView에서 스크롤 처리
         itemCount: memosList.length,
         itemBuilder: (context, index) => ideaCards(
           context,
