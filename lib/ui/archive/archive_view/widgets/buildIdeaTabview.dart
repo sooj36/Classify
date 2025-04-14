@@ -113,7 +113,7 @@ Widget _buildSortButton({
 Widget ideaCards(BuildContext context, MemoModel memo, ArchiveViewModel viewModel) {
   return InkWell(
       onTap: () {
-      // GoRouter 대신 일반 Navigator 사용
+      // GoRouter 대신 일반 Navigator 사용(rootNavigator: true 이 파트가 rootscreen의 appbar & bottomappabar를 가려줌)
       Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
           builder: (_) => IdeaDetailPage(
