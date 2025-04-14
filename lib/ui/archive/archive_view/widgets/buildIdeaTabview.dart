@@ -2,6 +2,7 @@ import 'package:weathercloset/domain/models/memo/memo_model.dart';
 import 'package:flutter/material.dart';
 import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_model.dart';
 import 'package:weathercloset/ui/archive/archive_view/widgets/buildIdeaDetailPage.dart';
+import 'dart:math';
 
 Widget buildIdeaTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel) {
   // '아이디어' 카테고리만 필터링
@@ -22,12 +23,18 @@ Widget buildIdeaTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel
     );
   }
   
-  // 최신순과 오래된순으로 정렬된 메모 리스트 생성
+  // 최신순 메모 리스트 생성
   final latestMemos = List<MemoModel>.from(ideaMemos)
     ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   
+  // 오래된순 메모 리스트 생성
   final oldestMemos = List<MemoModel>.from(ideaMemos)
     ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+
+  // 랜덤 메모 리스트 생성
+  final randomMemos = List<MemoModel>.from(ideaMemos.isEmpty 
+    ? [] 
+    : _getRandomMemos(ideaMemos, 2));
   
   // 현재 보여줄 메모 리스트 (기본값은 최신순)
   ValueNotifier<List<MemoModel>> currentMemos = ValueNotifier<List<MemoModel>>(latestMemos);
@@ -35,55 +42,122 @@ Widget buildIdeaTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel
   // 최신순인지 여부를 추적하는 플래그
   ValueNotifier<bool> isLatestSort = ValueNotifier<bool>(true);
 
+  // 랜덤 메모 리스트를 위한 ValueNotifier
+  ValueNotifier<List<MemoModel>> randomMemosNotifier = ValueNotifier<List<MemoModel>>(randomMemos);
+
   return Padding(
     padding: const EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 16.0),
     child: Column(
       children: [
-        // 정렬 버튼
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            _buildSortButton(
-              isLatestSort: isLatestSort, 
-              isLatest: true, 
-              icon: Icons.arrow_downward, 
-              label: '최신순', 
-              onPressed: () {
-                currentMemos.value = latestMemos;
-                isLatestSort.value = true;
-              }
-            ),
-            const SizedBox(width: 4),
-            _buildSortButton(
-              isLatestSort: isLatestSort, 
-              isLatest: false, 
-              icon: Icons.arrow_upward, 
-              label: '오래된순', 
-              onPressed: () {
-                currentMemos.value = oldestMemos;
-                isLatestSort.value = false;
-              }
-            ),
-          ],
-        ),
-        // 메모 리스트
+        _buildRandomMemoList(randomMemosNotifier, viewModel, ideaMemos),
         Expanded(
-          child: ValueListenableBuilder<List<MemoModel>>(
-            valueListenable: currentMemos,
-            builder: (context, memosList, _) {
-              return ListView.builder(
-                itemCount: memosList.length,
-                itemBuilder: (context, index) => ideaCards(
-                  context,
-                  memosList[index],
-                  viewModel,
-                ),
-              );
-            },
+          child: Column(
+            children: [
+              _buildSortButtons(isLatestSort, latestMemos, oldestMemos, currentMemos),
+              Expanded(
+                child: _buildMemoList(currentMemos, viewModel),
+              ),
+            ],
           ),
         ),
       ],
     ),
+  );
+}
+
+Widget _buildRandomMemoList(
+  ValueNotifier<List<MemoModel>> randomMemos,
+  ArchiveViewModel viewModel,
+  List<MemoModel> ideaMemos,
+) {
+  debugPrint('randomMemos: $randomMemos');
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            '랜덤 추천',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          TextButton.icon(
+            onPressed: () {
+              // 랜덤 메모 리스트 갱신
+              randomMemos.value = _getRandomMemos(ideaMemos, 2);
+            },
+            icon: const Icon(Icons.refresh, size: 16),
+            label: const Text('새로고침'),
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.blue.withOpacity(0.1),
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 8),
+      SizedBox(
+        height: 180, // 고정 높이 설정
+        child: _buildMemoList(randomMemos, viewModel),
+      ),
+      const Divider(height: 24),
+    ],
+  );
+}
+
+Widget _buildSortButtons(
+  ValueNotifier<bool> isLatestSort,
+  List<MemoModel> latestMemos,
+  List<MemoModel> oldestMemos,
+  ValueNotifier<List<MemoModel>> currentMemos,
+) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: [
+      _buildSortButton(
+        isLatestSort: isLatestSort, 
+        isLatest: true, 
+        icon: Icons.arrow_downward, 
+        label: '최신순', 
+        onPressed: () {
+          currentMemos.value = latestMemos;
+          isLatestSort.value = true;
+        }
+      ),
+      const SizedBox(width: 4),
+      _buildSortButton(
+        isLatestSort: isLatestSort, 
+        isLatest: false, 
+        icon: Icons.arrow_upward, 
+        label: '오래된순', 
+        onPressed: () {
+          currentMemos.value = oldestMemos;
+          isLatestSort.value = false;
+        }
+      ),
+    ],
+  );
+}
+
+Widget _buildMemoList(
+  ValueNotifier<List<MemoModel>> currentMemos,
+  ArchiveViewModel viewModel,
+) {
+  return ValueListenableBuilder<List<MemoModel>>(
+    valueListenable: currentMemos,
+    builder: (context, memosList, _) {
+      return ListView.builder(
+        shrinkWrap: true, // 내용에 맞게 크기 조정
+        physics: const AlwaysScrollableScrollPhysics(), // 항상 스크롤 가능하도록 설정
+        itemCount: memosList.length,
+        itemBuilder: (context, index) => ideaCards(
+          context,
+          memosList[index],
+          viewModel,
+        ),
+      );
+    },
   );
 }
 
@@ -167,4 +241,27 @@ Widget ideaCards(BuildContext context, MemoModel memo, ArchiveViewModel viewMode
       ),
     ),
   );
+}
+
+// 랜덤 메모를 가져오는 함수
+List<MemoModel> _getRandomMemos(List<MemoModel> memos, int count) {
+  final random = Random();
+  final result = <MemoModel>[];
+  
+  // 메모 리스트가 요청 개수보다 작으면 전체 리스트 반환
+  if (memos.length <= count) {
+    return memos;
+  }
+  
+  // 비복원 추출을 이용하여 중복 없이 랜덤하게 메모 선택
+  // 비복원 추출이란?
+  // 한번 선택한 항목을 다시 선택 대상에서 제외하여 중복 없이 샘플을 추출하는 방법
+  final tempList = List<MemoModel>.from(memos);
+  for (int i = 0; i < count; i++) {
+    final randomIndex = random.nextInt(tempList.length); // 랜덤 숫자 생성의 핵심
+    result.add(tempList[randomIndex]);
+    tempList.removeAt(randomIndex); //선택된 메모는 임시 리스트에서 제거(비복원 추출의 핵심)
+  }
+  
+  return result; 
 }
