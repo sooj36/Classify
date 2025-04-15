@@ -198,6 +198,30 @@ Widget ideaCards(BuildContext context, MemoModel memo, ArchiveViewModel viewMode
         ),
       );
     },
+    onLongPress: () {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('메모 삭제'),
+            content: const Text('정말로 이 메모를 삭제하시겠습니까?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('취소'),
+              ),
+              TextButton(
+                onPressed: () {
+                  viewModel.deleteMemo(memo.memoId);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('확인', style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          );
+        },
+      );
+    },
     child: Card(
       margin: const EdgeInsets.only(bottom: 12.0),
       child: Padding(
@@ -255,8 +279,7 @@ List<MemoModel> _getRandomMemos(List<MemoModel> memos, int count) {
   }
   
   // 비복원 추출을 이용하여 중복 없이 랜덤하게 메모 선택
-  // 비복원 추출이란?
-  // 한번 선택한 항목을 다시 선택 대상에서 제외하여 중복 없이 샘플을 추출하는 방법
+  // 비복원 추출: 한번 선택한 항목을 다시 선택 대상에서 제외하여 중복 없이 샘플을 추출하는 방법
   final tempList = List<MemoModel>.from(memos);
   for (int i = 0; i < count; i++) {
     final randomIndex = random.nextInt(tempList.length); // 랜덤 숫자 생성의 핵심
