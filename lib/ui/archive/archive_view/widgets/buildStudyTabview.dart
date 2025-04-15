@@ -23,20 +23,21 @@ Widget buildStudyTabView(Map<String, MemoModel> memos, ArchiveViewModel viewMode
     );
   }
   
-  // 최신순과 오래된순으로 정렬된 메모 리스트 생성
+  // 최신순 메모 리스트 생성
   final latestMemos = List<MemoModel>.from(studyMemos)
     ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   
+  // 오래된순 메모 리스트 생성
   final oldestMemos = List<MemoModel>.from(studyMemos)
     ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
   
-  // 질문이 있는 메모만 필터링
+  // 질문이 있는 메모만 필터링(사용자가 임의로 질문을 삭제했을 수도 있기에)
   final questionMemos = studyMemos.where((memo) => memo.question != null && memo.question!.isNotEmpty).toList();
   
   // 랜덤 메모 리스트 생성 (질문이 있는 메모 중에서)
   final randomMemos = questionMemos.isEmpty 
       ? <MemoModel>[] 
-      : _getRandomMemos(questionMemos, 2);
+      : _getRandomMemos(questionMemos, 1);
   
   // 현재 보여줄 메모 리스트 (기본값은 최신순)
   ValueNotifier<List<MemoModel>> currentMemos = ValueNotifier<List<MemoModel>>(latestMemos);
@@ -85,7 +86,7 @@ Widget _buildRandomQuestionList(
           TextButton.icon(
             onPressed: () {
               // 랜덤 메모 리스트 갱신
-              randomMemos.value = _getRandomMemos(questionMemos, 2);
+              randomMemos.value = _getRandomMemos(questionMemos, 1);
             },
             icon: const Icon(Icons.refresh, size: 16, color: Colors.blue),
             label: const Text('새로고침', style: TextStyle(color: Colors.blue)),
