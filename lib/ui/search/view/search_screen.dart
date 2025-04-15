@@ -106,43 +106,55 @@ class _SearchScreenState extends State<SearchScreen> {
   // 정렬 옵션 위젯
   Widget _buildSortOptions() {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const Text('정렬: '),
         const SizedBox(width: 8),
-        TextButton.icon(
-          onPressed: () => widget.viewModel.sortByLatest(),
-          icon: Icon(
-            Icons.arrow_downward,
-            color: widget.viewModel.isLatestSort ? Theme.of(context).primaryColor : Colors.grey,
-            size: 16,
-          ),
-          label: Text(
-            '최신순',
-            style: TextStyle(
-              color: widget.viewModel.isLatestSort ? Theme.of(context).primaryColor : Colors.grey,
-              fontSize: 12,
-            ),
-          ),
-          style: TextButton.styleFrom(padding: const EdgeInsets.all(4)),
+        _buildSortButton(
+          isLatest: true,
+          icon: Icons.arrow_downward,
+          label: '최신순',
         ),
-        const SizedBox(width: 8),
-        TextButton.icon(
-          onPressed: () => widget.viewModel.sortByOldest(),
-          icon: Icon(
-            Icons.arrow_upward,
-            color: !widget.viewModel.isLatestSort ? Theme.of(context).primaryColor : Colors.grey,
-            size: 16,
-          ),
-          label: Text(
-            '오래된순',
-            style: TextStyle(
-              color: !widget.viewModel.isLatestSort ? Theme.of(context).primaryColor : Colors.grey,
-              fontSize: 12,
-            ),
-          ),
-          style: TextButton.styleFrom(padding: const EdgeInsets.all(4)),
+        const SizedBox(width: 4),
+        _buildSortButton(
+          isLatest: false,
+          icon: Icons.arrow_upward,
+          label: '오래된순',
         ),
       ],
+    );
+  }
+
+  // 정렬 버튼 위젯
+  Widget _buildSortButton({
+    required bool isLatest,
+    required IconData icon,
+    required String label,
+  }) {
+    final bool isSelected = isLatest ? widget.viewModel.isLatestSort : !widget.viewModel.isLatestSort;
+    
+    return TextButton.icon(
+      onPressed: () {
+        if (isLatest) {
+          widget.viewModel.sortByLatest();
+        } else {
+          widget.viewModel.sortByOldest();
+        }
+      },
+      icon: Icon(
+        icon, 
+        size: 16, 
+        color: isSelected ? Colors.blue : Colors.black
+      ),
+      label: Text(
+        label, 
+        style: TextStyle(
+          color: isSelected ? Colors.blue : Colors.black
+        )
+      ),
+      style: TextButton.styleFrom(
+        backgroundColor: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+      ),
     );
   }
 
@@ -154,7 +166,7 @@ class _SearchScreenState extends State<SearchScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildFilterOptions(),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           _buildSortOptions(),
         ],
       ),
