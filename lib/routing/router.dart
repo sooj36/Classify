@@ -15,7 +15,8 @@ import 'package:weathercloset/ui/send_memo_to_ai/widgets/send_memo_to_ai_screen.
 import 'package:weathercloset/ui/basics/profile_screen.dart';
 import 'package:weathercloset/global/global.dart';
 import 'package:weathercloset/ui/send_memo_to_ai/view_models/send_memo_to_ai_viewmodel.dart';
-
+import 'package:weathercloset/ui/search/view/search_screen.dart';
+import 'package:weathercloset/ui/search/view_model/search_view_model.dart';
 final router = GoRouter(
   initialLocation: firebaseAuth.currentUser != null ? Routes.sendMemo : Routes.login,
   routes: [
@@ -58,6 +59,14 @@ final router = GoRouter(
     GoRoute(
       path: Routes.setting,
       builder: (context, state) => const SettingScreen(),
+    ),
+    GoRoute(
+      path: Routes.search,
+      builder: (context, state) => SearchScreen(
+        viewModel: SearchViewModel(
+          memoRepositoryRemote: context.read<MemoRepositoryRemote>(),
+        ),
+      ),
     ),
     GoRoute(
       path: Routes.login,
