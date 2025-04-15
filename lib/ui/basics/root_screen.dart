@@ -38,6 +38,12 @@ class _RootScreenState extends State<RootScreen> {
         backgroundColor: Colors.blue,
         actions: [
           IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              // context.push(Routes.search);
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
               context.push(Routes.setting);

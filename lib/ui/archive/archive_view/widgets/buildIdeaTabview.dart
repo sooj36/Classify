@@ -47,51 +47,91 @@ Widget buildIdeaTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel
 
   return Padding(
     padding: const EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 16.0),
-    child: SingleChildScrollView(
-      child: Column(
-        children: [
-          _buildRandomMemoList(randomMemosNotifier, viewModel, ideaMemos),
-          _buildSortButtons(isLatestSort, latestMemos, oldestMemos, currentMemos),
-          _buildMemoList(currentMemos, viewModel),
-        ],
-      ),
+    child: CustomScrollView(
+      slivers: [
+        // 랜덤 메모 리스트
+        SliverToBoxAdapter(
+          child: _buildRandomMemoHeader(randomMemosNotifier, viewModel, ideaMemos),
+        ),
+        
+        // 랜덤 메모 표시
+        SliverToBoxAdapter(
+          child: ValueListenableBuilder<List<MemoModel>>(
+            valueListenable: randomMemosNotifier,
+            builder: (context, randomList, _) {
+              return Column(
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: randomList.length,
+                    itemBuilder: (context, index) => ideaCards(
+                      context,
+                      randomList[index],
+                      viewModel,
+                    ),
+                  ),
+                  const Divider(height: 24),
+                ],
+              );
+            },
+          ),
+        ),
+        
+        // 정렬 버튼
+        SliverAppBar(
+          pinned: true,
+          elevation: 0,
+          backgroundColor: Colors.blue.shade50,
+          automaticallyImplyLeading: false,
+          title: _buildSortButtons(isLatestSort, latestMemos, oldestMemos, currentMemos),
+        ),
+        
+        // 메모 리스트
+        ValueListenableBuilder<List<MemoModel>>(
+          valueListenable: currentMemos,
+          builder: (context, memosList, _) {
+            return SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return ideaCards(context, memosList[index], viewModel);
+                },
+                childCount: memosList.length,
+              ),
+            );
+          },
+        ),
+      ],
     ),
   );
 }
 
-Widget _buildRandomMemoList(
+Widget _buildRandomMemoHeader(
   ValueNotifier<List<MemoModel>> randomMemos,
   ArchiveViewModel viewModel,
   List<MemoModel> ideaMemos,
 ) {
-  return Column(
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            '랜덤 보기',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-          TextButton.icon(
-            onPressed: () {
-              // 랜덤 메모 리스트 갱신
-              randomMemos.value = _getRandomMemos(ideaMemos, 2);
-            },
-            icon: const Icon(Icons.refresh, size: 16, color: Colors.blue),
-            label: const Text('새로고침', style: TextStyle(color: Colors.blue)),
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.blue.withOpacity(0.1),
-            ),
-          ),
-        ],
+      const Text(
+        '랜덤 보기',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+        ),
       ),
-      const SizedBox(height: 8),
-      _buildMemoList(randomMemos, viewModel),
-      const Divider(height: 24),
+      TextButton.icon(
+        onPressed: () {
+          // 랜덤 메모 리스트 갱신
+          randomMemos.value = _getRandomMemos(ideaMemos, 2);
+        },
+        icon: const Icon(Icons.refresh, size: 16, color: Colors.blue),
+        label: const Text('새로고침', style: TextStyle(color: Colors.blue)),
+        style: TextButton.styleFrom(
+          backgroundColor: Colors.blue.withOpacity(0.1),
+        ),
+      ),
     ],
   );
 }
@@ -138,27 +178,6 @@ Widget _buildSortButtons(
         ],
       ),
     ],
-  );
-}
-
-Widget _buildMemoList(
-  ValueNotifier<List<MemoModel>> currentMemos,
-  ArchiveViewModel viewModel,
-) {
-  return ValueListenableBuilder<List<MemoModel>>(
-    valueListenable: currentMemos,
-    builder: (context, memosList, _) {
-      return ListView.builder(
-        shrinkWrap: true, // 내용에 맞게 크기 조정
-        physics: const NeverScrollableScrollPhysics(), // 외부 SingleChildScrollView에서 스크롤 처리
-        itemCount: memosList.length,
-        itemBuilder: (context, index) => ideaCards(
-          context,
-          memosList[index],
-          viewModel,
-        ),
-      );
-    },
   );
 }
 

@@ -50,18 +50,38 @@ Widget buildStudyTabView(Map<String, MemoModel> memos, ArchiveViewModel viewMode
 
   return Padding(
     padding: const EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 16.0),
-    child: SingleChildScrollView(
-      child: Column(
-        children: [
-          // 랜덤 질문 카드 섹션
-          if (questionMemos.isNotEmpty)
-            _buildRandomQuestionList(randomMemosNotifier, viewModel, questionMemos),
-          
-          // 정렬 버튼 및 메모 리스트
-          _buildSortButtons(isLatestSort, latestMemos, oldestMemos, currentMemos),
-          _buildMemoList(currentMemos, viewModel),
-        ],
-      ),
+    child: CustomScrollView(
+      slivers: [
+        // 랜덤 질문 카드 섹션
+        if (questionMemos.isNotEmpty)
+          SliverToBoxAdapter(
+            child: _buildRandomQuestionList(randomMemosNotifier, viewModel, questionMemos),
+          ),
+        
+        // 정렬 버튼
+        SliverAppBar(
+          pinned: true,
+          elevation: 0,
+          backgroundColor: Colors.blue.shade50,
+          automaticallyImplyLeading: false,
+          title: _buildSortButtons(isLatestSort, latestMemos, oldestMemos, currentMemos),
+        ),
+        
+        // 메모 리스트
+        ValueListenableBuilder<List<MemoModel>>(
+          valueListenable: currentMemos,
+          builder: (context, memosList, _) {
+            return SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return studyCards(context, memosList[index], viewModel);
+                },
+                childCount: memosList.length,
+              ),
+            );
+          },
+        ),
+      ],
     ),
   );
 }
@@ -280,27 +300,6 @@ Widget _buildSortButtons(
         ],
       ),
     ],
-  );
-}
-
-Widget _buildMemoList(
-  ValueNotifier<List<MemoModel>> currentMemos,
-  ArchiveViewModel viewModel,
-) {
-  return ValueListenableBuilder<List<MemoModel>>(
-    valueListenable: currentMemos,
-    builder: (context, memosList, _) {
-      return ListView.builder(
-        shrinkWrap: true, // 내용에 맞게 크기 조정
-        physics: const NeverScrollableScrollPhysics(), // 외부 SingleChildScrollView에서 스크롤 처리
-        itemCount: memosList.length,
-        itemBuilder: (context, index) => studyCards(
-          context,
-          memosList[index],
-          viewModel,
-        ),
-      );
-    },
   );
 }
 
