@@ -3,25 +3,26 @@ import 'package:weathercloset/domain/models/memo/memo_model.dart';
 import 'package:intl/intl.dart';
 import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_model.dart';
 
-class IdeaDetailPage extends StatefulWidget {
+class StudyDetailPage extends StatefulWidget {
   final MemoModel memo;
   final ArchiveViewModel viewModel;
 
-  const IdeaDetailPage({
+  const StudyDetailPage({
     super.key, 
     required this.memo,
     required this.viewModel,
   });
 
   @override
-  State<IdeaDetailPage> createState() => _IdeaDetailPageState();
+  State<StudyDetailPage> createState() => _StudyDetailPageState();
 }
 
-class _IdeaDetailPageState extends State<IdeaDetailPage> {
+class _StudyDetailPageState extends State<StudyDetailPage> {
   late TextEditingController _titleController;
   late TextEditingController _contentController;
   late TextEditingController _categoryController;
   late TextEditingController _tagController;
+  late TextEditingController _questionController;
   late DateTime _createdAt;
   late List<String> _tags;
   bool _isEditing = false;
@@ -33,6 +34,7 @@ class _IdeaDetailPageState extends State<IdeaDetailPage> {
     _contentController = TextEditingController(text: widget.memo.content);
     _categoryController = TextEditingController(text: widget.memo.category);
     _tagController = TextEditingController();
+    _questionController = TextEditingController(text: widget.memo.question ?? '');
     _createdAt = widget.memo.createdAt;
     _tags = widget.memo.tags?.toList() ?? [];
   }
@@ -43,6 +45,7 @@ class _IdeaDetailPageState extends State<IdeaDetailPage> {
     _contentController.dispose();
     _categoryController.dispose();
     _tagController.dispose();
+    _questionController.dispose();
     super.dispose();
   }
 
@@ -53,6 +56,7 @@ class _IdeaDetailPageState extends State<IdeaDetailPage> {
       content: _contentController.text,
       category: _categoryController.text,
       tags: _tags,
+      question: _questionController.text.isEmpty ? null : _questionController.text,
       lastModified: DateTime.now(),
     );
   }
@@ -85,16 +89,14 @@ class _IdeaDetailPageState extends State<IdeaDetailPage> {
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('아이디어 상세'),
+          title: const Text('공부 상세'),
           actions: [
-            //삭제 버튼
             IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () {
                 _showDeleteConfirmDialog();
               },
             ),
-            //수정 버튼
             IconButton(
               icon: Icon(_isEditing ? Icons.check : Icons.edit),
               onPressed: () {
@@ -197,6 +199,31 @@ class _IdeaDetailPageState extends State<IdeaDetailPage> {
                   ),
                 ],
               ),
+              const SizedBox(height: 8),
+              // 질문
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Icon(Icons.question_answer, size: 18, color: Colors.grey),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: _questionController,
+                      enabled: _isEditing,
+                      minLines: 1,
+                      maxLines: null,
+                      style: const TextStyle(fontSize: 14),
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: '질문',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               
               const SizedBox(height: 16),
               const Divider(),
@@ -251,8 +278,8 @@ class _IdeaDetailPageState extends State<IdeaDetailPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('아이디어 삭제'),
-        content: const Text('이 아이디어를 삭제하시겠습니까?'),
+        title: const Text('공부 메모 삭제'),
+        content: const Text('이 공부 메모를 삭제하시겠습니까?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),

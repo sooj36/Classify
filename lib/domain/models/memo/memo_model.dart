@@ -41,6 +41,9 @@ class MemoModel extends HiveObject {
   @HiveField(8)
   final String memoId;
 
+  @HiveField(9)
+  final String? question;
+
   MemoModel({
     required this.title,
     required this.content,
@@ -51,6 +54,7 @@ class MemoModel extends HiveObject {
     required this.category,
     this.isDone = false,
     required this.memoId,
+    this.question
   }) : createdAt = createdAt ?? DateTime.now();
 
   MemoModel copyWith({
@@ -63,6 +67,7 @@ class MemoModel extends HiveObject {
     String? category,
     bool? isDone,
     String? memoId,
+    String? question,
   }) => MemoModel(
     title: title ?? this.title,
     content: content ?? this.content,
@@ -73,5 +78,6 @@ class MemoModel extends HiveObject {
     category: category ?? this.category,
     isDone: isDone ?? this.isDone,
     memoId: memoId ?? this.memoId,
+    question: question ?? this.question,
   );
 }

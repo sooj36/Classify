@@ -1,6 +1,8 @@
 import 'package:weathercloset/domain/models/memo/memo_model.dart';
 import 'package:flutter/material.dart';
 import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_model.dart';
+import 'package:weathercloset/ui/archive/archive_view/widgets/buildStudyDetailPage.dart';
+import 'dart:math';
 
 Widget buildStudyTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel) {
   // '공부' 카테고리만 필터링
@@ -28,60 +30,276 @@ Widget buildStudyTabView(Map<String, MemoModel> memos, ArchiveViewModel viewMode
   final oldestMemos = List<MemoModel>.from(studyMemos)
     ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
   
+  // 질문이 있는 메모만 필터링
+  final questionMemos = studyMemos.where((memo) => memo.question != null && memo.question!.isNotEmpty).toList();
+  
+  // 랜덤 메모 리스트 생성 (질문이 있는 메모 중에서)
+  final randomMemos = questionMemos.isEmpty 
+      ? <MemoModel>[] 
+      : _getRandomMemos(questionMemos, 2);
+  
   // 현재 보여줄 메모 리스트 (기본값은 최신순)
   ValueNotifier<List<MemoModel>> currentMemos = ValueNotifier<List<MemoModel>>(latestMemos);
   
   // 최신순인지 여부를 추적하는 플래그
   ValueNotifier<bool> isLatestSort = ValueNotifier<bool>(true);
+  
+  // 랜덤 메모 리스트를 위한 ValueNotifier
+  ValueNotifier<List<MemoModel>> randomMemosNotifier = ValueNotifier<List<MemoModel>>(randomMemos);
 
   return Padding(
     padding: const EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 16.0),
-    child: Column(
-      children: [
-        // 정렬 버튼
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            _buildSortButton(
-              isLatestSort: isLatestSort, 
-              isLatest: true, 
-              icon: Icons.arrow_downward, 
-              label: '최신순', 
-              onPressed: () {
-                currentMemos.value = latestMemos;
-                isLatestSort.value = true;
-              }
+    child: SingleChildScrollView(
+      child: Column(
+        children: [
+          // 랜덤 질문 카드 섹션
+          if (questionMemos.isNotEmpty)
+            _buildRandomQuestionList(randomMemosNotifier, viewModel, questionMemos),
+          
+          // 정렬 버튼 및 메모 리스트
+          _buildSortButtons(isLatestSort, latestMemos, oldestMemos, currentMemos),
+          _buildMemoList(currentMemos, viewModel),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _buildRandomQuestionList(
+  ValueNotifier<List<MemoModel>> randomMemos,
+  ArchiveViewModel viewModel,
+  List<MemoModel> questionMemos,
+) {
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            '오늘의 랜덤 질문',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
             ),
-            const SizedBox(width: 4),
-            _buildSortButton(
-              isLatestSort: isLatestSort, 
-              isLatest: false, 
-              icon: Icons.arrow_upward, 
-              label: '오래된순', 
-              onPressed: () {
-                currentMemos.value = oldestMemos;
-                isLatestSort.value = false;
-              }
+          ),
+          TextButton.icon(
+            onPressed: () {
+              // 랜덤 메모 리스트 갱신
+              randomMemos.value = _getRandomMemos(questionMemos, 2);
+            },
+            icon: const Icon(Icons.refresh, size: 16, color: Colors.blue),
+            label: const Text('새로고침', style: TextStyle(color: Colors.blue)),
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.blue.withOpacity(0.1),
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 8),
+      ValueListenableBuilder<List<MemoModel>>(
+        valueListenable: randomMemos,
+        builder: (context, questionList, _) {
+          return Column(
+            children: questionList.map((memo) => _buildQuestionCard(context, memo, viewModel)).toList(),
+          );
+        },
+      ),
+      const Divider(height: 24),
+    ],
+  );
+}
+
+Widget _buildQuestionCard(BuildContext context, MemoModel memo, ArchiveViewModel viewModel) {
+  return Card(
+    margin: const EdgeInsets.only(bottom: 12.0),
+    color: Colors.blue.shade50,
+    child: InkWell(
+      onTap: () {
+        _showContentDialog(context, memo, viewModel);
+      },
+      onLongPress: () {
+        _showDeleteDialog(context, memo, viewModel);
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.question_mark, color: Colors.blue),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    '질문',
+                    style: TextStyle(
+                      color: Colors.blue.shade800,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              memo.question ?? '',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '탭하여 답변 보기',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey.shade700,
+                fontStyle: FontStyle.italic,
+              ),
             ),
           ],
         ),
-        // 메모 리스트
-        Expanded(
-          child: ValueListenableBuilder<List<MemoModel>>(
-            valueListenable: currentMemos,
-            builder: (context, memosList, _) {
-              return ListView.builder(
-                itemCount: memosList.length,
-                itemBuilder: (context, index) => studyCards(
-                  context,
-                  memosList[index],
+      ),
+    ),
+  );
+}
+
+void _showContentDialog(BuildContext context, MemoModel memo, ArchiveViewModel viewModel) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(memo.title),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('질문:', style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 4),
+              Text(memo.question ?? ''),
+              const SizedBox(height: 16),
+              const Text('답변:', style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 4),
+              Text(memo.content),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('닫기'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.of(context, rootNavigator: true).push(
+                MaterialPageRoute(
+                  builder: (_) => StudyDetailPage(
+                    memo: memo,
+                    viewModel: viewModel,
+                  ),
                 ),
               );
             },
+            child: const Text('상세보기'),
           ),
+        ],
+      );
+    },
+  );
+}
+
+void _showDeleteDialog(BuildContext context, MemoModel memo, ArchiveViewModel viewModel) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('공부 메모 삭제'),
+        content: const Text('정말로 이 메모를 삭제하시겠습니까?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('취소'),
+          ),
+          TextButton(
+            onPressed: () {
+              viewModel.deleteMemo(memo.memoId);
+              Navigator.of(context).pop();
+            },
+            child: const Text('확인', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Widget _buildSortButtons(
+  ValueNotifier<bool> isLatestSort,
+  List<MemoModel> latestMemos,
+  List<MemoModel> oldestMemos,
+  ValueNotifier<List<MemoModel>> currentMemos,
+) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      const Text(
+        '시간순 보기',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
         ),
-      ],
-    ),
+      ),
+      Row(
+        children: [
+          _buildSortButton(
+            isLatestSort: isLatestSort, 
+            isLatest: true, 
+            icon: Icons.arrow_downward, 
+            label: '최신순', 
+            onPressed: () {
+              currentMemos.value = latestMemos;
+              isLatestSort.value = true;
+            }
+          ),
+          const SizedBox(width: 4),
+          _buildSortButton(
+            isLatestSort: isLatestSort, 
+            isLatest: false, 
+            icon: Icons.arrow_upward, 
+            label: '오래된순', 
+            onPressed: () {
+              currentMemos.value = oldestMemos;
+              isLatestSort.value = false;
+            }
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
+Widget _buildMemoList(
+  ValueNotifier<List<MemoModel>> currentMemos,
+  ArchiveViewModel viewModel,
+) {
+  return ValueListenableBuilder<List<MemoModel>>(
+    valueListenable: currentMemos,
+    builder: (context, memosList, _) {
+      return ListView.builder(
+        shrinkWrap: true, // 내용에 맞게 크기 조정
+        physics: const NeverScrollableScrollPhysics(), // 외부 SingleChildScrollView에서 스크롤 처리
+        itemCount: memosList.length,
+        itemBuilder: (context, index) => studyCards(
+          context,
+          memosList[index],
+          viewModel,
+        ),
+      );
+    },
   );
 }
 
@@ -108,48 +326,85 @@ Widget _buildSortButton({
   );
 }
 
-Widget studyCards(BuildContext context, MemoModel memo) {
-  return Card(
-    margin: const EdgeInsets.only(bottom: 12.0),
-    child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 제목
-          Text(
-            memo.title,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
+Widget studyCards(BuildContext context, MemoModel memo, ArchiveViewModel viewModel) {
+  return InkWell(
+    onTap: () {
+      // StudyDetailPage로 이동
+      Navigator.of(context, rootNavigator: true).push(
+        MaterialPageRoute(
+          builder: (_) => StudyDetailPage(
+            memo: memo,
+            viewModel: viewModel,
           ),
-          const SizedBox(height: 8),
-          // 내용
-          Text(
-            memo.content,
-            style: const TextStyle(fontSize: 14),
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 12),
-          // 태그
-          if (memo.tags != null && memo.tags!.isNotEmpty)
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: memo.tags!.map((tag) => Chip(
-                label: Text(
-                  tag,
-                  style: const TextStyle(fontSize: 12),
-                ),
-                backgroundColor: Colors.blue.withOpacity(0.1),
-                visualDensity: VisualDensity.compact,
-                padding: const EdgeInsets.all(4),
-              )).toList(),
+        ),
+      );
+    },
+    onLongPress: () {
+      _showDeleteDialog(context, memo, viewModel);
+    },
+    child: Card(
+      margin: const EdgeInsets.only(bottom: 12.0),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 제목
+            Text(
+              memo.title,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
             ),
-        ],
+            const SizedBox(height: 8),
+            // 내용
+            Text(
+              memo.content,
+              style: const TextStyle(fontSize: 14),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 12),
+            // 태그
+            if (memo.tags != null && memo.tags!.isNotEmpty)
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: memo.tags!.map((tag) => Chip(
+                  label: Text(
+                    tag,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  backgroundColor: Colors.blue.withOpacity(0.1),
+                  visualDensity: VisualDensity.compact,
+                  padding: const EdgeInsets.all(4),
+                )).toList(),
+              ),
+          ],
+        ),
       ),
     ),
   );
+}
+
+// 랜덤 메모를 가져오는 함수
+List<MemoModel> _getRandomMemos(List<MemoModel> memos, int count) {
+  final random = Random();
+  final result = <MemoModel>[];
+  
+  // 메모 리스트가 요청 개수보다 작으면 전체 리스트 반환
+  if (memos.length <= count) {
+    return memos;
+  }
+  
+  // 비복원 추출을 이용하여 중복 없이 랜덤하게 메모 선택
+  final tempList = List<MemoModel>.from(memos);
+  for (int i = 0; i < count; i++) {
+    final randomIndex = random.nextInt(tempList.length);
+    result.add(tempList[randomIndex]);
+    tempList.removeAt(randomIndex);
+  }
+  
+  return result; 
 }
