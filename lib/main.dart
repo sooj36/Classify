@@ -25,8 +25,10 @@ void main() async {
     debugPrint('✅ Firebase 초기화 성공!');
     await initSharedPreferences();
     debugPrint('✅ SharedPreferences 초기화 성공!');
-    initGemini();
+    initGemini(); 
     debugPrint('✅ Gemini 초기화 성공!');
+    await getIdToken();
+    debugPrint('✅ Firebase Auth Token 초기화 성공!: $idToken');
     final dir = await getApplicationDocumentsDirectory();
     Hive.init(dir.path);
     Hive.registerAdapter(MemoModelAdapter());

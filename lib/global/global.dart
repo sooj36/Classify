@@ -6,7 +6,7 @@ const apiKey = 'AIzaSyBdhi3SyjsLP9Y3HFyaRjvSJRcGOydR6fE';
 SharedPreferences? sharedPreferences;
 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 GenerativeModel? model;
-
+String? idToken;
 Future<void> initSharedPreferences() async {
   sharedPreferences = await SharedPreferences.getInstance();
 }
@@ -16,4 +16,8 @@ void initGemini() {
     model: 'gemini-2.0-flash-lite',
     apiKey: apiKey,
   );
+}
+
+Future<void> getIdToken() async {
+  idToken = await firebaseAuth.currentUser?.getIdToken(true);
 }
