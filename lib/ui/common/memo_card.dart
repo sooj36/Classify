@@ -6,10 +6,10 @@ class MemoCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const MemoCard({
-    Key? key,
+    super.key,
     required this.memo,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
