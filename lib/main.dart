@@ -15,6 +15,7 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:weathercloset/data/services/hive_service.dart';
 import 'package:weathercloset/domain/models/memo/memo_model.dart';
+import 'package:weathercloset/data/services/google_login_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //flutter engine과 app 연결
@@ -61,11 +62,15 @@ class MainApp extends StatelessWidget {
         Provider<HiveService>(
           create: (_) => HiveService(),
         ),
+        Provider<GoogleLoginService>(
+          create: (_) => GoogleLoginService(),
+        ),
         ChangeNotifierProvider<AuthRepositoryRemote>(
           create: (context) => AuthRepositoryRemote(
             firebaseAuthService: context.read<FirebaseAuthService>(),
             firestoreService: context.read<FirestoreService>(),
             hiveService: context.read<HiveService>(),
+            googleLoginService: context.read<GoogleLoginService>(),
           ),
         ),
         ChangeNotifierProvider<MemoRepositoryRemote>(

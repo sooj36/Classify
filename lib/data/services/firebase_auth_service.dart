@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:weathercloset/global/global.dart';
 import 'package:flutter/foundation.dart';
-
+import 'package:weathercloset/data/services/google_login_service.dart';
 class FirebaseAuthService {
   final FirebaseAuth _auth = firebaseAuth;
 
@@ -25,6 +25,14 @@ class FirebaseAuthService {
       password: password,
     );
     return userCredential;
+  }
+
+  Future<UserCredential> signupWithGoogle() async {
+    return await GoogleLoginService().signInWithGoogle();
+  }
+
+  Future<UserCredential> loginWithGoogle() async {
+    return await GoogleLoginService().signInWithGoogle();
   }
 
   Future<void> logout() async {
