@@ -39,6 +39,8 @@ class _LoginScreenState extends State<LoginScreen> {
               style: const TextStyle(color: Colors.red),
             ),
           buildButtons(context, widget.viewModel),
+          const SizedBox(height: 20),
+          buildGoogleLoginButton(context, widget.viewModel),
         ],
       ),
         );
@@ -133,6 +135,36 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget buildGoogleLoginButton(BuildContext context, LoginViewModel viewModel) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: ElevatedButton.icon(
+        icon: const Icon(Icons.email, color: Colors.white),
+        label: const Text(
+          "구글 계정으로 로그인",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.red,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          minimumSize: const Size(double.infinity, 50),
+        ),
+        onPressed: viewModel.isLoading
+          ? null
+          : () async {
+              final success = await viewModel.loginWithGoogle();
+              if (success && context.mounted) {
+                context.go(Routes.sendMemo);
+              }
+            },
       ),
     );
   }

@@ -58,6 +58,25 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 
+  Future<bool> loginWithGoogle() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _authRepositoryRemote.loginWithGoogle();
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = "구글 로그인 실패";
+      _isLoading = false;
+      notifyListeners();
+      debugPrint("❌ 구글 로그인 실패 in [loginWithGoogle method] in [login_viewmodel]: $e");
+      return false;
+    }
+  }
+
   bool _validateInputs(String email, String password) {
     if (email.isEmpty || password.isEmpty) {
       _error = "이메일과 비밀번호를 입력해주세요.";

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:weathercloset/data/repositories/auth/auth_repository_remote.dart';
 
@@ -47,6 +46,26 @@ class SignUpViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       debugPrint("❌ 회원가입 실패: $e");
+      return false;
+    }
+  }
+
+  Future<bool> signUpWithGoogle() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _repository.signupWithGoogle();
+      _isLoading = false;
+      notifyListeners();
+      debugPrint("✅ 구글 회원가입 완료");
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      debugPrint("❌ 구글 회원가입 실패: $e");
       return false;
     }
   }

@@ -104,8 +104,15 @@ class AuthRepositoryRemote extends AuthRepository {
   }
 
   @override
-  Future<UserCredential> loginWithGoogle() async {
-    return await _googleLoginService.signInWithGoogle();
+  Future<bool> loginWithGoogle() async {
+    try {
+      final userCredential = await _googleLoginService.signInWithGoogle();
+      debugPrint("✅ 구글 로그인 성공: ${userCredential.user!.uid}");
+      return true;
+    } catch (e) {
+      debugPrint("❌ 구글 로그인 실패 in [loginWithGoogle method] in [auth_repository_remote]: $e");
+      return false;
+    }
   }
   @override
   Future<bool> deleteAccount() async {

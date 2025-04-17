@@ -9,7 +9,7 @@ abstract class AuthRepository extends ChangeNotifier {
 
   Future<bool> signupWithGoogle();
 
-  Future<UserCredential> loginWithGoogle();
+  Future<bool> loginWithGoogle();
 
   /// Perform login
   Future<bool> login({

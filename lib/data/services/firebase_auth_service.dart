@@ -31,8 +31,14 @@ class FirebaseAuthService {
     return await GoogleLoginService().signInWithGoogle();
   }
 
-  Future<UserCredential> loginWithGoogle() async {
-    return await GoogleLoginService().signInWithGoogle();
+  Future<bool> loginWithGoogle() async {
+    try {
+      await GoogleLoginService().signInWithGoogle();
+      return true;
+    } catch (e) {
+      debugPrint("❌ 구글 로그인 실패 in [loginWithGoogle method] in [firebase_auth_service]: $e");
+      return false;
+    }
   }
 
   Future<void> logout() async {
