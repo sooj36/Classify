@@ -20,18 +20,15 @@ class GeminiService {
           timeout: const Duration(seconds: 30),
         ),
       );
-      debugPrint('🔍 here1');
 
       // 함수 호출을 위한 데이터 준비
       final Map<String, dynamic> requestData = {
         'memoText': memoText,
         'categories': categories,
       };
-      debugPrint('🔍 here2');
       // 함수 호출
       final response = await callable(requestData);
       final data = response.data;
-      debugPrint('🔍 here3');
       // 응답 파싱
       Map<String, dynamic> parsedResponse;
       try {
