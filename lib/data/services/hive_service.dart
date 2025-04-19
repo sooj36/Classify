@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 import 'package:weathercloset/domain/models/memo/memo_model.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:flutter/foundation.dart';
 
 
 class HiveService {
@@ -43,7 +44,32 @@ class HiveService {
     _memoBox.delete(id);
   }
 
-  void clear() {
+  void clearMemos() {
     _memoBox.clear();
+  }
+
+  void clearCategories() {
+    _categoryBox.clear();
+  }
+
+  void syncMemosFromServer(Map<String, MemoModel> memos) {
+    // 기존 메모 데이터 지우기
+    _memoBox.clear();
+    
+    // 새로운 메모 저장
+    memos.forEach((uuid, memo) {
+      debugPrint( "🔥 메모 uuid: $uuid");
+      debugPrint("✅ 메모 데이터 로컬 동기화 완료: ${memo.title}");
+      _memoBox.put(uuid, memo);
+    });
+    
+    debugPrint("✅ 메모 데이터 로컬 동기화 완료: ${memos.length}개");
+  }
+
+  void syncCategoriesFromServer(List<String> categories) {
+    if (categories.isNotEmpty) {
+      _categoryBox.put("categories", categories);
+      debugPrint("✅ 카테고리 데이터 로컬 동기화 완료: ${categories.length}개");
+    }
   }
 }

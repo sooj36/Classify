@@ -134,4 +134,61 @@ class FirestoreService {
       "categories": ["아이디어", "공부", "할 일", "업무", "스크랩"],
     });
   }
+
+  Future<Map<String, MemoModel>> getUserMemos() async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('users')
+          .doc(firebaseAuth.currentUser!.uid)
+          .collection('memo')
+          .get();
+      
+      Map<String, MemoModel> memos = {};
+      for (var doc in querySnapshot.docs) {
+        final data = doc.data();
+        memos[doc.id] = MemoModel(
+          memoId: doc.id,
+          title: data['title'] ?? '',
+          content: data['content'] ?? '',
+          category: data['category'] ?? '',
+          isImportant: data['isImportant'] ?? false,
+          tags: List<String>.from(data['tags'] ?? []),
+          lastModified: data['lastModified'] is Timestamp 
+              ? (data['lastModified'] as Timestamp).toDate() 
+              : data['lastModified'],
+          createdAt: data['createdAt'] is Timestamp 
+              ? (data['createdAt'] as Timestamp).toDate() 
+              : (data['createdAt'] ?? DateTime.now()),
+        );
+      }
+      debugPrint("✅ 메모 데이터 가져오기 성공: ${memos.length}개");
+      return memos;
+    } catch (e) {
+      debugPrint("❌ 메모 가져오기 실패: $e");
+      return {};
+    }
+  }
+
+  Future<List<String>> getUserCategories() async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('users')
+          .doc(firebaseAuth.currentUser!.uid)
+          .collection('categories')
+          .get();
+      
+      if (querySnapshot.docs.isEmpty) {
+        return [];
+      }
+      
+      // 첫 번째 문서의 categories 필드 가져오기
+      final data = querySnapshot.docs.first.data();
+      List<String> categories = List<String>.from(data['categories'] ?? []);
+      debugPrint("✅ 카테고리 데이터 가져오기 성공: ${categories.length}개");
+      return categories;
+    } catch (e) {
+      debugPrint("❌ 카테고리 가져오기 실패: $e");
+      return [];
+    }
+  }
 }

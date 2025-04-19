@@ -27,6 +27,15 @@ class AuthRepositoryRemote extends AuthRepository {
     try {
       final userCredential = await _firebaseAuthService.login(email: email, password: password);
       debugPrint("✅ 로그인 성공: ${userCredential.user!.uid}");
+      
+      // Firestore에서 메모 및 카테고리 가져오기
+      final memos = await _firestoreService.getUserMemos();
+      final categories = await _firestoreService.getUserCategories();
+      
+      // Hive에 데이터 동기화
+      _hiveService.syncMemosFromServer(memos);
+      _hiveService.syncCategoriesFromServer(categories);
+      
       return true;
     } catch (e) {
       debugPrint("❌ 로그인 실패 in [login method] in [auth_repository_remote]: $e");
@@ -38,7 +47,9 @@ class AuthRepositoryRemote extends AuthRepository {
   Future<bool> logout() async {
     try {
       await _firebaseAuthService.logout();
-      debugPrint("✅ 로그아웃 성공");
+      _hiveService.clearMemos();
+      _hiveService.clearCategories();
+      debugPrint("✅ 로그아웃 성공 & hive 데이터 초기화 완료");
       return true;
     } catch (e) {
       debugPrint("❌ 로그아웃 실패 in [logout method] in [auth_repository_remote]: $e");
@@ -107,6 +118,15 @@ class AuthRepositoryRemote extends AuthRepository {
     try {
       final userCredential = await _googleLoginService.signInWithGoogle();
       debugPrint("✅ 구글 로그인 성공: ${userCredential.user!.uid}");
+      
+      // Firestore에서 메모 및 카테고리 가져오기
+      final memos = await _firestoreService.getUserMemos();
+      final categories = await _firestoreService.getUserCategories();
+      
+      // Hive에 데이터 동기화
+      _hiveService.syncMemosFromServer(memos);
+      _hiveService.syncCategoriesFromServer(categories);
+      
       return true;
     } catch (e) {
       debugPrint("❌ 구글 로그인 실패 in [loginWithGoogle method] in [auth_repository_remote]: $e");
