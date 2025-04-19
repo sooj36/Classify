@@ -151,6 +151,7 @@ class FirestoreService {
           title: data['title'] ?? '',
           content: data['content'] ?? '',
           category: data['category'] ?? '',
+          question: data['question'] ?? '',
           isImportant: data['isImportant'] ?? false,
           tags: List<String>.from(data['tags'] ?? []),
           lastModified: data['lastModified'] is Timestamp 
