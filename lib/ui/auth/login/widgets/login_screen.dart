@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
-            "WeatherCloset",
+            "Classify",
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),

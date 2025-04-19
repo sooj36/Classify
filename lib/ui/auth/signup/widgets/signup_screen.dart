@@ -23,7 +23,7 @@ class SignupScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 55),
             const Text(
-              "WeatherCloset",
+              "Classify",
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
             signUpForm(),
