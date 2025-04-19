@@ -17,6 +17,8 @@ import 'package:weathercloset/global/global.dart';
 import 'package:weathercloset/ui/send_memo_to_ai/view_models/send_memo_to_ai_viewmodel.dart';
 import 'package:weathercloset/ui/search/view/search_screen.dart';
 import 'package:weathercloset/ui/search/view_model/search_view_model.dart';
+import 'package:weathercloset/ui/setting/view_models/setting_viewmodel.dart';
+
 final router = GoRouter(
   initialLocation: firebaseAuth.currentUser != null ? Routes.sendMemo : Routes.login,
   routes: [
@@ -58,7 +60,11 @@ final router = GoRouter(
     // 독립적인 전체 화면 라우트들
     GoRoute(
       path: Routes.setting,
-      builder: (context, state) => const SettingScreen(),
+      builder: (context, state) => SettingScreen(
+        viewModel: SettingViewModel(
+          authRepository: context.read<AuthRepositoryRemote>(),
+        ),
+      ),
     ),
     GoRoute(
       path: Routes.search,

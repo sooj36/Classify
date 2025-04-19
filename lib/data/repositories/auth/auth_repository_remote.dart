@@ -138,6 +138,8 @@ class AuthRepositoryRemote extends AuthRepository {
     try {
       await _firestoreService.deleteUser();
       await _firebaseAuthService.deleteAccount();
+      _hiveService.clearMemos();
+      _hiveService.clearCategories();
       debugPrint("✅ 계정 삭제 성공");
       return true;
     } catch (e) {
