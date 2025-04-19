@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:weathercloset/global/global.dart';
 import 'package:weathercloset/data/services/hive_service.dart';
 import 'package:weathercloset/data/services/google_login_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 class AuthRepositoryRemote extends AuthRepository {
   AuthRepositoryRemote({
     required FirebaseAuthService firebaseAuthService,
