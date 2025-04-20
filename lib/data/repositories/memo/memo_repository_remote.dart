@@ -111,4 +111,24 @@ class MemoRepositoryRemote extends MemoRepository {
       rethrow; // 에러를 상위로 전달
     }
   }
+
+  @override
+  Map<String, MemoModel> getMemos() {
+    debugPrint("✅ getMemos에서 showMemobox 호출");
+    _hiveService.showMemoBox();
+    final rawMemos = _hiveService.getMemos();
+    debugPrint('📝 Hive 원본 데이터: $rawMemos');
+    return rawMemos.map((key, value) => MapEntry(key.toString(), value as MemoModel));
+  }
+
+  @override
+  Future<void> syncFromServer() async {
+      // Firestore에서 메모 및 카테고리 가져오기
+      final memos = await _firestoreService.getUserMemos();
+      final categories = await _firestoreService.getUserCategories();
+      
+      // Hive에 데이터 동기화
+      _hiveService.syncMemosFromServer(memos);
+      _hiveService.syncCategoriesFromServer(categories);
+  }
 } 

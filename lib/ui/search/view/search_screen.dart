@@ -21,7 +21,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    widget.viewModel.fetchMemos();
+    widget.viewModel.connectStreamToCachedMemos();
     _searchController.addListener(_onSearchTextChanged);
   }
   

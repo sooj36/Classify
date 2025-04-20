@@ -33,8 +33,8 @@ class AuthRepositoryRemote extends AuthRepository {
       final categories = await _firestoreService.getUserCategories();
       
       // Hive에 데이터 동기화
-      _hiveService.syncMemosFromServer(memos);
-      _hiveService.syncCategoriesFromServer(categories);
+      await _hiveService.syncMemosFromServer(memos);
+      await _hiveService.syncCategoriesFromServer(categories);
       
       return true;
     } catch (e) {

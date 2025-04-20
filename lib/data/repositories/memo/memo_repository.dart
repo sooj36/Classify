@@ -11,5 +11,7 @@ abstract class MemoRepository extends ChangeNotifier {
   
   Future<void> updateMemo(MemoModel memo);
 
-  // Future<void> saveMemo(MemoModel memo);
+  Map<String, MemoModel> getMemos();
+
+  Future<void> syncFromServer();
 } 

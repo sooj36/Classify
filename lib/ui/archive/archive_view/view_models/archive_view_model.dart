@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weathercloset/data/repositories/memo/memo_repository_remote.dart';
+import 'package:weathercloset/data/repositories/auth/auth_repository_remote.dart';
 import 'package:weathercloset/domain/models/memo/memo_model.dart';
 
 
@@ -23,19 +24,24 @@ class ArchiveViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  
+  void initCachedMemos() {
+    _cachedMemos = _memoRepositoryRemote.getMemos();
+    notifyListeners();
+  }
+
   //1번만 이 함수가 실행되면 stream에 변화가 있을 때마다 listen함수가 자동으로 cachedmemo를 업데이트함.
-  Future<void> fetchMemos() async {
+  Future<void> connectStreamToCachedMemos() async {
     try {
-      debugPrint("⭐ 1. fetchMemos 시작");
+      debugPrint("⭐ 1. connectStreamToCachedMemos 시작");
       _isLoading = true;
       notifyListeners();
       
       debugPrint("⭐ 2. Stream 접근 시도");
-      final stream = _memoRepositoryRemote.watchMemoLocal();
+      // _memos 필드에 스트림 할당
+      _memos = _memoRepositoryRemote.watchMemoLocal();
       
-      debugPrint("⭐ 3. Stream.first 대기 시작");
-      await stream.listen((data) {
+      debugPrint("⭐ 3. Stream 구독 시작");
+      _memos.listen((data) {
         debugPrint("⭐ 4. 데이터 받음: ${data.length}개");
         data.forEach((key, memo) {
           debugPrint("""
@@ -45,13 +51,18 @@ class ArchiveViewModel extends ChangeNotifier {
             """);
         });
         _cachedMemos = data;
-        notifyListeners();
         _isLoading = false;
-      }).asFuture();
+        notifyListeners();
+      });
+      
+      // 초기 데이터를 기다림 (first는 listen과 별도로 작동함)
+      _cachedMemos = await _memos.first;
+      _isLoading = false;
+      notifyListeners();
+      
     } catch (e) {
-      debugPrint("❌ 에러 발생: $e in [fetchMemos method] in [archive_view_model]");
+      debugPrint("❌ 에러 발생: $e in [connectStreamToCachedMemos method] in [archive_view_model]");
       _error = e.toString();
-    } finally {
       _isLoading = false;
       notifyListeners();
     }

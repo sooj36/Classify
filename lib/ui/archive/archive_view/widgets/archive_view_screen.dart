@@ -17,7 +17,8 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
     super.initState();
     //archiveScreen이 완전히 그려진 후에 fetchMemo를 안전하게 실행하기 위함
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.viewModel.fetchMemos();
+      widget.viewModel.initCachedMemos();
+      widget.viewModel.connectStreamToCachedMemos();
     });
   }
 

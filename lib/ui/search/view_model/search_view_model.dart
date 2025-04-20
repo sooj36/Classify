@@ -30,7 +30,7 @@ class SearchViewModel extends ChangeNotifier {
   bool get isLatestSort => _isLatestSort;
 
   // 메모 데이터 로드
-  Future<void> fetchMemos() async {
+  Future<void> connectStreamToCachedMemos() async {
     _isLoading = true;
     _error = null;
     notifyListeners();
