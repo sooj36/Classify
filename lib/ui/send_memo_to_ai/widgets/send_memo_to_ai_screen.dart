@@ -15,198 +15,114 @@ class SendMemoToAiScreen extends StatefulWidget {
 
 class _SendMemoToAiScreenState extends State<SendMemoToAiScreen> {
   final TextEditingController _memoController = TextEditingController();
-  bool _showSuccess = false;
+  final FocusNode _memoFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+    // 자동으로 키보드가 올라오도록 설정
+      _memoFocusNode.requestFocus();
+    });
   }
 
   @override
   void dispose() {
     _memoController.dispose();
+    _memoFocusNode.dispose();
     super.dispose();
+  }
+
+  // 메모 저장 함수 - Optimistic UI 적용
+  void _saveMemo() {
+    final text = _memoController.text.trim();
+    if (text.isEmpty) {
+      return;
+    }
+
+    // 즉시 화면 닫기 (Optimistic UI)
+    Navigator.pop(context);
+    
+    // 백그라운드에서 메모 처리 진행
+    _processMemoInBackground(text);
+  }
+  
+  // 백그라운드에서 메모 처리
+  Future<void> _processMemoInBackground(String text) async {
+    try {
+      await widget._sendMemoToAiViewModel.sendMemoToAi(text);
+      
+      // 현재 화면은 이미 닫혔으므로 다른 방식으로 피드백 제공 필요
+      if (widget._sendMemoToAiViewModel.error != null) {
+        // 필요시 에러 처리 로직 추가 (예: 글로벌 스낵바, 로깅 등)
+        debugPrint("메모 저장 중 오류: ${widget._sendMemoToAiViewModel.error}");
+      }
+    } catch (e) {
+      debugPrint("메모 저장 중 예외 발생: $e");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('새 메모'),
+        centerTitle: true,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: [
+          TextButton(
+            onPressed: _saveMemo,
+            child: const Text(
+              '저장',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
-          child: Column(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
           children: [
-            _buildMemoTextField(),
-            const SizedBox(height: 15),
-            _buildHelpSection(),
+            Expanded(
+              child: TextField(
+                controller: _memoController,
+                focusNode: _memoFocusNode,
+                maxLines: null,
+                expands: true,
+                textAlignVertical: TextAlignVertical.top,
+                style: const TextStyle(fontSize: 16),
+                decoration: const InputDecoration(
+                  hintText: '메모를 입력하세요...',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+            // 에러 메시지 표시
+            ListenableBuilder(
+              listenable: widget._sendMemoToAiViewModel,
+              builder: (context, _) {
+                final error = widget._sendMemoToAiViewModel.error;
+                return error != null
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          error,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      )
+                    : const SizedBox.shrink();
+              },
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildMemoTextField() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2), 
-            blurRadius: 8, 
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(20),
-      width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(height: 3),
-          const Text(
-            '메모 입력',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 16),
-          // 메모 입력 텍스트 필드
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.blue.shade300),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: TextField(
-              controller: _memoController,
-              maxLines: 5,
-              cursorColor: Colors.black,
-              decoration: const InputDecoration(
-                hintText: '200자 이내로 입력해주세요.',
-                contentPadding: EdgeInsets.all(16),
-                focusedBorder: InputBorder.none,
-                border: InputBorder.none,
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          // 정리하기 버튼
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              //버튼이 성공 상태를 표시하고 있거나 로딩 중일 때는 버튼을 비활성화하기 위해 삼항 연산자 사용
-              onPressed: _showSuccess || widget._sendMemoToAiViewModel.isLoading
-                ? null
-                : () async {
-                    if (_memoController.text.trim().isNotEmpty) {
-                      await widget._sendMemoToAiViewModel.sendMemoToAi(_memoController.text);
-                      
-                      // 작업 완료 후 에러가 없으면 성공 처리
-                      if (widget._sendMemoToAiViewModel.error == null && mounted) {
-                        _memoController.clear();
-                        setState(() {
-                          _showSuccess = true;
-                        });
-                        
-                        Future.delayed(const Duration(milliseconds: 1500), () {
-                          if (mounted) {
-                            setState(() {
-                              _showSuccess = false;
-                            });
-                          }
-                        });
-                      }
-                    }
-                  },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _showSuccess ? Colors.green : Colors.blue,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                disabledBackgroundColor: _showSuccess 
-                  ? Colors.green
-                  : Colors.blue.withOpacity(0.6),
-              ),
-              // 아이콘들을 굳이 sizedbox로 감싼 이유는 텍스트와 아이콘의 높이가 다르기 때문에 높이를 맞추기 위함
-              child: _showSuccess
-                ? const SizedBox(
-                    height: 24,
-                    width: double.infinity,
-                    child: Center(
-                      child: Icon(
-                        Icons.check,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                    ),
-                  )
-                : widget._sendMemoToAiViewModel.isLoading
-                  ? const SizedBox(
-                      height: 24,
-                      width: double.infinity,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      ),
-                    )
-                  : const SizedBox(
-                      height: 24,
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          '정리하기',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHelpSection() {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(16),
-      child: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '도움말',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            '링크를 넣으면 웹사이트 아카이빙도 가능합니다',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black87,
-            ),
-          ),
-        ],
       ),
     );
   }
