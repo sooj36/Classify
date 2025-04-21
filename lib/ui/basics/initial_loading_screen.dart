@@ -29,7 +29,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
           gradient: LinearGradient(
             colors: [
               AppTheme.primaryColor,
-              AppTheme.secondaryColor,
+              AppTheme.secondaryColor1,
             ],
             begin: FractionalOffset(0.0, 0.0),
             end: FractionalOffset(1.0, 0.0),

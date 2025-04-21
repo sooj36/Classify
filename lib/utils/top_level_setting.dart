@@ -22,13 +22,125 @@ class PlatformWidget extends StatelessWidget {
 
 //최상위 앱 테마를 설정
 class AppTheme {
-  static const Color primaryColor = Colors.blue;
-  static const Color secondaryColor = Colors.white;
+  // 메인 컬러
+  static const Color primaryColor = Color(0xFF2E7D32); // 깊은 초록색 - 앱의 기본 브랜드 색상
+  static const Color secondaryColor1 = Color(0xFF388E3C); // 미디엄 초록색 - 메인 컬러보다 약간 밝은 변형
+  static const Color secondaryColor2 = Color(0xFF00796B); // 티얼 그린 - 푸른 기가 살짝 도는 초록색
+  static const Color accentColor = Color(0xFF8BC34A); // 라임 그린 - 강조가 필요한 요소에 사용
   
+  // 배경 및 장식 컬러
+  static const Color backgroundColor = Color(0xFFFFFFFF); // 화이트 - 기본 배경 색상
+  static const Color subBackgroundColor = Color(0xFFF1F8E9); // 연한 연두색 - 구분이 필요한 섹션이나 카드에 사용
+  static const Color decorationColor1 = Color(0xFFC8E6C9); // 연한 민트색 - 경계선, 분리선 등에 사용
+  static const Color decorationColor2 = Color(0xFF81C784); // 밝은 초록색 - 진행 바, 활성 아이콘 등에 사용
+  
+  // 텍스트 및 기능 컬러
+  static const Color textColor1 = Color(0xFF212121); // 거의 검은색 - 주요 텍스트에 사용
+  static const Color textColor2 = Color(0xFF757575); // 중간 회색 - 부가 설명이나 덜 중요한 텍스트에 사용
+  static const Color darkAccentColor = Color(0xFF4CAF50); // 표준 초록색 - 다크 모드에서 사용할 밝은 액센트
+  static const Color errorColor = Color(0xFFFF5722); // 딥 오렌지 - 오류 메시지나 중요 알림에 사용
+  
+  // 테마 설정
   static final ThemeData lightTheme = ThemeData(
-    primarySwatch: Colors.blue,
-    brightness: Brightness.light,
-    textTheme: GoogleFonts.nanumGothicTextTheme(ThemeData.light().textTheme),
+    primaryColor: primaryColor,
+    colorScheme: const ColorScheme.light(
+      primary: primaryColor,
+      secondary: secondaryColor1,
+      error: errorColor,
+      background: backgroundColor,
+      surface: subBackgroundColor,
+    ),
+    scaffoldBackgroundColor: backgroundColor,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: primaryColor,
+      foregroundColor: Colors.white,
+      elevation: 0,
+    ),
+    cardTheme: CardTheme(
+      color: backgroundColor,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
+        elevation: 1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 12),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: subBackgroundColor,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: decorationColor1),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: decorationColor1),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: primaryColor),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    ),
+    textTheme: GoogleFonts.nanumGothicTextTheme(ThemeData.light().textTheme).copyWith(
+      titleLarge: GoogleFonts.nanumGothic(
+        textStyle: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+          color: textColor1,
+        ),
+      ),
+      titleMedium: GoogleFonts.nanumGothic(
+        textStyle: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+          color: textColor1,
+        ),
+      ),
+      bodyLarge: GoogleFonts.nanumGothic(
+        textStyle: TextStyle(
+          fontSize: 16,
+          color: textColor1,
+        ),
+      ),
+      bodyMedium: GoogleFonts.nanumGothic(
+        textStyle: TextStyle(
+          fontSize: 14,
+          color: textColor1,
+        ),
+      ),
+      bodySmall: GoogleFonts.nanumGothic(
+        textStyle: TextStyle(
+          fontSize: 12,
+          color: textColor2,
+        ),
+      ),
+    ),
+    checkboxTheme: CheckboxThemeData(
+      fillColor: MaterialStateProperty.resolveWith<Color>((states) {
+        if (states.contains(MaterialState.selected)) {
+          return primaryColor;
+        }
+        return Colors.transparent;
+      }),
+      side: BorderSide(color: secondaryColor1),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
+      ),
+    ),
+    dividerTheme: DividerThemeData(
+      color: decorationColor1,
+      thickness: 1,
+    ),
   );
 }
 
