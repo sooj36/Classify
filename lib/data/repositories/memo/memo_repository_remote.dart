@@ -46,7 +46,7 @@ class MemoRepositoryRemote extends MemoRepository {
       
       debugPrint("📋 현재 카테고리 목록: $_categories");
     } catch (e) {
-      debugPrint("❌ 카테고리 초기화 실패: $e");
+      debugPrint("❌ 카테고리 초기화 실패 in [_initCategories method] in [memo_repository_remote]: $e");
       // 기본 카테고리 설정
       _categories = ["아이디어", "공부", "할 일", "업무", "스크랩"];
     }
@@ -68,7 +68,7 @@ class MemoRepositoryRemote extends MemoRepository {
       debugPrint('✅ 파이어스토어 저장 완료');
       return null;
     } catch (e) {
-      debugPrint('❌ 메모 분석 및 저장 중 오류: $e');
+      debugPrint('❌ 메모 분석 및 저장 중 오류 in [analyzeAndSaveMemo method] in [memo_repository_remote]: $e');
       return e.toString();
     }
   }
@@ -92,8 +92,14 @@ class MemoRepositoryRemote extends MemoRepository {
 
   @override
   Future<void> deleteMemo(String memoId) async {
-    await _firestoreService.deleteMemo(memoId);
-    _hiveService.deleteMemo(memoId);
+    try {
+      await _firestoreService.deleteMemo(memoId);
+      _hiveService.deleteMemo(memoId);
+      debugPrint('✅ 메모 삭제 완료');
+    } catch (e) {
+      debugPrint('❌ 메모 삭제 실패 in [deleteMemo method] in [memo_repository_remote]: $e');
+      rethrow;
+    }
   }
 
   @override
@@ -107,8 +113,31 @@ class MemoRepositoryRemote extends MemoRepository {
       await _firestoreService.saveMemo(memo, memo.memoId);
       debugPrint('✅ 파이어스토어 업데이트 완료');
     } catch (e) {
-      debugPrint('❌ 메모 업데이트 중 오류: $e');
+      debugPrint('❌ 메모 업데이트 실패 in [updateMemo method] in [memo_repository_remote]: $e');
       rethrow; // 에러를 상위로 전달
+    }
+  }
+
+  @override
+  Map<String, MemoModel> getMemos() {
+    final rawMemos = _hiveService.getMemos();
+    return rawMemos.map((key, value) => MapEntry(key.toString(), value as MemoModel));
+  }
+
+  @override
+  Future<void> syncFromServer() async {
+    try {
+      // Firestore에서 메모 및 카테고리 가져오기
+      final memos = await _firestoreService.getUserMemos();
+      final categories = await _firestoreService.getUserCategories();
+      
+      // Hive에 데이터 동기화
+      _hiveService.syncMemosFromServer(memos);
+      _hiveService.syncCategoriesFromServer(categories);
+      debugPrint('✅ 서버에서 동기화 완료');
+    } catch (e) {
+      debugPrint('❌ 서버에서 동기화 실패 in [syncFromServer method] in [memo_repository_remote]: $e');
+      rethrow;
     }
   }
 } 
