@@ -18,9 +18,11 @@ import 'package:weathercloset/ui/send_memo_to_ai/view_models/send_memo_to_ai_vie
 import 'package:weathercloset/ui/search/view/search_screen.dart';
 import 'package:weathercloset/ui/search/view_model/search_view_model.dart';
 import 'package:weathercloset/ui/setting/view_models/setting_viewmodel.dart';
+import 'package:weathercloset/ui/today_act/view/today_act_screen.dart';
+import 'package:weathercloset/ui/today_act/view_models/today_act_view_model.dart';
 
 final router = GoRouter(
-  initialLocation: firebaseAuth.currentUser != null ? Routes.sendMemo : Routes.login,
+  initialLocation: firebaseAuth.currentUser != null ? Routes.today : Routes.login,
   routes: [
     ShellRoute(
         builder: (context, state, child) => MultiProvider(
@@ -35,29 +37,38 @@ final router = GoRouter(
           memoRepositoryRemote: context.read<MemoRepositoryRemote>(),
         ),
       ),
+      ChangeNotifierProvider(
+        create: (context) => TodayActViewModel(
+          memoRepositoryRemote: context.read<MemoRepositoryRemote>(),
+        ),
+      ),
     ],
     child: RootScreen(child: child),
   ),
       routes: [
-                GoRoute(
+        GoRoute(
+          path: Routes.today,
+          builder: (context, state) => TodayActScreen(
+            viewModel: context.read<TodayActViewModel>(),
+          ),
+        ),
+        GoRoute(
           path: Routes.archive,
           builder: (context, state) => ArchiveScreen(
             viewModel: context.read<ArchiveViewModel>(),
           ),
         ),
-        GoRoute(
-          path: Routes.sendMemo,
-          builder: (context, state) => SendMemoToAiScreen(
-            sendMemoToAiViewModel: context.read<SendMemoToAiViewModel>(),
-          ),
-        ),
-        GoRoute(
-          path: Routes.profile,
-          builder: (context, state) => const ProfileScreen(),
-        ),
       ],
     ),
     // 독립적인 전체 화면 라우트들
+    GoRoute(
+      path: Routes.sendMemo,
+      builder: (context, state) => SendMemoToAiScreen(
+        sendMemoToAiViewModel: SendMemoToAiViewModel(
+          memoRepositoryRemote: context.read<MemoRepositoryRemote>(),
+        ),
+      ),
+    ),
     GoRoute(
       path: Routes.setting,
       builder: (context, state) => SettingScreen(

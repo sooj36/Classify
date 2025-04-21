@@ -10,7 +10,7 @@ const RootScreen({super.key, required this.child});
 }
 
 class _RootScreenState extends State<RootScreen> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 0; // 오늘을 기본값으로 설정 (이제 0번 인덱스)
 
   @override
   void initState() {
@@ -23,9 +23,11 @@ class _RootScreenState extends State<RootScreen> {
       _selectedIndex = index;
       switch (index) {
         case 0:
-          context.go(Routes.archive);
+          context.go(Routes.today);
+          break;
         case 1:
-          context.go(Routes.sendMemo);
+          context.go(Routes.archive);
+          break;
       }
     });
   }
@@ -52,16 +54,41 @@ class _RootScreenState extends State<RootScreen> {
         ],
       ),
       body: widget.child,
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.shifting,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.note_add), label: '메모'),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.push(Routes.sendMemo);
+        },
+        backgroundColor: Colors.blue,
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Expanded(
+              child: IconButton(
+                icon: Icon(
+                  Icons.today,
+                  color: _selectedIndex == 0 ? Colors.blue : Colors.grey,
+                ),
+                onPressed: () => _onItemTapped(0),
+              ),
+            ),
+            const SizedBox(width: 48), // FAB 공간
+            Expanded(
+              child: IconButton(
+                icon: Icon(
+                  Icons.archive,
+                  color: _selectedIndex == 1 ? Colors.blue : Colors.grey,
+                ),
+                onPressed: () => _onItemTapped(1),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
