@@ -110,6 +110,7 @@ class FirestoreService {
       'title': memo.title,
       'content': memo.content,
       'category': memo.category,
+      'question': memo.question,
       'isImportant': memo.isImportant,
       'tags': memo.tags,
       'lastModified': memo.lastModified,
