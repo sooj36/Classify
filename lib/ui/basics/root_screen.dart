@@ -42,7 +42,7 @@ class _RootScreenState extends State<RootScreen> {
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              context.push(Routes.login);
+              context.push(Routes.search);
             },
           ),
           IconButton(

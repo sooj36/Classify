@@ -22,22 +22,29 @@ class CustomTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.subBackgroundColor,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppTheme.decorationColor1, width: 1),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         enabled: enabled,
         controller: controller,
         obscureText: isObsecre ?? true,
         cursorColor: AppTheme.primaryColor,
-        style: TextStyle(fontSize: 14, color: AppTheme.textColor1),
+        style: const TextStyle(fontSize: 14, color: AppTheme.textColor1),
         decoration: InputDecoration(
-          border: InputBorder.none,
+          filled: true,
+          fillColor: AppTheme.subBackgroundColor,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: AppTheme.decorationColor1, width: 1),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: AppTheme.decorationColor1, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: AppTheme.primaryColor, width: 1.5),
+          ),
           prefixIcon: Icon(
             data,
             color: AppTheme.secondaryColor1,
@@ -46,10 +53,10 @@ class CustomTextField extends StatelessWidget {
           focusColor: AppTheme.primaryColor,
           hintText: hintText,
           hintStyle: TextStyle(color: AppTheme.textColor2, fontSize: 14),
-          contentPadding: const EdgeInsets.symmetric(vertical: 12),
+          contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
           suffixIcon: isObsecre == true
               ? IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.visibility_off,
                     color: AppTheme.textColor2,
                     size: 18,
