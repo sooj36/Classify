@@ -16,13 +16,12 @@ class SendMemoToAiScreen extends StatefulWidget {
 class _SendMemoToAiScreenState extends State<SendMemoToAiScreen> {
   final TextEditingController _memoController = TextEditingController();
   final FocusNode _memoFocusNode = FocusNode();
-  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    // 자동으로 텍스트필드에 포커스
     WidgetsBinding.instance.addPostFrameCallback((_) {
+    // 자동으로 키보드가 올라오도록 설정
       _memoFocusNode.requestFocus();
     });
   }
@@ -34,30 +33,32 @@ class _SendMemoToAiScreenState extends State<SendMemoToAiScreen> {
     super.dispose();
   }
 
-  // 메모 저장 함수
-  Future<void> _saveMemo() async {
+  // 메모 저장 함수 - Optimistic UI 적용
+  void _saveMemo() {
     final text = _memoController.text.trim();
     if (text.isEmpty) {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
-
+    // 즉시 화면 닫기 (Optimistic UI)
+    Navigator.pop(context);
+    
+    // 백그라운드에서 메모 처리 진행
+    _processMemoInBackground(text);
+  }
+  
+  // 백그라운드에서 메모 처리
+  Future<void> _processMemoInBackground(String text) async {
     try {
       await widget._sendMemoToAiViewModel.sendMemoToAi(text);
       
-      if (mounted) {
-        // 저장 성공 시 화면 닫기
-        Navigator.pop(context);
+      // 현재 화면은 이미 닫혔으므로 다른 방식으로 피드백 제공 필요
+      if (widget._sendMemoToAiViewModel.error != null) {
+        // 필요시 에러 처리 로직 추가 (예: 글로벌 스낵바, 로깅 등)
+        debugPrint("메모 저장 중 오류: ${widget._sendMemoToAiViewModel.error}");
       }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+    } catch (e) {
+      debugPrint("메모 저장 중 예외 발생: $e");
     }
   }
 
@@ -73,25 +74,16 @@ class _SendMemoToAiScreenState extends State<SendMemoToAiScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          _isLoading
-              ? Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  width: 24,
-                  height: 24,
-                  child: const CircularProgressIndicator(
-                    strokeWidth: 2,
-                  ),
-                )
-              : TextButton(
-                  onPressed: _saveMemo,
-                  child: const Text(
-                    '저장',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+          TextButton(
+            onPressed: _saveMemo,
+            child: const Text(
+              '저장',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
         ],
       ),
       body: Padding(
@@ -112,6 +104,22 @@ class _SendMemoToAiScreenState extends State<SendMemoToAiScreen> {
                   border: InputBorder.none,
                 ),
               ),
+            ),
+            // 에러 메시지 표시
+            ListenableBuilder(
+              listenable: widget._sendMemoToAiViewModel,
+              builder: (context, _) {
+                final error = widget._sendMemoToAiViewModel.error;
+                return error != null
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          error,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      )
+                    : const SizedBox.shrink();
+              },
             ),
           ],
         ),
