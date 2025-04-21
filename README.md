@@ -1,3 +1,3 @@
-# weathercloset
+# Classify
 
 A new Flutter project.
