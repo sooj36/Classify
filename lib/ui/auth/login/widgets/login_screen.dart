@@ -97,9 +97,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       emailController.text,
                       passwordController.text,
                     );
-                    
                     if (success && context.mounted) {
-                      context.go(Routes.sendMemo);
+                      context.go(Routes.today);
                     }
                   },
               child: widget.viewModel.isLoading
@@ -162,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
           : () async {
               final success = await viewModel.loginWithGoogle();
               if (success && context.mounted) {
-                context.go(Routes.sendMemo);
+                context.go(Routes.today);
               }
             },
       ),
