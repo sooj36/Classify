@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:weathercloset/data/repositories/memo/memo_repository_remote.dart';
-import 'package:weathercloset/data/repositories/auth/auth_repository_remote.dart';
 import 'package:weathercloset/domain/models/memo/memo_model.dart';
 
 

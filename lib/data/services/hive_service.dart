@@ -44,12 +44,12 @@ class HiveService {
 
   void clearMemos() {
     _memoBox.clear();
-    debugPrint("✅ 메모 데이터 로컬 초기화 완료");
+    debugPrint("✅ 모든 hive 메모 삭제 완료");
   }
 
   void clearCategories() {
     _categoryBox.clear();
-    debugPrint("✅ 카테고리 데이터 로컬 초기화 완료");
+    debugPrint("✅ 모든 hive 카테고리 삭제 완료");
   }
 
   Future<void> syncMemosFromServer(Map<String, MemoModel> memos) async {
@@ -58,18 +58,11 @@ class HiveService {
 
       await Hive.box<MemoModel>("memo").close();
 
-  // Box 다시 열기
+      // Box 다시 열기
       _memoBox = await Hive.openBox<MemoModel>("memo");
     
     // 한 번에 모든 메모 저장
     _memoBox.putAll(memos);
-    
-    // 로깅 목적으로 몇 개의 샘플 확인
-    if (memos.isNotEmpty) {
-      final sampleKey = memos.keys.first;
-      debugPrint("🔄 샘플 메모 확인 - 키: $sampleKey, 제목: ${memos[sampleKey]?.title}");
-    }
-    
     debugPrint("✅ 메모 데이터 로컬 동기화 완료: ${memos.length}개");
   }
 
@@ -79,20 +72,6 @@ class HiveService {
       _categoryBox = await Hive.openBox<List<String>>("category");
       _categoryBox.put("categories", categories);
       debugPrint("✅ 카테고리 데이터 로컬 동기화 완료: ${categories.length}개");
-    }
-  }
-
-  void showMemoBox() {
-    final box = Hive.box<MemoModel>("memo");
-    debugPrint("✅ memobox 조회, 항목 수: ${box.length}");
-    
-    // 모든 키 출력
-    debugPrint("📝 모든 키: ${box.keys.toList()}");
-    
-    // 각 키에 해당하는 값 가져오기
-    for (var key in box.keys) {
-      final value = box.get(key);
-      debugPrint("🔑 키: $key, 값: ${value?.title ?? '값 없음'}");
     }
   }
 }

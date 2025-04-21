@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/global/global.dart';
 import 'package:weathercloset/routing/routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:weathercloset/ui/setting/view_models/setting_viewmodel.dart';
