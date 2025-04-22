@@ -105,21 +105,34 @@ class _SearchScreenState extends State<SearchScreen> {
 
   // 정렬 옵션 위젯
   Widget _buildSortOptions() {
+    // ValueNotifier 생성 및 초기화
+    final ValueNotifier<bool> isLatestSort = ValueNotifier<bool>(widget.viewModel.isLatestSort);
+    
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const Text('정렬: '),
         const SizedBox(width: 8),
         _buildSortButton(
+          isLatestSort: isLatestSort,
           isLatest: true,
           icon: Icons.arrow_downward,
           label: '최신순',
+          onPressed: () {
+            widget.viewModel.sortByLatest();
+            isLatestSort.value = true;
+          }
         ),
         const SizedBox(width: 4),
         _buildSortButton(
+          isLatestSort: isLatestSort,
           isLatest: false,
           icon: Icons.arrow_upward,
           label: '오래된순',
+          onPressed: () {
+            widget.viewModel.sortByOldest();
+            isLatestSort.value = false;
+          }
         ),
       ],
     );
@@ -127,34 +140,25 @@ class _SearchScreenState extends State<SearchScreen> {
 
   // 정렬 버튼 위젯
   Widget _buildSortButton({
+    required ValueNotifier<bool> isLatestSort,
     required bool isLatest,
     required IconData icon,
     required String label,
+    required VoidCallback onPressed,
   }) {
-    final bool isSelected = isLatest ? widget.viewModel.isLatestSort : !widget.viewModel.isLatestSort;
-    
-    return TextButton.icon(
-      onPressed: () {
-        if (isLatest) {
-          widget.viewModel.sortByLatest();
-        } else {
-          widget.viewModel.sortByOldest();
-        }
-      },
-      icon: Icon(
-        icon, 
-        size: 16, 
-        color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1
-      ),
-      label: Text(
-        label, 
-        style: TextStyle(
-          color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1
-        )
-      ),
-      style: TextButton.styleFrom(
-        backgroundColor: isSelected ? AppTheme.primaryColor.withAlpha(26) : Colors.transparent,
-      ),
+    return ValueListenableBuilder<bool>(
+      valueListenable: isLatestSort,
+      builder: (context, value, _) {
+        final bool isSelected = isLatest ? value : !value;
+        return TextButton.icon(
+          onPressed: onPressed,
+          icon: Icon(icon, size: 16, color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1),
+          label: Text(label, style: TextStyle(color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1)),
+          style: TextButton.styleFrom(
+            backgroundColor: isSelected ? AppTheme.primaryColor.withAlpha(26) : Colors.transparent,
+          ),
+        );
+      }
     );
   }
 
