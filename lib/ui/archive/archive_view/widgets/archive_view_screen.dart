@@ -3,6 +3,8 @@ import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_m
 import 'package:weathercloset/ui/archive/archive_view/widgets/buildTodoTabview.dart';
 import 'package:weathercloset/ui/archive/archive_view/widgets/buildIdeaTabview.dart';
 import 'package:weathercloset/ui/archive/archive_view/widgets/buildStudyTabview.dart';
+import 'package:weathercloset/utils/top_level_setting.dart';
+
 class ArchiveScreen extends StatefulWidget {
   final ArchiveViewModel viewModel;
   const ArchiveScreen({super.key, required this.viewModel});
@@ -50,10 +52,10 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
               children: [
                 TabBar(
                   isScrollable: true,
-                  labelColor: Colors.black,
-                  indicatorColor: Colors.blue,
+                  labelColor: AppTheme.textColor1,
+                  indicatorColor: AppTheme.primaryColor,
                   tabs: uniqueCategories.map((category) => 
-                    Tab(text: category ?? 'Unknown')
+                    Tab(text: category)
                   ).toList(),
                 ),
                 Expanded(

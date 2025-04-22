@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weathercloset/domain/models/memo/memo_model.dart';
+import 'package:weathercloset/utils/top_level_setting.dart';
 
 class MemoCard extends StatelessWidget {
   final MemoModel memo;
@@ -65,7 +66,7 @@ class MemoCard extends StatelessWidget {
           _formatDate(memo.createdAt),
           style: const TextStyle(
             fontSize: 12,
-            color: Colors.grey,
+            color: AppTheme.textColor2,
           ),
         ),
       ],
@@ -76,14 +77,14 @@ class MemoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.1),
+        color: AppTheme.primaryColor.withAlpha(26),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
         '#$tag',
         style: const TextStyle(
           fontSize: 12,
-          color: Colors.blue,
+          color: AppTheme.primaryColor,
         ),
       ),
     );

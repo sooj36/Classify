@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weathercloset/domain/models/memo/memo_model.dart';
 import 'package:intl/intl.dart';
 import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_model.dart';
+import 'package:weathercloset/utils/top_level_setting.dart';
 
 class StudyDetailPage extends StatefulWidget {
   final MemoModel memo;
@@ -128,6 +129,7 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                   hintText: '제목',
+                  filled: false
                 ),
               ),
               const Divider(),
@@ -135,7 +137,7 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
               // 카테고리
               Row(
                 children: [
-                  const Icon(Icons.category, size: 18, color: Colors.grey),
+                  const Icon(Icons.category, size: 18, color: AppTheme.textColor1),
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
@@ -145,6 +147,7 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: '카테고리',
+                        filled: false
                       ),
                     ),
                   ),
@@ -154,11 +157,11 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
               // 생성 시간
               Row(
                 children: [
-                  const Icon(Icons.access_time, size: 18, color: Colors.grey),
+                  const Icon(Icons.access_time, size: 18, color: AppTheme.textColor1),
                   const SizedBox(width: 8),
                   Text(
                     '생성: ${DateFormat('yyyy-MM-dd HH:mm').format(_createdAt)}',
-                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    style: const TextStyle(fontSize: 14, color: AppTheme.textColor1),
                   ),
                 ],
               ),
@@ -170,7 +173,7 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
                 children: [
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 4),
-                    child: Icon(Icons.tag, size: 18, color: Colors.grey),
+                    child: Icon(Icons.tag, size: 18, color: AppTheme.textColor1),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
@@ -191,6 +194,7 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
                               hintText: '새 태그 추가 (입력 후 엔터)',
                               border: OutlineInputBorder(),
                               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              filled: false
                             ),
                           ),
                         ],
@@ -206,7 +210,7 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
                 children: [
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Icon(Icons.question_answer, size: 18, color: Colors.grey),
+                    child: Icon(Icons.question_answer, size: 18, color: AppTheme.textColor1),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
@@ -219,6 +223,7 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: '질문',
+                        filled: false
                       ),
                     ),
                   ),
@@ -238,6 +243,7 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                   hintText: '내용을 입력하세요',
+                  filled: false
                 ),
               ),
             ],
@@ -250,7 +256,7 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
   Widget _buildTagChip(String tag) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.blue.withAlpha(26),
+        color: AppTheme.primaryColor.withAlpha(26),
         borderRadius: BorderRadius.circular(16),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -291,7 +297,7 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
               widget.viewModel.deleteMemo(widget.memo.memoId);
               Navigator.pop(context); // 상세 페이지 닫기
             },
-            child: const Text('삭제', style: TextStyle(color: Colors.red)),
+            child: const Text('삭제', style: TextStyle(color: AppTheme.errorColor)),
           ),
         ],
       ),

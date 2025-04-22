@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_model.dart';
 import 'package:weathercloset/ui/archive/archive_view/widgets/buildStudyDetailPage.dart';
 import 'dart:math';
+import 'package:weathercloset/utils/top_level_setting.dart';
 
 Widget buildStudyTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel) {
   // '공부' 카테고리만 필터링
@@ -17,7 +18,7 @@ Widget buildStudyTabView(Map<String, MemoModel> memos, ArchiveViewModel viewMode
         "작성된 메모가 없습니다",
         style: TextStyle(
           fontSize: 16,
-          color: Colors.grey,
+          color: AppTheme.textColor2,
         ),
       ),
     );
@@ -62,7 +63,7 @@ Widget buildStudyTabView(Map<String, MemoModel> memos, ArchiveViewModel viewMode
         SliverAppBar(
           pinned: true,
           elevation: 0,
-          backgroundColor: Colors.blue.shade50,
+          backgroundColor: AppTheme.decorationColor1,
           automaticallyImplyLeading: false,
           title: _buildSortButtons(isLatestSort, latestMemos, oldestMemos, currentMemos),
         ),
@@ -108,10 +109,10 @@ Widget _buildRandomQuestionList(
               // 랜덤 메모 리스트 갱신
               randomMemos.value = _getRandomMemos(questionMemos, 1);
             },
-            icon: const Icon(Icons.refresh, size: 16, color: Colors.blue),
-            label: const Text('새로고침', style: TextStyle(color: Colors.blue)),
+            icon: const Icon(Icons.refresh, size: 16, color: AppTheme.primaryColor),
+            label: const Text('새로고침', style: TextStyle(color: AppTheme.primaryColor)),
             style: TextButton.styleFrom(
-              backgroundColor: Colors.blue.withOpacity(0.1),
+              backgroundColor: AppTheme.primaryColor.withAlpha(26),
             ),
           ),
         ],
@@ -133,7 +134,7 @@ Widget _buildRandomQuestionList(
 Widget _buildQuestionCard(BuildContext context, MemoModel memo, ArchiveViewModel viewModel) {
   return Card(
     margin: const EdgeInsets.only(bottom: 12.0),
-    color: Colors.blue.shade50,
+    color: AppTheme.decorationColor1,
     child: InkWell(
       onTap: () {
         _showContentDialog(context, memo, viewModel);
@@ -146,15 +147,15 @@ Widget _buildQuestionCard(BuildContext context, MemoModel memo, ArchiveViewModel
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
-                const Icon(Icons.question_mark, color: Colors.blue),
-                const SizedBox(width: 8),
+                Icon(Icons.question_mark, color: AppTheme.primaryColor),
+                SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     '질문',
                     style: TextStyle(
-                      color: Colors.blue.shade800,
+                      color: AppTheme.textColor1,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -170,11 +171,11 @@ Widget _buildQuestionCard(BuildContext context, MemoModel memo, ArchiveViewModel
               ),
             ),
             const SizedBox(height: 8),
-            Text(
+            const Text(
               '탭하여 답변 보기',
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.grey.shade700,
+                color: AppTheme.textColor2,
                 fontStyle: FontStyle.italic,
               ),
             ),
@@ -272,6 +273,7 @@ Widget _buildSortButtons(
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 16,
+          color: AppTheme.textColor1,
         ),
       ),
       Row(
@@ -316,10 +318,10 @@ Widget _buildSortButton({
       final bool isSelected = isLatest ? value : !value;
       return TextButton.icon(
         onPressed: onPressed,
-        icon: Icon(icon, size: 16, color: isSelected ? Colors.blue : Colors.black),
-        label: Text(label, style: TextStyle(color: isSelected ? Colors.blue : Colors.black)),
+        icon: Icon(icon, size: 16, color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1),
+        label: Text(label, style: TextStyle(color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1)),
         style: TextButton.styleFrom(
-          backgroundColor: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+          backgroundColor: isSelected ? AppTheme.primaryColor.withAlpha(26) : Colors.transparent,
         ),
       );
     }
@@ -369,17 +371,9 @@ Widget studyCards(BuildContext context, MemoModel memo, ArchiveViewModel viewMod
             // 태그
             if (memo.tags != null && memo.tags!.isNotEmpty)
               Wrap(
-                spacing: 6,
+                spacing: 8,
                 runSpacing: 6,
-                children: memo.tags!.map((tag) => Chip(
-                  label: Text(
-                    tag,
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                  backgroundColor: Colors.blue.withOpacity(0.1),
-                  visualDensity: VisualDensity.compact,
-                  padding: const EdgeInsets.all(4),
-                )).toList(),
+                children: memo.tags!.map((tag) => _buildTagItem(tag)).toList(),
               ),
           ],
         ),
@@ -407,4 +401,21 @@ List<MemoModel> _getRandomMemos(List<MemoModel> memos, int count) {
   }
   
   return result; 
+}
+
+Widget _buildTagItem(String tag) {
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    decoration: BoxDecoration(
+      color: AppTheme.primaryColor.withOpacity(0.1),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Text(
+      '#$tag',
+      style: TextStyle(
+        fontSize: 12,
+        color: AppTheme.primaryColor,
+      ),
+    ),
+  );
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:weathercloset/routing/routes.dart';
+import 'package:weathercloset/utils/top_level_setting.dart';
 
 class RootScreen extends StatefulWidget {
 const RootScreen({super.key, required this.child});
@@ -34,19 +35,28 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Classify", style: TextStyle(fontWeight: FontWeight.bold),),
-        backgroundColor: Colors.blue,
+        title: Text(
+          "Classify", 
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: AppTheme.primaryColor,
+        elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.search),
+            icon: const Icon(Icons.search, color: Colors.white),
             onPressed: () {
               context.push(Routes.search);
             },
           ),
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Icons.settings, color: Colors.white),
             onPressed: () {
               context.push(Routes.setting);
             },
@@ -58,36 +68,47 @@ class _RootScreenState extends State<RootScreen> {
         onPressed: () {
           context.push(Routes.sendMemo);
         },
-        backgroundColor: Colors.blue,
-        child: const Icon(Icons.add),
+        backgroundColor: AppTheme.accentColor,
+        elevation: 4,
+        child: const Icon(Icons.add, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Expanded(
-              child: IconButton(
-                icon: Icon(
-                  Icons.today,
-                  color: _selectedIndex == 0 ? Colors.blue : Colors.grey,
+        color: Colors.white,
+        elevation: 8,
+        child: Container(
+          height: 60,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Expanded(
+                child: IconButton(
+                  icon: Icon(
+                    Icons.today,
+                    color: _selectedIndex == 0 ? AppTheme.primaryColor : AppTheme.textColor2,
+                    size: 26,
+                  ),
+                  tooltip: '오늘',
+                  onPressed: () => _onItemTapped(0),
                 ),
-                onPressed: () => _onItemTapped(0),
               ),
-            ),
-            const SizedBox(width: 48), // FAB 공간
-            Expanded(
-              child: IconButton(
-                icon: Icon(
-                  Icons.archive,
-                  color: _selectedIndex == 1 ? Colors.blue : Colors.grey,
+              const SizedBox(width: 48), // FAB 공간
+              Expanded(
+                child: IconButton(
+                  icon: Icon(
+                    Icons.archive,
+                    color: _selectedIndex == 1 ? AppTheme.primaryColor : AppTheme.textColor2,
+                    size: 26,
+                  ),
+                  tooltip: '보관함',
+                  onPressed: () => _onItemTapped(1),
                 ),
-                onPressed: () => _onItemTapped(1),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
