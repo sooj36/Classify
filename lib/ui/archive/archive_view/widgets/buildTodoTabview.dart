@@ -1,6 +1,7 @@
 import 'package:weathercloset/domain/models/memo/memo_model.dart';
 import 'package:flutter/material.dart';
 import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_model.dart';
+import 'package:weathercloset/utils/top_level_setting.dart';
 
 Widget buildTodoTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel) {
   // '할 일' 카테고리만 필터링
@@ -101,10 +102,10 @@ Widget _buildSortButton({
       final bool isSelected = isLatest ? value : !value;
       return TextButton.icon(
         onPressed: onPressed,
-        icon: Icon(icon, size: 16, color: isSelected ? Colors.blue : Colors.black),
-        label: Text(label, style: TextStyle(color: isSelected ? Colors.blue : Colors.black)),
+        icon: Icon(icon, size: 16, color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1),
+        label: Text(label, style: TextStyle(color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1)),
         style: TextButton.styleFrom(
-          backgroundColor: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+          backgroundColor: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.transparent,
         ),
       );
     }
@@ -124,7 +125,7 @@ Widget todoCards(BuildContext context, MemoModel memo, {required Function(String
             scale: 1.2,
             child: Checkbox(
               value: memo.isDone,
-              activeColor: Colors.green,
+              activeColor: AppTheme.primaryColor,
               onChanged: (bool? value) {
                 if (value == true) {
                   // 체크했을 때 할일 완료 처리 - 삭제 수행

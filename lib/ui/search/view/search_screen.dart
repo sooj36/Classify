@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weathercloset/domain/models/memo/memo_model.dart';
 import 'package:weathercloset/ui/search/view_model/search_view_model.dart';
 import 'package:weathercloset/ui/common/memo_card.dart';
-
+import 'package:weathercloset/utils/top_level_setting.dart';
 class SearchScreen extends StatefulWidget {
   final SearchViewModel viewModel;
 
@@ -64,15 +64,15 @@ class _SearchScreenState extends State<SearchScreen> {
           prefixIcon: const Icon(Icons.search),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Colors.black),
+            borderSide: const BorderSide(color: AppTheme.textColor1),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Colors.black),
+            borderSide: const BorderSide(color: AppTheme.textColor1),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Colors.black, width: 2),
+            borderSide: const BorderSide(color: AppTheme.textColor1, width: 2),
           ),
           suffixIcon: _searchController.text.isNotEmpty
             ? IconButton(
@@ -144,16 +144,16 @@ class _SearchScreenState extends State<SearchScreen> {
       icon: Icon(
         icon, 
         size: 16, 
-        color: isSelected ? Colors.blue : Colors.black
+        color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1
       ),
       label: Text(
         label, 
         style: TextStyle(
-          color: isSelected ? Colors.blue : Colors.black
+          color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1
         )
       ),
       style: TextButton.styleFrom(
-        backgroundColor: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+        backgroundColor: isSelected ? AppTheme.primaryColor.withAlpha(26) : Colors.transparent,
       ),
     );
   }
@@ -233,7 +233,7 @@ class _SearchScreenState extends State<SearchScreen> {
           });
         }
       },
-      selectedColor: Colors.blue.withOpacity(0.2),
+      selectedColor: AppTheme.primaryColor.withAlpha(26),
     );
   }
 
@@ -269,7 +269,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     spacing: 8,
                     children: memo.tags!.map((tag) => Chip(
                       label: Text(tag),
-                      backgroundColor: Colors.blue.withOpacity(0.1),
+                      backgroundColor: AppTheme.primaryColor.withAlpha(26),
                     )).toList(),
                   ),
                 ],

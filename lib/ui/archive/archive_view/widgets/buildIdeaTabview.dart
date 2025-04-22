@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_model.dart';
 import 'package:weathercloset/ui/archive/archive_view/widgets/buildIdeaDetailPage.dart';
 import 'dart:math';
+import 'package:weathercloset/utils/top_level_setting.dart';
 
 Widget buildIdeaTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel) {
   // '아이디어' 카테고리만 필터링
@@ -17,7 +18,7 @@ Widget buildIdeaTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel
         "작성된 메모가 없습니다",
         style: TextStyle(
           fontSize: 16,
-          color: Colors.grey,
+          color: AppTheme.textColor2,
         ),
       ),
     );
@@ -82,7 +83,7 @@ Widget buildIdeaTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel
         SliverAppBar(
           pinned: true,
           elevation: 0,
-          backgroundColor: Colors.blue.shade50,
+          backgroundColor: AppTheme.decorationColor1,
           automaticallyImplyLeading: false,
           title: _buildSortButtons(isLatestSort, latestMemos, oldestMemos, currentMemos),
         ),
@@ -126,10 +127,10 @@ Widget _buildRandomMemoHeader(
           // 랜덤 메모 리스트 갱신
           randomMemos.value = _getRandomMemos(ideaMemos, 2);
         },
-        icon: const Icon(Icons.refresh, size: 16, color: Colors.blue),
-        label: const Text('새로고침', style: TextStyle(color: Colors.blue)),
+        icon: const Icon(Icons.refresh, size: 16, color: AppTheme.primaryColor),
+        label: const Text('새로고침', style: TextStyle(color: AppTheme.primaryColor)),
         style: TextButton.styleFrom(
-          backgroundColor: Colors.blue.withOpacity(0.1),
+          backgroundColor: AppTheme.primaryColor.withAlpha(26),
         ),
       ),
     ],
@@ -150,6 +151,7 @@ Widget _buildSortButtons(
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 16,
+          color: AppTheme.textColor1,
         ),
       ),
       Row(
@@ -194,10 +196,10 @@ Widget _buildSortButton({
       final bool isSelected = isLatest ? value : !value;
       return TextButton.icon(
         onPressed: onPressed,
-        icon: Icon(icon, size: 16, color: isSelected ? Colors.blue : Colors.black),
-        label: Text(label, style: TextStyle(color: isSelected ? Colors.blue : Colors.black)),
+        icon: Icon(icon, size: 16, color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1),
+        label: Text(label, style: TextStyle(color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1)),
         style: TextButton.styleFrom(
-          backgroundColor: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+          backgroundColor: isSelected ? AppTheme.primaryColor.withAlpha(26) : Colors.transparent,
         ),
       );
     }
@@ -275,7 +277,7 @@ Widget ideaCards(BuildContext context, MemoModel memo, ArchiveViewModel viewMode
                     tag,
                     style: const TextStyle(fontSize: 12),
                   ),
-                  backgroundColor: Colors.blue.withOpacity(0.1),
+                  backgroundColor: AppTheme.decorationColor1.withAlpha(26),
                   visualDensity: VisualDensity.compact,
                   padding: const EdgeInsets.all(4),
                 )).toList(),
