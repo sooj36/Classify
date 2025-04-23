@@ -27,4 +27,8 @@ abstract class AuthRepository extends ChangeNotifier {
   });
 
   Future<bool> deleteAccount();
+
+  String? getSavedEmail();
+
+  Future<void> saveEmail(String email, bool remember);
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/data/repositories/memo/memo_repository_remote.dart';
+import 'package:weathercloset/data/repositories/memo/memo_repository.dart';
 import 'package:weathercloset/domain/models/memo/memo_model.dart';
+
 
 enum SearchFilter {
   all,
@@ -9,7 +10,7 @@ enum SearchFilter {
 }
 
 class SearchViewModel extends ChangeNotifier {
-  final MemoRepositoryRemote _memoRepositoryRemote;
+  final MemoRepository _memoRepository;
   Map<String, MemoModel> _allMemos = {};
   List<MemoModel> _searchResults = [];
   String _searchQuery = '';
@@ -18,8 +19,8 @@ class SearchViewModel extends ChangeNotifier {
   SearchFilter _searchFilter = SearchFilter.all;
   bool _isLatestSort = true; // true: 최신순, false: 오래된순
 
-  SearchViewModel({required MemoRepositoryRemote memoRepositoryRemote}) 
-    : _memoRepositoryRemote = memoRepositoryRemote;
+  SearchViewModel({required MemoRepository memoRepository}) 
+    : _memoRepository = memoRepository;
 
   // Getters
   List<MemoModel> get searchResults => _searchResults;
@@ -37,7 +38,7 @@ class SearchViewModel extends ChangeNotifier {
 
     try {
       debugPrint("메모 데이터 로드 시작");
-      final stream = _memoRepositoryRemote.watchMemoLocal();
+      final stream = _memoRepository.watchMemoLocal();
       
       stream.listen((memos) {
         _allMemos = memos;

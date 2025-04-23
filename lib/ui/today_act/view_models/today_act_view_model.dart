@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/data/repositories/memo/memo_repository_remote.dart';
+import 'package:weathercloset/data/repositories/memo/memo_repository.dart';
 import 'package:weathercloset/domain/models/memo/memo_model.dart';
 
 class TodayActViewModel extends ChangeNotifier {
-  final MemoRepositoryRemote _memoRepositoryRemote;
+  final MemoRepository _memoRepository;
   late Stream<Map<String, MemoModel>> _memos;
   Map<String, MemoModel> _cachedMemos = {};
   Map<String, MemoModel> _todayMemos = {};
@@ -11,8 +11,8 @@ class TodayActViewModel extends ChangeNotifier {
   String? _error;
 
   TodayActViewModel({
-    required MemoRepositoryRemote memoRepositoryRemote,
-  }) : _memoRepositoryRemote = memoRepositoryRemote,
+    required MemoRepository memoRepository,
+  }) : _memoRepository = memoRepository,
        _isLoading = false,
        _error = null;
 
@@ -26,7 +26,7 @@ class TodayActViewModel extends ChangeNotifier {
   int get todayMemoCount => _todayMemos.length;
 
   void initCachedMemos() {
-    _cachedMemos = _memoRepositoryRemote.getMemos();
+    _cachedMemos = _memoRepository.getMemos();
     _filterTodayMemos();
     notifyListeners();
   }
@@ -59,7 +59,7 @@ class TodayActViewModel extends ChangeNotifier {
       
       debugPrint("⭐ 2. Stream 접근 시도");
       // _memos 필드에 스트림 할당
-      _memos = _memoRepositoryRemote.watchMemoLocal();
+      _memos = _memoRepository.watchMemoLocal();
       
       debugPrint("⭐ 3. Stream 구독 시작");
       _memos.listen((data) {
@@ -85,7 +85,7 @@ class TodayActViewModel extends ChangeNotifier {
   }
 
   void deleteMemo(String memoId) {
-    _memoRepositoryRemote.deleteMemo(memoId);
+    _memoRepository.deleteMemo(memoId);
     notifyListeners();
   }
   
@@ -97,7 +97,7 @@ class TodayActViewModel extends ChangeNotifier {
       notifyListeners();
       
       // MemoRepository를 통해 Hive와 Firestore에 저장
-      await _memoRepositoryRemote.updateMemo(memo);
+      await _memoRepository.updateMemo(memo);
       
       debugPrint("✅ 메모 업데이트 완료: ${memo.memoId}");
     } catch (e) {

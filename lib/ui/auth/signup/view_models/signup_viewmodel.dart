@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/data/repositories/auth/auth_repository_remote.dart';
+import 'package:weathercloset/data/repositories/auth/auth_repository.dart';
 
 
 class SignUpViewModel extends ChangeNotifier {
-  final AuthRepositoryRemote _repository;
+  final AuthRepository _authRepository;
 
-  SignUpViewModel({required AuthRepositoryRemote authRepositoryRemote})
-  : _repository = authRepositoryRemote;
+  SignUpViewModel({required AuthRepository authRepository})
+  : _authRepository = authRepository;
   
   bool _isLoading = false;
   String? _error;
@@ -31,7 +31,7 @@ class SignUpViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _repository.signUp(
+      await _authRepository.signUp(
         email: email,
         password: password,
         name: name,
@@ -56,7 +56,7 @@ class SignUpViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _repository.signupWithGoogle();
+      await _authRepository.signupWithGoogle();
       _isLoading = false;
       notifyListeners();
       debugPrint("✅ 구글 회원가입 완료");

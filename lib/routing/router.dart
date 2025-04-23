@@ -12,7 +12,6 @@ import 'package:weathercloset/data/repositories/memo/memo_repository_remote.dart
 import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_model.dart';
 import 'package:weathercloset/ui/archive/archive_view/widgets/archive_view_screen.dart';
 import 'package:weathercloset/ui/send_memo_to_ai/widgets/send_memo_to_ai_screen.dart';
-import 'package:weathercloset/ui/basics/profile_screen.dart';
 import 'package:weathercloset/global/global.dart';
 import 'package:weathercloset/ui/send_memo_to_ai/view_models/send_memo_to_ai_viewmodel.dart';
 import 'package:weathercloset/ui/search/view/search_screen.dart';
@@ -29,17 +28,17 @@ final router = GoRouter(
     providers: [
       ChangeNotifierProvider(
         create: (context) => SendMemoToAiViewModel(
-          memoRepositoryRemote: context.read<MemoRepositoryRemote>(),
+          memoRepository: context.read<MemoRepositoryRemote>(),
         ),
       ),
       ChangeNotifierProvider(
         create: (context) => ArchiveViewModel(
-          memoRepositoryRemote: context.read<MemoRepositoryRemote>(),
+          memoRepository: context.read<MemoRepositoryRemote>(),
         ),
       ),
       ChangeNotifierProvider(
         create: (context) => TodayActViewModel(
-          memoRepositoryRemote: context.read<MemoRepositoryRemote>(),
+          memoRepository: context.read<MemoRepositoryRemote>(),
         ),
       ),
     ],
@@ -65,7 +64,7 @@ final router = GoRouter(
       path: Routes.sendMemo,
       builder: (context, state) => SendMemoToAiScreen(
         sendMemoToAiViewModel: SendMemoToAiViewModel(
-          memoRepositoryRemote: context.read<MemoRepositoryRemote>(),
+          memoRepository: context.read<MemoRepositoryRemote>(),
         ),
       ),
     ),
@@ -81,7 +80,7 @@ final router = GoRouter(
       path: Routes.search,
       builder: (context, state) => SearchScreen(
         viewModel: SearchViewModel(
-          memoRepositoryRemote: context.read<MemoRepositoryRemote>(),
+          memoRepository: context.read<MemoRepositoryRemote>(),
         ),
       ),
     ),
@@ -89,7 +88,7 @@ final router = GoRouter(
       path: Routes.login,
       builder: (context, state) => LoginScreen(
         viewModel: LoginViewModel(
-          authRepositoryRemote: context.read<AuthRepositoryRemote>(),
+          authRepository: context.read<AuthRepositoryRemote>(),
         ),
       ),
     ),
@@ -97,7 +96,7 @@ final router = GoRouter(
       path: Routes.signup,
       builder: (context, state) => SignupScreen(
         viewModel: SignUpViewModel(
-          authRepositoryRemote: context.read<AuthRepositoryRemote>(),
+          authRepository: context.read<AuthRepositoryRemote>(),
         ),
       ),
     ),

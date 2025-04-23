@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/data/repositories/auth/auth_repository_remote.dart';
-
+import 'package:weathercloset/data/repositories/auth/auth_repository.dart';
+  
 class LoginViewModel extends ChangeNotifier {
   LoginViewModel({
-    required AuthRepositoryRemote authRepositoryRemote,
+    required AuthRepository authRepository,
   })  :
     // Repositories are manually assigned because they're private members.
-    _authRepositoryRemote = authRepositoryRemote {
+    _authRepository = authRepository {
       _initializeEmail();
     }
 
-  final AuthRepositoryRemote _authRepositoryRemote;
+  final AuthRepository _authRepository;
   
   bool _isLoading = false;
   String? _error;
@@ -23,7 +23,7 @@ class LoginViewModel extends ChangeNotifier {
   String? get savedEmail => _savedEmail;
 
   void _initializeEmail() {
-    _savedEmail = _authRepositoryRemote.getSavedEmail();
+    _savedEmail = _authRepository.getSavedEmail();
     if (_savedEmail != null) {
       _rememberMe = true;
       notifyListeners();
@@ -45,8 +45,8 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _authRepositoryRemote.login(email: email, password: password);
-      await _authRepositoryRemote.saveEmail(email, _rememberMe);
+      await _authRepository.login(email: email, password: password);
+      await _authRepository.saveEmail(email, _rememberMe);
       _isLoading = false;
       notifyListeners();
       return true;
@@ -64,7 +64,7 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _authRepositoryRemote.loginWithGoogle();
+      await _authRepository.loginWithGoogle();
       _isLoading = false;
       notifyListeners();
       return true;

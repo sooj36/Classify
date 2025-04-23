@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:weathercloset/data/repositories/auth/auth_repository_remote.dart';
+import 'package:weathercloset/data/repositories/auth/auth_repository.dart';
 
 class SettingViewModel extends ChangeNotifier {
-  final AuthRepositoryRemote _authRepository;
+  final AuthRepository _authRepository;
 
   SettingViewModel({
-    required AuthRepositoryRemote authRepository,
+    required AuthRepository authRepository,
   }) : _authRepository = authRepository;
 
   Future<bool> logout() async {
