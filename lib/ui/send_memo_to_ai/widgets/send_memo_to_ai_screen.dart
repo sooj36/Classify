@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weathercloset/ui/send_memo_to_ai/view_models/send_memo_to_ai_viewmodel.dart';
+import 'package:weathercloset/utils/top_level_setting.dart';
 
 class SendMemoToAiScreen extends StatefulWidget {
   final SendMemoToAiViewModel _sendMemoToAiViewModel;
@@ -81,6 +82,7 @@ class _SendMemoToAiScreenState extends State<SendMemoToAiScreen> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
+                color: AppTheme.backgroundColor,
               ),
             ),
           ),
