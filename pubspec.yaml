@@ -50,5 +50,5 @@ flutter:
 package_rename_config:
   android:
     app_name: Classify
-    package_name: com.example.classify
+    package_name: com.seongjko.classify
     override_old_package: com.example.weathercloset
