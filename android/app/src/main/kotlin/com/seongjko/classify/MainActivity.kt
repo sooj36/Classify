@@ -1,4 +1,4 @@
-package com.example.classify
+package com.seongjko.classify
 
 import io.flutter.embedding.android.FlutterActivity
 
