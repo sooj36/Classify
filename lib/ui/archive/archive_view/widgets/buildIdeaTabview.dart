@@ -1,9 +1,9 @@
-import 'package:weathercloset/domain/models/memo/memo_model.dart';
+import 'package:classify/domain/models/memo/memo_model.dart';
 import 'package:flutter/material.dart';
-import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_model.dart';
-import 'package:weathercloset/ui/archive/archive_view/widgets/buildIdeaDetailPage.dart';
+import 'package:classify/ui/archive/archive_view/view_models/archive_view_model.dart';
+import 'package:classify/ui/archive/archive_view/widgets/buildIdeaDetailPage.dart';
 import 'dart:math';
-import 'package:weathercloset/utils/top_level_setting.dart';
+import 'package:classify/utils/top_level_setting.dart';
 
 Widget buildIdeaTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel) {
   // '아이디어' 카테고리만 필터링

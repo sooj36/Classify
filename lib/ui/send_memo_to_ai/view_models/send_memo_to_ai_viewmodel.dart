@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/data/repositories/memo/memo_repository.dart';
+import 'package:classify/data/repositories/memo/memo_repository.dart';
 
 //StreamBuilder를 사용하지 않고 데이터를 캐시하여 사용하였음
 //화면을 전환하면 Stream으로부터 새 데이터가 오기 전까지는 데이터를 표시하지 않기 때문

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_model.dart';
-import 'package:weathercloset/ui/archive/archive_view/widgets/buildTodoTabview.dart';
-import 'package:weathercloset/ui/archive/archive_view/widgets/buildIdeaTabview.dart';
-import 'package:weathercloset/ui/archive/archive_view/widgets/buildStudyTabview.dart';
-import 'package:weathercloset/utils/top_level_setting.dart';
+import 'package:classify/ui/archive/archive_view/view_models/archive_view_model.dart';
+import 'package:classify/ui/archive/archive_view/widgets/buildTodoTabview.dart';
+import 'package:classify/ui/archive/archive_view/widgets/buildIdeaTabview.dart';
+import 'package:classify/ui/archive/archive_view/widgets/buildStudyTabview.dart';
+import 'package:classify/utils/top_level_setting.dart';
 
 class ArchiveScreen extends StatefulWidget {
   final ArchiveViewModel viewModel;

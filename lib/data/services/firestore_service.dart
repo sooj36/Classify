@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:weathercloset/domain/models/auth/signup_user_model.dart';
-import 'package:weathercloset/global/global.dart';
+import 'package:classify/domain/models/auth/signup_user_model.dart';
+import 'package:classify/global/global.dart';
 import 'package:flutter/foundation.dart';
-import 'package:weathercloset/domain/models/memo/memo_model.dart';
+import 'package:classify/domain/models/memo/memo_model.dart';
 
 
 class FirestoreService {

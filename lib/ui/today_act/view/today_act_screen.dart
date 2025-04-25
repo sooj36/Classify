@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:weathercloset/domain/models/memo/memo_model.dart';
-import 'package:weathercloset/ui/today_act/view_models/today_act_view_model.dart';
+import 'package:classify/domain/models/memo/memo_model.dart';
+import 'package:classify/ui/today_act/view_models/today_act_view_model.dart';
 
 class TodayActScreen extends StatefulWidget {
   final TodayActViewModel viewModel;

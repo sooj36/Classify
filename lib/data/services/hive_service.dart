@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:weathercloset/domain/models/memo/memo_model.dart';
+import 'package:classify/domain/models/memo/memo_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter/foundation.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/routing/routes.dart';
+import 'package:classify/routing/routes.dart';
 import 'package:go_router/go_router.dart';
-import 'package:weathercloset/ui/setting/view_models/setting_viewmodel.dart';
+import 'package:classify/ui/setting/view_models/setting_viewmodel.dart';
 
 class SettingScreen extends StatelessWidget {
   final SettingViewModel viewModel;

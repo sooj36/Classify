@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/data/repositories/auth/auth_repository.dart';
+import 'package:classify/data/repositories/auth/auth_repository.dart';
   
 class LoginViewModel extends ChangeNotifier {
   LoginViewModel({

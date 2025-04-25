@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/domain/models/memo/memo_model.dart';
+import 'package:classify/domain/models/memo/memo_model.dart';
 
 abstract class MemoRepository extends ChangeNotifier {
 

@@ -1,9 +1,9 @@
-import 'package:weathercloset/utils/custom_text_field.dart';
+import 'package:classify/utils/custom_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:weathercloset/routing/routes.dart';
-import 'package:weathercloset/ui/auth/login/view_models/login_viewmodel.dart';
+import 'package:classify/routing/routes.dart';
+import 'package:classify/ui/auth/login/view_models/login_viewmodel.dart';
 import 'package:go_router/go_router.dart';
-import 'package:weathercloset/utils/top_level_setting.dart';
+import 'package:classify/utils/top_level_setting.dart';
 
 class LoginScreen extends StatefulWidget {
   final LoginViewModel viewModel;
@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   child: Center(
                     child: Text(
-                      "Classify",
+                      "classify",
                       style: theme.textTheme.titleLarge?.copyWith(
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "Classify에 오신 것을 환영합니다.",
+                          "classify에 오신 것을 환영합니다.",
                           style: theme.textTheme.bodySmall,
                         ),
                         const SizedBox(height: 24),
