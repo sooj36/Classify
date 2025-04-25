@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:classify/ui/archive/archive_view/view_models/archive_view_model.dart';
-import 'package:classify/ui/archive/archive_view/widgets/buildTodoTabview.dart';
-import 'package:classify/ui/archive/archive_view/widgets/buildIdeaTabview.dart';
-import 'package:classify/ui/archive/archive_view/widgets/buildStudyTabview.dart';
+import 'package:classify/ui/archive/archive_view/widgets/build_to_do_tab_view.dart';
+import 'package:classify/ui/archive/archive_view/widgets/build_idea_tab_view.dart';
+import 'package:classify/ui/archive/archive_view/widgets/build_study_tab_view.dart';
 import 'package:classify/utils/top_level_setting.dart';
 
 class ArchiveScreen extends StatefulWidget {
