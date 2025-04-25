@@ -94,7 +94,6 @@ void main() {
       ),
     );
     
-    // 에러 메시지가 화면에 나타나는지 확인
     expect(find.text('에러 발생: 테스트 에러 메시지'), findsOneWidget);
   });
 
