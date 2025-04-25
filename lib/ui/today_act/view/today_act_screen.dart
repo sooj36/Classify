@@ -7,9 +7,9 @@ class TodayActScreen extends StatefulWidget {
   final TodayActViewModel viewModel;
   
   const TodayActScreen({
-    Key? key,
+    super.key,
     required this.viewModel,
-  }) : super(key: key);
+  });
 
   @override
   State<TodayActScreen> createState() => _TodayActScreenState();
@@ -58,17 +58,17 @@ class _TodayActScreenState extends State<TodayActScreen> {
   }
   
   Widget _buildEmptyState() {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
+          Icon(
             Icons.event_note_outlined,
             size: 80,
             color: Colors.grey,
           ),
-          const SizedBox(height: 16),
-          const Text(
+          SizedBox(height: 16),
+          Text(
             '오늘 작성한 메모가 없습니다',
             style: TextStyle(
               fontSize: 18,
@@ -76,8 +76,8 @@ class _TodayActScreenState extends State<TodayActScreen> {
               color: Colors.grey,
             ),
           ),
-          const SizedBox(height: 8),
-          const Text(
+          SizedBox(height: 8),
+          Text(
             '새로운 메모를 작성해보세요!',
             style: TextStyle(
               fontSize: 16,
@@ -285,10 +285,10 @@ class TodayActDetailPage extends StatefulWidget {
   final TodayActViewModel viewModel;
 
   const TodayActDetailPage({
-    Key? key,
+    super.key,
     required this.memo,
     required this.viewModel,
-  }) : super(key: key);
+  });
 
   @override
   State<TodayActDetailPage> createState() => _TodayActDetailPageState();

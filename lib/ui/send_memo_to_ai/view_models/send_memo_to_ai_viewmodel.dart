@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/data/repositories/memo/memo_repository_remote.dart';
 import 'package:weathercloset/data/repositories/memo/memo_repository.dart';
 
 //StreamBuilder를 사용하지 않고 데이터를 캐시하여 사용하였음

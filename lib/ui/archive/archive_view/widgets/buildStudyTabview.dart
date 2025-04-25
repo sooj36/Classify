@@ -412,7 +412,7 @@ Widget _buildTagItem(String tag) {
     ),
     child: Text(
       '#$tag',
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 12,
         color: AppTheme.primaryColor,
       ),

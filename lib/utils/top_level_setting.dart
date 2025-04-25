@@ -47,7 +47,6 @@ class AppTheme {
       primary: primaryColor,
       secondary: secondaryColor1,
       error: errorColor,
-      background: backgroundColor,
       surface: subBackgroundColor,
     ),
     scaffoldBackgroundColor: backgroundColor,
@@ -79,65 +78,65 @@ class AppTheme {
       fillColor: subBackgroundColor,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: decorationColor1),
+        borderSide: const BorderSide(color: decorationColor1),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: decorationColor1),
+        borderSide: const BorderSide(color: decorationColor1),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: primaryColor),
+        borderSide: const BorderSide(color: primaryColor),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     ),
     textTheme: GoogleFonts.nanumGothicTextTheme(ThemeData.light().textTheme).copyWith(
       titleLarge: GoogleFonts.nanumGothic(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.w600,
           color: textColor1,
         ),
       ),
       titleMedium: GoogleFonts.nanumGothic(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w500,
           color: textColor1,
         ),
       ),
       bodyLarge: GoogleFonts.nanumGothic(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 16,
           color: textColor1,
         ),
       ),
       bodyMedium: GoogleFonts.nanumGothic(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 14,
           color: textColor1,
         ),
       ),
       bodySmall: GoogleFonts.nanumGothic(
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 12,
           color: textColor2,
         ),
       ),
     ),
     checkboxTheme: CheckboxThemeData(
-      fillColor: MaterialStateProperty.resolveWith<Color>((states) {
-        if (states.contains(MaterialState.selected)) {
+      fillColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.selected)) {
           return primaryColor;
         }
         return Colors.transparent;
       }),
-      side: BorderSide(color: secondaryColor1),
+      side: const BorderSide(color: secondaryColor1),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(4),
       ),
     ),
-    dividerTheme: DividerThemeData(
+    dividerTheme: const DividerThemeData(
       color: decorationColor1,
       thickness: 1,
     ),

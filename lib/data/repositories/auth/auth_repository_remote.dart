@@ -154,6 +154,7 @@ class AuthRepositoryRemote extends AuthRepository {
     }
   }
 
+  @override
   Future<void> saveEmail(String email, bool remember) async {
     final prefs = sharedPreferences;
     if (remember) {
@@ -165,6 +166,7 @@ class AuthRepositoryRemote extends AuthRepository {
     }
   }
 
+  @override
   String? getSavedEmail() {
     return sharedPreferences!.getString("savedEmail");
   }
