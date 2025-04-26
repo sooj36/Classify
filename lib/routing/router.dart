@@ -17,6 +17,7 @@ import 'package:classify/ui/search/view_model/search_view_model.dart';
 import 'package:classify/ui/setting/view_models/setting_viewmodel.dart';
 import 'package:classify/ui/today_act/view/today_act_screen.dart';
 import 'package:classify/ui/today_act/view_models/today_act_view_model.dart';
+import 'package:classify/ui/setting/widgets/privacy_policy_screen.dart';
 
 final router = GoRouter(
   initialLocation: firebaseAuth.currentUser != null ? Routes.today : Routes.login,
@@ -89,6 +90,10 @@ final router = GoRouter(
           authRepository: context.read<AuthRepositoryRemote>(),
         ),
       ),
+    ),
+    GoRoute(
+      path: Routes.privacyPolicy,
+      builder: (context, state) => const PrivacyPolicyScreen(),
     ),
   ],
 );

@@ -35,6 +35,7 @@ dependencies:
   cloud_functions: ^5.4.0
   google_sign_in: ^6.3.0
   package_rename: ^1.10.0
+  webview_flutter: ^4.11.0
 
 dev_dependencies:
   flutter_test:

@@ -12,4 +12,5 @@ final class Routes {
   static const archive = '/archive';
   static const search = '/search';
   static const today = '/today';
+  static const privacyPolicy = '/privacyPolicy';
 }

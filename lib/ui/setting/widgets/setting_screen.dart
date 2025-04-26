@@ -29,6 +29,11 @@ class SettingScreen extends StatelessWidget {
             title: const Text('회원 탈퇴'),
             onTap: () => _showDeleteConfirmDialog(context),
           ),
+          ListTile(
+            leading: const Icon(Icons.privacy_tip),
+            title: const Text('개인정보처리방침'),
+            onTap: () => _navigateToPrivacyPolicy(context),
+          ),
         ],
       ),
     );
@@ -78,5 +83,9 @@ class SettingScreen extends StatelessWidget {
         );
       },
     );
+  }
+  
+  void _navigateToPrivacyPolicy(BuildContext context) {
+    context.push(Routes.privacyPolicy);
   }
 }
