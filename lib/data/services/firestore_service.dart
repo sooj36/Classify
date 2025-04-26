@@ -40,8 +40,39 @@ class FirestoreService {
   }
 
   Future<void> deleteUser() async {
-    await _firestore.collection("users").doc(firebaseAuth.currentUser!.uid).delete();
-    debugPrint("✅ 회원 탈퇴 성공");
+    String uid = firebaseAuth.currentUser!.uid;
+    
+    try {
+      // 1. 알려진 모든 하위 컬렉션 목록
+      List<String> subCollections = ["memo", "categories"]; // 필요 시 컬렉션 추가
+      
+      // 2. 모든 하위 컬렉션의 문서 삭제
+      for (String collection in subCollections) {
+        final querySnapshot = await _firestore
+            .collection("users")
+            .doc(uid)
+            .collection(collection)
+            .get();
+            
+        //WriteBatch - 여러 문서에 대한 쓰기 작업을 원자적 작업으로 처리
+        WriteBatch batch = _firestore.batch();
+        for (var doc in querySnapshot.docs) { //삭제 작업을 batch에 추가
+          batch.delete(doc.reference);
+        }
+        
+        if (querySnapshot.docs.isNotEmpty) { //batch에 작업이 있으면 작업 실행
+          await batch.commit();
+        }
+      }
+      
+      // 3. 최종적으로 사용자 문서 삭제
+      await _firestore.collection("users").doc(uid).delete();
+      
+      debugPrint("✅ 사용자 데이터 삭제 완료");
+    } catch (e) {
+      debugPrint("❌ 사용자 데이터 삭제 실패: $e");
+      throw e;
+    }
   }
 
 
