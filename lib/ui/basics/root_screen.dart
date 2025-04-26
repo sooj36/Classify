@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:weathercloset/routing/routes.dart';
-import 'package:weathercloset/utils/top_level_setting.dart';
+import 'package:classify/routing/routes.dart';
+import 'package:classify/utils/top_level_setting.dart';
 
 class RootScreen extends StatefulWidget {
 const RootScreen({super.key, required this.child});
@@ -40,7 +40,7 @@ class _RootScreenState extends State<RootScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Classify", 
+          "classify", 
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
             color: Colors.white,

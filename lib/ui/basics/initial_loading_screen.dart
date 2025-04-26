@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:weathercloset/global/global.dart';
+import 'package:classify/global/global.dart';
 import 'package:flutter/material.dart';
-import 'package:weathercloset/routing/routes.dart';
+import 'package:classify/routing/routes.dart';
 import 'package:go_router/go_router.dart';
-import 'package:weathercloset/utils/top_level_setting.dart';
+import 'package:classify/utils/top_level_setting.dart';
 
 class InitialLoadingScreen extends StatefulWidget {
   const InitialLoadingScreen({super.key});
@@ -38,7 +38,7 @@ class _InitialLoadingScreenState extends State<InitialLoadingScreen> {
           ),
         ),
         child: const Center(
-          child: Text("WeatherCloset", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
+          child: Text("classify", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
         ),
       ),
     );

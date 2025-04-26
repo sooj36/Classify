@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/ui/send_memo_to_ai/view_models/send_memo_to_ai_viewmodel.dart';
-import 'package:weathercloset/utils/top_level_setting.dart';
+import 'package:classify/ui/send_memo_to_ai/view_models/send_memo_to_ai_viewmodel.dart';
+import 'package:classify/utils/top_level_setting.dart';
 
 class SendMemoToAiScreen extends StatefulWidget {
   final SendMemoToAiViewModel _sendMemoToAiViewModel;

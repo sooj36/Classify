@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>1065933419614-27haasij3ua19pdnpmcgnvf3dhnqneg0.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1065933419614-27haasij3ua19pdnpmcgnvf3dhnqneg0</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>1065933419614-ibh4uhc0udus26vkd7pomc622gdhl1pj.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyB_eBOv3OFXAqX0ZKlFEHFQODJFs7wIUJw</string>
 	<key>GCM_SENDER_ID</key>
@@ -26,5 +32,7 @@
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:1065933419614:ios:5402a01cd48e0e55d130cf</string>
+	<key>DATABASE_URL</key>
+	<string>https://weathercloset-b7a14-default-rtdb.firebaseio.com</string>
 </dict>
 </plist>

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/routing/routes.dart';
-import 'package:weathercloset/utils/custom_text_field.dart';
-import 'package:weathercloset/ui/auth/signup/view_models/signup_viewmodel.dart';
+import 'package:classify/routing/routes.dart';
+import 'package:classify/utils/custom_text_field.dart';
+import 'package:classify/ui/auth/signup/view_models/signup_viewmodel.dart';
 import 'package:go_router/go_router.dart';
-import 'package:weathercloset/utils/top_level_setting.dart';
+import 'package:classify/utils/top_level_setting.dart';
 
 class SignupScreen extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
@@ -39,7 +39,7 @@ class SignupScreen extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  "Classify",
+                  "classify",
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
@@ -73,7 +73,7 @@ class SignupScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "Classify에 가입하고 이용해보세요.",
+                        "classify에 가입하고 이용해보세요.",
                         style: theme.textTheme.bodySmall,
                       ),
                       const SizedBox(height: 24),

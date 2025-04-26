@@ -42,18 +42,20 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyBuFqK-tFBqfIzIAVVDR1ADB6XAa46u-o4',
-    appId: '1:1065933419614:web:ca05646e5ee80bcfd130cf',
+    appId: '1:1065933419614:web:07d512686e102b45d130cf',
     messagingSenderId: '1065933419614',
     projectId: 'weathercloset-b7a14',
     authDomain: 'weathercloset-b7a14.firebaseapp.com',
+    databaseURL: 'https://weathercloset-b7a14-default-rtdb.firebaseio.com',
     storageBucket: 'weathercloset-b7a14.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAx93q3l1UoFpf4Jsn0QwPIBlhNBwJNJ8U',
-    appId: '1:1065933419614:android:7a86706623eedb37d130cf',
+    appId: '1:1065933419614:android:6e1e9910de79d113d130cf',
     messagingSenderId: '1065933419614',
     projectId: 'weathercloset-b7a14',
+    databaseURL: 'https://weathercloset-b7a14-default-rtdb.firebaseio.com',
     storageBucket: 'weathercloset-b7a14.firebasestorage.app',
   );
 
@@ -62,7 +64,10 @@ class DefaultFirebaseOptions {
     appId: '1:1065933419614:ios:5402a01cd48e0e55d130cf',
     messagingSenderId: '1065933419614',
     projectId: 'weathercloset-b7a14',
+    databaseURL: 'https://weathercloset-b7a14-default-rtdb.firebaseio.com',
     storageBucket: 'weathercloset-b7a14.firebasestorage.app',
+    androidClientId: '1065933419614-ibh4uhc0udus26vkd7pomc622gdhl1pj.apps.googleusercontent.com',
+    iosClientId: '1065933419614-27haasij3ua19pdnpmcgnvf3dhnqneg0.apps.googleusercontent.com',
     iosBundleId: 'com.example.weathercloset',
   );
 
@@ -71,16 +76,21 @@ class DefaultFirebaseOptions {
     appId: '1:1065933419614:ios:5402a01cd48e0e55d130cf',
     messagingSenderId: '1065933419614',
     projectId: 'weathercloset-b7a14',
+    databaseURL: 'https://weathercloset-b7a14-default-rtdb.firebaseio.com',
     storageBucket: 'weathercloset-b7a14.firebasestorage.app',
+    androidClientId: '1065933419614-ibh4uhc0udus26vkd7pomc622gdhl1pj.apps.googleusercontent.com',
+    iosClientId: '1065933419614-27haasij3ua19pdnpmcgnvf3dhnqneg0.apps.googleusercontent.com',
     iosBundleId: 'com.example.weathercloset',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyBuFqK-tFBqfIzIAVVDR1ADB6XAa46u-o4',
-    appId: '1:1065933419614:web:07d512686e102b45d130cf',
+    appId: '1:1065933419614:web:1161a2cb91a90828d130cf',
     messagingSenderId: '1065933419614',
     projectId: 'weathercloset-b7a14',
     authDomain: 'weathercloset-b7a14.firebaseapp.com',
+    databaseURL: 'https://weathercloset-b7a14-default-rtdb.firebaseio.com',
     storageBucket: 'weathercloset-b7a14.firebasestorage.app',
   );
+
 }

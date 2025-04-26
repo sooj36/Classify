@@ -6,16 +6,16 @@ import 'utils/top_level_setting.dart';
 import 'global/global.dart';
 import 'routing/router.dart';
 import 'package:provider/provider.dart';
-import 'package:weathercloset/data/repositories/auth/auth_repository_remote.dart';
-import 'package:weathercloset/data/services/firebase_auth_service.dart';
-import 'package:weathercloset/data/services/firestore_service.dart';
-import 'package:weathercloset/data/services/gemini_service.dart';
-import 'package:weathercloset/data/repositories/memo/memo_repository_remote.dart';
+import 'package:classify/data/repositories/auth/auth_repository_remote.dart';
+import 'package:classify/data/services/firebase_auth_service.dart';
+import 'package:classify/data/services/firestore_service.dart';
+import 'package:classify/data/services/gemini_service.dart';
+import 'package:classify/data/repositories/memo/memo_repository_remote.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:weathercloset/data/services/hive_service.dart';
-import 'package:weathercloset/domain/models/memo/memo_model.dart';
-import 'package:weathercloset/data/services/google_login_service.dart';
+import 'package:classify/data/services/hive_service.dart';
+import 'package:classify/domain/models/memo/memo_model.dart';
+import 'package:classify/data/services/google_login_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //flutter engine과 app 연결

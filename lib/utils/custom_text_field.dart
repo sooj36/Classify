@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/utils/top_level_setting.dart';
+import 'package:classify/utils/top_level_setting.dart';
 
 // ignore: must_be_immutable
 class CustomTextField extends StatelessWidget {

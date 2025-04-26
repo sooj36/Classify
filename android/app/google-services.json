@@ -1,18 +1,24 @@
 {
   "project_info": {
     "project_number": "1065933419614",
+    "firebase_url": "https://weathercloset-b7a14-default-rtdb.firebaseio.com",
     "project_id": "weathercloset-b7a14",
     "storage_bucket": "weathercloset-b7a14.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1065933419614:android:7a86706623eedb37d130cf",
+        "mobilesdk_app_id": "1:1065933419614:android:6e1e9910de79d113d130cf",
         "android_client_info": {
-          "package_name": "com.example.weathercloset"
+          "package_name": "com.seongjko.classify"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1065933419614-qeicv9otkrnsc8elms1o16kvmc19gmkp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAx93q3l1UoFpf4Jsn0QwPIBlhNBwJNJ8U"
@@ -20,7 +26,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1065933419614-qeicv9otkrnsc8elms1o16kvmc19gmkp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1065933419614-27haasij3ua19pdnpmcgnvf3dhnqneg0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.weathercloset"
+              }
+            }
+          ]
         }
       }
     }

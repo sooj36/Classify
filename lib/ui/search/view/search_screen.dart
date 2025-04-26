@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/domain/models/memo/memo_model.dart';
-import 'package:weathercloset/ui/search/view_model/search_view_model.dart';
-import 'package:weathercloset/ui/common/memo_card.dart';
-import 'package:weathercloset/utils/top_level_setting.dart';
+import 'package:classify/domain/models/memo/memo_model.dart';
+import 'package:classify/ui/search/view_model/search_view_model.dart';
+import 'package:classify/ui/common/memo_card.dart';
+import 'package:classify/utils/top_level_setting.dart';
 class SearchScreen extends StatefulWidget {
   final SearchViewModel viewModel;
 

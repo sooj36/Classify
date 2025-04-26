@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/domain/models/memo/memo_model.dart';
+import 'package:classify/domain/models/memo/memo_model.dart';
 import 'dart:convert';
 import 'package:cloud_functions/cloud_functions.dart';
 

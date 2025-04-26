@@ -1,4 +1,4 @@
-package com.example.weathercloset
+package com.seongjko.classify
 
 import io.flutter.embedding.android.FlutterActivity
 

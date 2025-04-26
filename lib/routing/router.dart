@@ -1,24 +1,24 @@
 import 'package:go_router/go_router.dart';
-import 'package:weathercloset/routing/routes.dart';
-import 'package:weathercloset/ui/basics/root_screen.dart';
-import 'package:weathercloset/ui/auth/login/widgets/login_screen.dart';
-import 'package:weathercloset/ui/auth/signup/widgets/signup_screen.dart';
-import 'package:weathercloset/ui/setting/widgets/setting_screen.dart';
-import 'package:weathercloset/ui/auth/login/view_models/login_viewmodel.dart';
-import 'package:weathercloset/ui/auth/signup/view_models/signup_viewmodel.dart';
-import 'package:weathercloset/data/repositories/auth/auth_repository_remote.dart';
+import 'package:classify/routing/routes.dart';
+import 'package:classify/ui/basics/root_screen.dart';
+import 'package:classify/ui/auth/login/widgets/login_screen.dart';
+import 'package:classify/ui/auth/signup/widgets/signup_screen.dart';
+import 'package:classify/ui/setting/widgets/setting_screen.dart';
+import 'package:classify/ui/auth/login/view_models/login_viewmodel.dart';
+import 'package:classify/ui/auth/signup/view_models/signup_viewmodel.dart';
+import 'package:classify/data/repositories/auth/auth_repository_remote.dart';
 import 'package:provider/provider.dart';
-import 'package:weathercloset/data/repositories/memo/memo_repository_remote.dart';
-import 'package:weathercloset/ui/archive/archive_view/view_models/archive_view_model.dart';
-import 'package:weathercloset/ui/archive/archive_view/widgets/archive_view_screen.dart';
-import 'package:weathercloset/ui/send_memo_to_ai/widgets/send_memo_to_ai_screen.dart';
-import 'package:weathercloset/global/global.dart';
-import 'package:weathercloset/ui/send_memo_to_ai/view_models/send_memo_to_ai_viewmodel.dart';
-import 'package:weathercloset/ui/search/view/search_screen.dart';
-import 'package:weathercloset/ui/search/view_model/search_view_model.dart';
-import 'package:weathercloset/ui/setting/view_models/setting_viewmodel.dart';
-import 'package:weathercloset/ui/today_act/view/today_act_screen.dart';
-import 'package:weathercloset/ui/today_act/view_models/today_act_view_model.dart';
+import 'package:classify/data/repositories/memo/memo_repository_remote.dart';
+import 'package:classify/ui/archive/archive_view/view_models/archive_view_model.dart';
+import 'package:classify/ui/archive/archive_view/widgets/archive_view_screen.dart';
+import 'package:classify/ui/send_memo_to_ai/widgets/send_memo_to_ai_screen.dart';
+import 'package:classify/global/global.dart';
+import 'package:classify/ui/send_memo_to_ai/view_models/send_memo_to_ai_viewmodel.dart';
+import 'package:classify/ui/search/view/search_screen.dart';
+import 'package:classify/ui/search/view_model/search_view_model.dart';
+import 'package:classify/ui/setting/view_models/setting_viewmodel.dart';
+import 'package:classify/ui/today_act/view/today_act_screen.dart';
+import 'package:classify/ui/today_act/view_models/today_act_view_model.dart';
 
 final router = GoRouter(
   initialLocation: firebaseAuth.currentUser != null ? Routes.today : Routes.login,

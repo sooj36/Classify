@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/domain/models/memo/memo_model.dart';
-import 'package:weathercloset/utils/top_level_setting.dart';
+import 'package:classify/domain/models/memo/memo_model.dart';
+import 'package:classify/utils/top_level_setting.dart';
 
 class MemoCard extends StatelessWidget {
   final MemoModel memo;

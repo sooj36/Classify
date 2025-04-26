@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:weathercloset/data/repositories/memo/memo_repository.dart';
-import 'package:weathercloset/domain/models/memo/memo_model.dart';
+import 'package:classify/data/repositories/memo/memo_repository.dart';
+import 'package:classify/domain/models/memo/memo_model.dart';
 
 
 //StreamBuilder를 사용하지 않고 데이터를 캐시하여 사용하였음

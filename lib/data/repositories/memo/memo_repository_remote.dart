@@ -1,8 +1,8 @@
-import 'package:weathercloset/data/repositories/memo/memo_repository.dart';
-import 'package:weathercloset/data/services/gemini_service.dart';
-import 'package:weathercloset/data/services/firestore_service.dart';
-import 'package:weathercloset/data/services/hive_service.dart';
-import 'package:weathercloset/domain/models/memo/memo_model.dart';
+import 'package:classify/data/repositories/memo/memo_repository.dart';
+import 'package:classify/data/services/gemini_service.dart';
+import 'package:classify/data/services/firestore_service.dart';
+import 'package:classify/data/services/hive_service.dart';
+import 'package:classify/domain/models/memo/memo_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
