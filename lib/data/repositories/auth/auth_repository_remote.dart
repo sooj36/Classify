@@ -129,7 +129,7 @@ class AuthRepositoryRemote extends AuthRepository {
   Future<bool> deleteAccount() async {
     try {
       await _firestoreService.deleteUser();
-      await _firebaseAuthService.deleteAccount();
+      await _googleLoginService.deleteAccount();
       _hiveService.clearMemos();
       _hiveService.clearCategories();
       debugPrint("✅ 계정 삭제 성공");
