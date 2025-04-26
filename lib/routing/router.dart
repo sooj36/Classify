@@ -2,10 +2,8 @@ import 'package:go_router/go_router.dart';
 import 'package:classify/routing/routes.dart';
 import 'package:classify/ui/basics/root_screen.dart';
 import 'package:classify/ui/auth/login/widgets/login_screen.dart';
-import 'package:classify/ui/auth/signup/widgets/signup_screen.dart';
 import 'package:classify/ui/setting/widgets/setting_screen.dart';
 import 'package:classify/ui/auth/login/view_models/login_viewmodel.dart';
-import 'package:classify/ui/auth/signup/view_models/signup_viewmodel.dart';
 import 'package:classify/data/repositories/auth/auth_repository_remote.dart';
 import 'package:provider/provider.dart';
 import 'package:classify/data/repositories/memo/memo_repository_remote.dart';
@@ -88,14 +86,6 @@ final router = GoRouter(
       path: Routes.login,
       builder: (context, state) => LoginScreen(
         viewModel: LoginViewModel(
-          authRepository: context.read<AuthRepositoryRemote>(),
-        ),
-      ),
-    ),
-    GoRoute(
-      path: Routes.signup,
-      builder: (context, state) => SignupScreen(
-        viewModel: SignUpViewModel(
           authRepository: context.read<AuthRepositoryRemote>(),
         ),
       ),

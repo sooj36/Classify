@@ -56,10 +56,10 @@ class HiveService {
     // 기존 메모 데이터 지우기
     _memoBox.clear();
 
-      await Hive.box<MemoModel>("memo").close();
+    await Hive.box<MemoModel>("memo").close();
 
-      // Box 다시 열기
-      _memoBox = await Hive.openBox<MemoModel>("memo");
+    // Box 다시 열기
+    _memoBox = await Hive.openBox<MemoModel>("memo");
     
     // 한 번에 모든 메모 저장
     _memoBox.putAll(memos);
