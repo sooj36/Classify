@@ -71,7 +71,7 @@ class FirestoreService {
       debugPrint("✅ 사용자 데이터 삭제 완료");
     } catch (e) {
       debugPrint("❌ 사용자 데이터 삭제 실패: $e");
-      throw e;
+      rethrow;
     }
   }
 
