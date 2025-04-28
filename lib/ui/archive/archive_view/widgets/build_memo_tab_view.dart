@@ -1,14 +1,14 @@
 import 'package:classify/domain/models/memo/memo_model.dart';
 import 'package:flutter/material.dart';
 import 'package:classify/ui/archive/archive_view/view_models/archive_view_model.dart';
-import 'package:classify/ui/archive/archive_view/widgets/build_idea_detail_page.dart';
+import 'package:classify/ui/archive/archive_view/widgets/build_memo_detail_page.dart';
 import 'dart:math';
 import 'package:classify/utils/top_level_setting.dart';
 
-Widget buildIdeaTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel) {
-  // '아이디어' 카테고리만 필터링
+Widget buildMemoTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel, String category) {
+  // 카테고리별 필터링
   final ideaMemos = memos.values
-      .where((memo) => memo.category == '아이디어')
+      .where((memo) => memo.category == category)
       .toList();
   
   // 메모가 없는 경우 처리
@@ -212,7 +212,7 @@ Widget ideaCards(BuildContext context, MemoModel memo, ArchiveViewModel viewMode
       // GoRouter 대신 일반 Navigator 사용(rootNavigator: true 이 파트가 rootscreen의 appbar & bottomappabar를 가려줌)
       Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
-          builder: (_) => IdeaDetailPage(
+          builder: (_) => MemoDetailPage(
             memo: memo,
             viewModel: viewModel,
           ),

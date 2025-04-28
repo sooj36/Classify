@@ -4,21 +4,21 @@ import 'package:intl/intl.dart';
 import 'package:classify/ui/archive/archive_view/view_models/archive_view_model.dart';
 import 'package:classify/utils/top_level_setting.dart';
 
-class IdeaDetailPage extends StatefulWidget {
+class MemoDetailPage extends StatefulWidget {
   final MemoModel memo;
   final ArchiveViewModel viewModel;
 
-  const IdeaDetailPage({
+  const MemoDetailPage({
     super.key, 
     required this.memo,
     required this.viewModel,
   });
 
   @override
-  State<IdeaDetailPage> createState() => _IdeaDetailPageState();
+  State<MemoDetailPage> createState() => _MemoDetailPageState();
 }
 
-class _IdeaDetailPageState extends State<IdeaDetailPage> {
+class _MemoDetailPageState extends State<MemoDetailPage> {
   late TextEditingController _titleController;
   late TextEditingController _contentController;
   late TextEditingController _categoryController;

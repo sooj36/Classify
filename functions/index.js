@@ -16,7 +16,7 @@ const createErrorResponse = (errorMessage, memoText, memoCategories) => {
   return {
     error: errorMessage,
     category: memoCategories &&
-      memoCategories.length > 0 ? memoCategories[0] : "할 일",
+      memoCategories.length > 0 ? memoCategories[0] : "공부",
     title: "처리 실패한 메모",
     content: memoText || "",
     tags: [],
@@ -30,7 +30,7 @@ exports.analyzeMemo = onCall({
   // request.data에서 직접 추출
   const data = request.data || {};
   const memoText = data.memoText || "";
-  const categories = data.categories || ["할 일", "공부", "아이디어"];
+  const categories = data.categories || ["공부", "아이디어", "참조", "회고"];
   console.log("데이터 수신:", data);
   console.log("memoText:", memoText);
   console.log("categories:", categories);
@@ -38,11 +38,11 @@ exports.analyzeMemo = onCall({
   // 메모 내용 검증
   if (!memoText) {
     console.error("메모 내용 누락");
-    return createErrorResponse("메모 내용이 필요합니다.", "", ["할 일"]);
+    return createErrorResponse("메모 내용이 필요합니다.", "", ["공부"]);
   }
 
   // 카테고리가 없으면 기본값 설정
-  const memoCategories = categories || ["할 일", "공부", "아이디어"];
+  const memoCategories = categories || ["공부", "아이디어", "참조", "회고"];
 
   // 환경 변수에서 API 키 가져오기
   const apiKey = process.env.GEMINI_API_KEY;
@@ -66,6 +66,7 @@ exports.analyzeMemo = onCall({
     또한 1개에서 3개의 태그를 붙여야 해.
     특히 조심해. 아래의 JSON 형식은 말 그대로 예시일 뿐이고
     네가 적절히 판단해서 최적의 태그 갯수를 산정한 다음에 태그를 붙이도록 해.
+    태그 갯수는 반드시 1개 이상 3개 이하여야 해.
     그리고 마지막으로 메모 원문을 보고 카테고리가 공부라고 판단했을 경우
     이 내용을 가지고 복습이 가능하도록 질문을 하나 만들어줘.
     아래와 같이 JSON 형식으로 답변할 수 있도록 해
