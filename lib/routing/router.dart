@@ -18,42 +18,73 @@ import 'package:classify/ui/setting/view_models/setting_viewmodel.dart';
 import 'package:classify/ui/today_act/view/today_act_screen.dart';
 import 'package:classify/ui/today_act/view_models/today_act_view_model.dart';
 import 'package:classify/ui/setting/widgets/privacy_policy_screen.dart';
+import 'package:classify/ui/study/view_models/study_view_model.dart';
+import 'package:classify/ui/study/view/study_screen.dart';
+import 'package:classify/ui/basics/profile_screen.dart';
+import 'package:flutter/material.dart';
 
 final router = GoRouter(
   initialLocation: firebaseAuth.currentUser != null ? Routes.today : Routes.login,
   routes: [
     ShellRoute(
-        builder: (context, state, child) => MultiProvider(
-    providers: [
-      ChangeNotifierProvider(
-        create: (context) => SendMemoToAiViewModel(
-          memoRepository: context.read<MemoRepositoryRemote>(),
-        ),
+      builder: (context, state, child) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => SendMemoToAiViewModel(
+              memoRepository: context.read<MemoRepositoryRemote>(),
+            ),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => ArchiveViewModel(
+              memoRepository: context.read<MemoRepositoryRemote>(),
+            ),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => TodayActViewModel(
+              memoRepository: context.read<MemoRepositoryRemote>(),
+            ),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => StudyViewModel(
+              memoRepository: context.read<MemoRepositoryRemote>(),
+            ),
+          ),
+        ],
+        child: RootScreen(child: child),
       ),
-      ChangeNotifierProvider(
-        create: (context) => ArchiveViewModel(
-          memoRepository: context.read<MemoRepositoryRemote>(),
-        ),
-      ),
-      ChangeNotifierProvider(
-        create: (context) => TodayActViewModel(
-          memoRepository: context.read<MemoRepositoryRemote>(),
-        ),
-      ),
-    ],
-    child: RootScreen(child: child),
-  ),
       routes: [
         GoRoute(
           path: Routes.today,
-          builder: (context, state) => TodayActScreen(
-            viewModel: context.read<TodayActViewModel>(),
+          pageBuilder: (context, state) => NoTransitionPage<void>(
+            key: state.pageKey,
+            child: TodayActScreen(
+              viewModel: context.read<TodayActViewModel>(),
+            ),
           ),
         ),
         GoRoute(
           path: Routes.archive,
-          builder: (context, state) => ArchiveScreen(
-            viewModel: context.read<ArchiveViewModel>(),
+          pageBuilder: (context, state) => NoTransitionPage<void>(
+            key: state.pageKey,
+            child: ArchiveScreen(
+              viewModel: context.read<ArchiveViewModel>(),
+            ),
+          ),
+        ),
+        GoRoute(
+          path: Routes.study,
+          pageBuilder: (context, state) => NoTransitionPage<void>(
+            key: state.pageKey,
+            child: StudyScreen(
+              viewModel: context.read<StudyViewModel>(),
+            ),
+          ),
+        ),
+        GoRoute(
+          path: Routes.profile,
+          pageBuilder: (context, state) => NoTransitionPage<void>(
+            key: state.pageKey,
+            child: const ProfileScreen(),
           ),
         ),
       ],
