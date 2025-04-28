@@ -1,6 +1,10 @@
 import 'package:hive/hive.dart';
 
 part 'todo_model.g.dart';
+// part 키워드: 물리적으로 분리된 파일이지만 논리적으로는 동일한 파일로 취급함
+// 주로 코드 생성기가 만든 파일(memo_model.g.dart)을 현재 파일과 연결할 때 사용함
+// 기계가 만든 코드와 사람이 만든 코드를 분리하기 위한 목적으로 쓰였음
+
 
 // model을 hive로 생성할 때 절차
 // 1. A 모델 클래스 생성
