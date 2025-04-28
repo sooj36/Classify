@@ -3,6 +3,7 @@ import 'package:classify/domain/models/auth/signup_user_model.dart';
 import 'package:classify/global/global.dart';
 import 'package:flutter/foundation.dart';
 import 'package:classify/domain/models/memo/memo_model.dart';
+import 'package:classify/domain/models/todo/todo_model.dart';
 
 
 class FirestoreService {
@@ -148,6 +149,22 @@ class FirestoreService {
       'createdAt': memo.createdAt,
     });
   }
+  
+  // updateMemo 메서드 추가
+  Future<void> updateMemo(MemoModel memo, String uuid) async {
+    // 업데이트 시간 기록
+    await _firestore.collection("users").doc(firebaseAuth.currentUser!.uid).collection("memo").doc(uuid).set({
+      'title': memo.title,
+      'content': memo.content,
+      'category': memo.category,
+      'question': memo.question,
+      'isImportant': memo.isImportant,
+      'tags': memo.tags,
+      'lastModified': DateTime.now(), // 항상 현재 시간으로 업데이트
+      'createdAt': memo.createdAt,
+    });
+    debugPrint("✅ 메모 업데이트 완료: $uuid");
+  }
 
   Stream<QuerySnapshot> watchMemo() {
     return _firestore
@@ -222,6 +239,74 @@ class FirestoreService {
     } catch (e) {
       debugPrint("❌ 카테고리 가져오기 실패: $e");
       return [];
+    }
+  }
+
+  Future<void> saveTodo(TodoModel todo, String uuid) async {
+    await _firestore.collection("users").doc(firebaseAuth.currentUser!.uid).collection("todo").doc(uuid).set({
+      'todo': todo.todo,
+      'isImportant': todo.isImportant,
+      'lastModified': todo.lastModified,
+      'createdAt': todo.createdAt,
+      'isDone': todo.isDone,
+      'memoId': todo.memoId,
+    });
+  }
+  
+  // updateTodo 메서드 추가
+  Future<void> updateTodo(TodoModel todo, String uuid) async {
+    await _firestore.collection("users").doc(firebaseAuth.currentUser!.uid).collection("todo").doc(uuid).set({
+      'todo': todo.todo,
+      'isImportant': todo.isImportant,
+      'lastModified': DateTime.now(), // 항상 현재 시간으로 업데이트
+      'createdAt': todo.createdAt,
+      'isDone': todo.isDone,
+      'memoId': todo.memoId,
+    });
+    debugPrint("✅ Todo 업데이트 완료: $uuid");
+  }
+
+  Stream<QuerySnapshot> watchTodo() {
+    return _firestore
+    .collection("users")
+    .doc(firebaseAuth.currentUser!.uid)
+    .collection("todo")
+    .snapshots();
+  }
+
+  Future<void> deleteTodo(String todoId) async {
+    await _firestore.collection("users").doc(firebaseAuth.currentUser!.uid).collection("todo").doc(todoId).delete();
+  }
+
+  Future<Map<String, TodoModel>> getUserTodos() async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('users')
+          .doc(firebaseAuth.currentUser!.uid)
+          .collection('todo')
+          .get();
+      
+      Map<String, TodoModel> todos = {};
+      for (var doc in querySnapshot.docs) {
+        final data = doc.data();
+        todos[doc.id] = TodoModel(
+          todo: data['todo'] ?? '',
+          isImportant: data['isImportant'] ?? false,
+          lastModified: data['lastModified'] is Timestamp 
+              ? (data['lastModified'] as Timestamp).toDate() 
+              : data['lastModified'],
+          createdAt: data['createdAt'] is Timestamp 
+              ? (data['createdAt'] as Timestamp).toDate() 
+              : DateTime.now(),
+          isDone: data['isDone'] ?? false,
+          memoId: data['memoId'] ?? '',
+        );
+      }
+      debugPrint("✅ Todo 데이터 가져오기 성공: ${todos.length}개");
+      return todos;
+    } catch (e) {
+      debugPrint("❌ Todo 가져오기 실패: $e");
+      return {};
     }
   }
 }
