@@ -180,7 +180,7 @@ class FirestoreService {
 
   Future<void> createCategoryWhenSignup() async {
     await _firestore.collection("users").doc(firebaseAuth.currentUser!.uid).collection("categories").add({
-      "categories": ["아이디어", "공부", "할 일", "업무", "스크랩"],
+      "categories": ["공부", "아이디어", "참조", "회고"],
     });
   }
 

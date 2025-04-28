@@ -39,7 +39,7 @@ class HiveService {
   }
 
   void createCategoryWhenSignup() {
-    _categoryBox.put("categories", ["아이디어", "공부", "할 일", "업무", "스크랩"]);
+    _categoryBox.put("categories", ["공부", "아이디어", "참조", "회고"]);
   }
 
   List<String> getCategories() {

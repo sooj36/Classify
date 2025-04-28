@@ -48,7 +48,7 @@ class MemoRepositoryRemote extends MemoRepository {
     } catch (e) {
       debugPrint("❌ 카테고리 초기화 실패 in [_initCategories method] in [memo_repository_remote]: $e");
       // 기본 카테고리 설정
-      _categories = ["아이디어", "공부", "할 일", "업무", "스크랩"];
+      _categories = ["공부", "아이디어", "참조", "회고"];
     }
   }
 
