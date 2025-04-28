@@ -15,6 +15,7 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:classify/data/services/hive_service.dart';
 import 'package:classify/domain/models/memo/memo_model.dart';
+import 'package:classify/domain/models/todo/todo_model.dart';
 import 'package:classify/data/services/google_login_service.dart';
 
 void main() async {
@@ -35,6 +36,8 @@ void main() async {
     Hive.registerAdapter(MemoModelAdapter());
     await Hive.openBox<MemoModel>('memo');
     await Hive.openBox<List<String>>("category");
+    Hive.registerAdapter(TodoModelAdapter());
+    await Hive.openBox<TodoModel>('todo');
     debugPrint("✅ Hive 초기화 성공!");
   } catch (e) {
     debugPrint('❌ 앱 초기화 실패: $e');
