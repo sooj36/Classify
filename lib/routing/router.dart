@@ -21,7 +21,6 @@ import 'package:classify/ui/setting/widgets/privacy_policy_screen.dart';
 import 'package:classify/ui/study/view_models/study_view_model.dart';
 import 'package:classify/ui/study/view/study_screen.dart';
 import 'package:classify/ui/basics/profile_screen.dart';
-import 'package:flutter/material.dart';
 
 final router = GoRouter(
   initialLocation: firebaseAuth.currentUser != null ? Routes.today : Routes.login,

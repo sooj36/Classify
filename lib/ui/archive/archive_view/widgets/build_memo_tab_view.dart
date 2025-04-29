@@ -2,6 +2,7 @@ import 'package:classify/domain/models/memo/memo_model.dart';
 import 'package:flutter/material.dart';
 import 'package:classify/ui/archive/archive_view/view_models/archive_view_model.dart';
 import 'package:classify/ui/archive/archive_view/widgets/build_memo_detail_page.dart';
+import 'package:classify/ui/common/memo_card.dart';
 import 'dart:math';
 import 'package:classify/utils/top_level_setting.dart';
 
@@ -208,8 +209,7 @@ Widget _buildSortButton({
 
 Widget ideaCards(BuildContext context, MemoModel memo, ArchiveViewModel viewModel) {
   return InkWell(
-      onTap: () {
-      // GoRouter 대신 일반 Navigator 사용(rootNavigator: true 이 파트가 rootscreen의 appbar & bottomappabar를 가려줌)
+    onTap: () {
       Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
           builder: (_) => MemoDetailPage(
@@ -243,48 +243,8 @@ Widget ideaCards(BuildContext context, MemoModel memo, ArchiveViewModel viewMode
         },
       );
     },
-    child: Card(
-      margin: const EdgeInsets.only(bottom: 12.0),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 제목
-            Text(
-              memo.title,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-            const SizedBox(height: 8),
-            // 내용
-            Text(
-              memo.content,
-              style: const TextStyle(fontSize: 14),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 12),
-            // 태그
-            if (memo.tags != null && memo.tags!.isNotEmpty)
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: memo.tags!.map((tag) => Chip(
-                  label: Text(
-                    tag,
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                  backgroundColor: AppTheme.decorationColor1.withAlpha(26),
-                  visualDensity: VisualDensity.compact,
-                  padding: const EdgeInsets.all(4),
-                )).toList(),
-              ),
-          ],
-        ),
-      ),
+    child: MemoCard(
+      memo: memo,
     ),
   );
 }
