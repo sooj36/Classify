@@ -85,6 +85,9 @@ class MainApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp.router(
+        scrollBehavior: ScrollConfiguration.of(context).copyWith(
+          physics: const ClampingScrollPhysics(),
+        ),
         theme: AppTheme.lightTheme,
         localizationsDelegates: const [
           AppLocalizations.delegate,
