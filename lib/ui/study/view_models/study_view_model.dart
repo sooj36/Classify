@@ -64,7 +64,7 @@ class StudyViewModel extends ChangeNotifier {
   }
 
   // 랜덤 스터디 메모 생성
-  void _generateRandomStudyMemos({int count = 5}) {
+  void _generateRandomStudyMemos({int count = 1}) {
     // 공부 카테고리의 메모 중 질문이 있는 메모만 필터링
     final studyMemos = _cachedMemos.values.where((memo) => 
       memo.category == '공부' && 
@@ -83,7 +83,7 @@ class StudyViewModel extends ChangeNotifier {
   }
 
   // 새로운 랜덤 메모 세트 생성
-  void refreshRandomStudyMemos({int count = 5}) {
+  void refreshRandomStudyMemos({int count = 1}) {
     _generateRandomStudyMemos(count: count);
     notifyListeners();
   }

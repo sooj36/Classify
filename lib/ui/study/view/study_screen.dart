@@ -88,8 +88,8 @@ class _StudyScreenState extends State<StudyScreen> {
               onPressed: () {
                 widget.viewModel.refreshRandomStudyMemos();
               },
-              icon: const Icon(Icons.refresh),
-              label: const Text('새로고침'),
+              icon: const Icon(Icons.refresh, color: Colors.white),
+              label: const Center(child: Text('새로고침', style: TextStyle(color: Colors.white))),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primaryColor,
                 foregroundColor: Colors.white,
@@ -112,9 +112,26 @@ class _StudyScreenState extends State<StudyScreen> {
           const SizedBox(height: 16),
           Expanded(
             child: ListView(
-              children: randomStudyMemos.map((memo) => 
-                _buildQuestionCard(context, memo)
-              ).toList(),
+              children: [
+                ...randomStudyMemos.map((memo) => 
+                  _buildQuestionCard(context, memo)
+                ),
+                const SizedBox(height: 16),
+                Center(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      widget.viewModel.refreshRandomStudyMemos();
+                    },
+                    icon: const Icon(Icons.refresh, color: Colors.white),
+                    label: const Text('새로고침', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryColor,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(200, 48),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -123,28 +140,13 @@ class _StudyScreenState extends State<StudyScreen> {
   }
   
   Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text(
-          '랜덤 학습 질문',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: AppTheme.textColor1,
-          ),
-        ),
-        TextButton.icon(
-          onPressed: () {
-            widget.viewModel.refreshRandomStudyMemos();
-          },
-          icon: const Icon(Icons.refresh, color: AppTheme.primaryColor),
-          label: const Text('새로고침', style: TextStyle(color: AppTheme.primaryColor)),
-          style: TextButton.styleFrom(
-            backgroundColor: AppTheme.primaryColor.withAlpha(26),
-          ),
-        ),
-      ],
+    return const Text(
+      '랜덤 학습 질문',
+      style: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+        color: AppTheme.textColor1,
+      ),
     );
   }
   
