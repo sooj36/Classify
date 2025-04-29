@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:classify/domain/models/memo/memo_model.dart';
 import 'package:classify/ui/today_act/view_models/today_act_view_model.dart';
+import 'package:classify/ui/today_act/view/memo_detail_page.dart';
 
 class TodayActScreen extends StatefulWidget {
   final TodayActViewModel viewModel;
@@ -244,7 +245,7 @@ class _TodayActScreenState extends State<TodayActScreen> {
   void _navigateToDetailScreen(MemoModel memo) {
     Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
-        builder: (_) => TodayActDetailPage(
+        builder: (_) => MemoDetailPage(
           memo: memo,
           viewModel: widget.viewModel,
         ),

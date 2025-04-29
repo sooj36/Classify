@@ -1,7 +1,7 @@
 import 'package:classify/domain/models/memo/memo_model.dart';
 import 'package:flutter/material.dart';
 import 'package:classify/ui/archive/archive_view/view_models/archive_view_model.dart';
-import 'package:classify/ui/archive/archive_view/widgets/build_memo_detail_page.dart';
+import 'package:classify/ui/archive/archive_view/widgets/memo_detail_page.dart';
 import 'package:classify/ui/common/memo_card.dart';
 import 'dart:math';
 import 'package:classify/utils/top_level_setting.dart';
