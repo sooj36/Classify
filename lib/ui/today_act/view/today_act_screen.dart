@@ -204,6 +204,7 @@ class _TodayActScreenState extends State<TodayActScreen> {
                         const SizedBox(width: 6),
                       if (memo.category == 'AI분류 실패')
                         GestureDetector(
+                          behavior: HitTestBehavior.opaque,
                           onTap: () async {
                             // 메모 내용 다시 분석 요청
                             final result = await widget.viewModel.reAnalyzeMemo(memo);
@@ -219,10 +220,14 @@ class _TodayActScreenState extends State<TodayActScreen> {
                               );
                             }
                           },
-                          child: const Icon(
-                            Icons.restore_outlined,
-                            size: 20,
-                            color: Colors.red,
+                          // 아이콘 탭 영역을 넓혀 detailpage로 이동하는 확률을 줄이기 위함
+                          child: const Padding(
+                            padding: EdgeInsets.all(2.0),
+                            child: Icon(
+                              Icons.restore_outlined,
+                              size: 20,
+                              color: Colors.red,
+                            ),
                           ),
                         ),
                     ],
