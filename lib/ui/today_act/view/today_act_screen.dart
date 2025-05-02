@@ -216,7 +216,7 @@ class _TodayActScreenState extends State<TodayActScreen> {
                             } else {
                               // 실패 
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('메모 분석 실패')),
+                                const SnackBar(content: Text('메모 분석 실패, 잠시 후 다시 시도하세요')),
                               );
                             }
                           },
