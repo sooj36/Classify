@@ -160,6 +160,7 @@ class _TodayActScreenState extends State<TodayActScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  //시간 표시
                   Row(
                     children: [
                       Icon(
@@ -178,23 +179,53 @@ class _TodayActScreenState extends State<TodayActScreen> {
                       ),
                     ],
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: _getCategoryColor(memo.category),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      memo.category,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
+                  //카테고리 표시
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _getCategoryColor(memo.category),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          memo.category,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
-                    ),
+                      if (memo.category == 'AI분류 실패')
+                        const SizedBox(width: 6),
+                      if (memo.category == 'AI분류 실패')
+                        GestureDetector(
+                          onTap: () async {
+                            // 메모 내용 다시 분석 요청
+                            final result = await widget.viewModel.reAnalyzeMemo(memo);
+                            if (result == null) {
+                              // 성공
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('메모가 다시 분석되었습니다')),
+                              );
+                            } else {
+                              // 실패 
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('메모 분석 실패')),
+                              );
+                            }
+                          },
+                          child: const Icon(
+                            Icons.restore_outlined,
+                            size: 20,
+                            color: Colors.red,
+                          ),
+                        ),
+                    ],
                   ),
                 ],
               ),
@@ -231,14 +262,16 @@ class _TodayActScreenState extends State<TodayActScreen> {
   
   Color _getCategoryColor(String category) {
     switch (category) {
-      case '할 일':
-        return Colors.blue;
       case '공부':
-        return Colors.green;
+        return Colors.blue;
       case '아이디어':
+        return Colors.green;
+      case '참조':
         return Colors.orange;
-      default:
+      case '회고':
         return Colors.purple;
+      default:
+        return Colors.red;
     }
   }
   

@@ -106,4 +106,25 @@ class TodayActViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+  
+  // 메모 재분석 메서드 추가
+  Future<String?> reAnalyzeMemo(MemoModel memo) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      
+      // MemoRepository의 analyzeAndSaveMemo 메서드 호출하여 메모 내용을 다시 분석
+      final result = await _memoRepository.analyzeAndSaveMemo(memo.content);
+      
+      _isLoading = false;
+      notifyListeners();
+      return result;
+    } catch (e) {
+      debugPrint("❌ 메모 재분석 중 오류 발생: $e");
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return e.toString();
+    }
+  }
 }

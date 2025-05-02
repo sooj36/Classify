@@ -74,6 +74,25 @@ class MemoRepositoryRemote extends MemoRepository {
   }
 
   @override
+  Future<String?> reAnalyzeAndSaveMemo(String memo, String uuid) async {
+    try {
+      MemoModel reAnalyzedMemo = await _geminiService.analyzeMemo(memo, _categories, uuid);
+      debugPrint('🔍 재분류된 메모: ${reAnalyzedMemo.category}');
+      debugPrint('🔍 재분류된 메모: ${reAnalyzedMemo.title}');
+      debugPrint('🔍 재분류된 메모: ${reAnalyzedMemo.content}');
+
+      _hiveService.saveMemo(reAnalyzedMemo, uuid);
+      debugPrint('✅ 하이브 저장 완료');
+      _firestoreService.saveMemo(reAnalyzedMemo, uuid);
+      debugPrint('✅ 파이어스토어 저장 완료');
+      return null;
+    } catch (e) {
+      debugPrint('❌ 메모 재분석 및 저장 중 오류 in [reAnalyzeAndSaveMemo method] in [memo_repository_remote]: $e');
+      return e.toString();
+    }
+  }
+
+  @override
   Stream<Map<String, MemoModel>> watchMemoLocal() {
     return _hiveService
       .watchMemos()
