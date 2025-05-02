@@ -114,7 +114,7 @@ class TodayActViewModel extends ChangeNotifier {
       notifyListeners();
       
       // MemoRepository의 analyzeAndSaveMemo 메서드 호출하여 메모 내용을 다시 분석
-      final result = await _memoRepository.analyzeAndSaveMemo(memo.content);
+      final result = await _memoRepository.reAnalyzeAndSaveMemo(memo.content, memo.memoId);
       
       _isLoading = false;
       notifyListeners();

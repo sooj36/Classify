@@ -83,6 +83,9 @@ class MemoRepositoryRemote extends MemoRepository {
 
       _hiveService.saveMemo(reAnalyzedMemo, uuid);
       debugPrint('✅ 하이브 저장 완료');
+      if (reAnalyzedMemo.category == 'AI분류 실패') {
+        return "AI분류 실패";
+      }
       _firestoreService.saveMemo(reAnalyzedMemo, uuid);
       debugPrint('✅ 파이어스토어 저장 완료');
       return null;
