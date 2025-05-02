@@ -46,7 +46,7 @@ class MockArchiveViewModel extends ChangeNotifier implements ArchiveViewModel {
   void initCachedMemos() {}
   
   @override
-  void deleteMemo(String memoId) {}
+  void deleteMemo(String memoId, String category) {}
   
   @override
   Future<void> updateMemo(MemoModel memo) async {}

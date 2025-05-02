@@ -299,7 +299,7 @@ class _StudyScreenState extends State<StudyScreen> {
             ),
             TextButton(
               onPressed: () {
-                widget.viewModel.deleteMemo(memo.memoId);
+                widget.viewModel.deleteMemo(memo.memoId, memo.category);
                 Navigator.of(context).pop();
               },
               child: const Text('삭제', style: TextStyle(color: Colors.red)),

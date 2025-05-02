@@ -248,7 +248,7 @@ void _showDeleteDialog(BuildContext context, MemoModel memo, ArchiveViewModel vi
           ),
           TextButton(
             onPressed: () {
-              viewModel.deleteMemo(memo.memoId);
+              viewModel.deleteMemo(memo.memoId, memo.category);
               Navigator.of(context).pop();
             },
             child: const Text('확인', style: TextStyle(color: Colors.red)),

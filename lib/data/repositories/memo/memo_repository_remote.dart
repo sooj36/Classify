@@ -64,6 +64,9 @@ class MemoRepositoryRemote extends MemoRepository {
 
       _hiveService.saveMemo(analyzedMemo, uuid);
       debugPrint('✅ 하이브 저장 완료');
+      if (analyzedMemo.category == 'AI분류 실패') {
+        return "AI분류 실패";
+      }
       _firestoreService.saveMemo(analyzedMemo, uuid);
       debugPrint('✅ 파이어스토어 저장 완료');
       return null;
@@ -113,11 +116,15 @@ class MemoRepositoryRemote extends MemoRepository {
   }
 
   @override
-  Future<void> deleteMemo(String memoId) async {
+  Future<void> deleteMemo(String memoId, String category) async {
     try {
-      await _firestoreService.deleteMemo(memoId);
       _hiveService.deleteMemo(memoId);
-      debugPrint('✅ 메모 삭제 완료');
+      debugPrint('✅ 하이브에서 삭제 완료');
+      if (category == 'AI분류 실패') {
+        return;
+      }
+      await _firestoreService.deleteMemo(memoId);
+      debugPrint('✅ firestore에서 삭제 완료');
     } catch (e) {
       debugPrint('❌ 메모 삭제 실패 in [deleteMemo method] in [memo_repository_remote]: $e');
       rethrow;

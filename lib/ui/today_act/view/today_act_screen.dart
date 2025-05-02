@@ -144,7 +144,7 @@ class _TodayActScreenState extends State<TodayActScreen> {
     
     return GestureDetector(
       onTap: () => _navigateToDetailScreen(memo),
-      onLongPress: () => _showDeleteDialog(memo.memoId),
+      onLongPress: () => _showDeleteDialog(memo.memoId, memo.category),
       child: Card(
         margin: const EdgeInsets.only(bottom: 16),
         elevation: 2,
@@ -291,7 +291,7 @@ class _TodayActScreenState extends State<TodayActScreen> {
     );
   }
   
-  void _showDeleteDialog(String memoId) {
+  void _showDeleteDialog(String memoId, String category) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -304,7 +304,7 @@ class _TodayActScreenState extends State<TodayActScreen> {
           ),
           TextButton(
             onPressed: () {
-              widget.viewModel.deleteMemo(memoId);
+              widget.viewModel.deleteMemo(memoId, category);
               Navigator.of(context).pop();
             },
             child: const Text(

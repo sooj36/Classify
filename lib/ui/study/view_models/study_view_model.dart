@@ -89,8 +89,8 @@ class StudyViewModel extends ChangeNotifier {
   }
 
   // 메모 삭제
-  void deleteMemo(String memoId) {
-    _memoRepository.deleteMemo(memoId);
+  void deleteMemo(String memoId, String category) {
+    _memoRepository.deleteMemo(memoId, category);
     // Stream을 통해 자동으로 업데이트되므로 별도로 notifyListeners 호출 불필요
   }
   

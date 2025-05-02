@@ -233,7 +233,7 @@ Widget ideaCards(BuildContext context, MemoModel memo, ArchiveViewModel viewMode
               ),
               TextButton(
                 onPressed: () {
-                  viewModel.deleteMemo(memo.memoId);
+                  viewModel.deleteMemo(memo.memoId, memo.category);
                   Navigator.of(context).pop();
                 },
                 child: const Text('확인', style: TextStyle(color: Colors.red)),
