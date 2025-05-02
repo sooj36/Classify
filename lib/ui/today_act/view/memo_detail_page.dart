@@ -58,13 +58,6 @@ class _MemoDetailPageState extends State<MemoDetailPage> {
     );
   }
 
-  // 페이지 나가기 전 저장
-  Future<bool> _onWillPop() async {
-    final updatedMemo = _getUpdatedMemo();
-    await widget.viewModel.updateMemo(updatedMemo);
-    return true;
-  }
-
   void _addTag(String tag) {
     if (tag.isNotEmpty && !_tags.contains(tag)) {
       setState(() {
@@ -82,144 +75,147 @@ class _MemoDetailPageState extends State<MemoDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('아이디어 상세'),
-          actions: [
-            //삭제 버튼
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () {
-                _showDeleteConfirmDialog();
-              },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('아이디어 상세'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        actions: [
+          //삭제 버튼
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              _showDeleteConfirmDialog();
+            },
+          ),
+          //수정 버튼
+          IconButton(
+            icon: Icon(_isEditing ? Icons.check : Icons.edit),
+            onPressed: () {
+              setState(() {
+                _isEditing = !_isEditing;
+                if (!_isEditing) {
+                  // 편집 모드 종료 시 저장
+                  final updatedMemo = _getUpdatedMemo();
+                  widget.viewModel.updateMemo(updatedMemo);
+                }
+              });
+            },
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 제목
+            TextField(
+              controller: _titleController,
+              enabled: _isEditing,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: '제목',
+                filled: false
+              ),
             ),
-            //수정 버튼
-            IconButton(
-              icon: Icon(_isEditing ? Icons.check : Icons.edit),
-              onPressed: () {
-                setState(() {
-                  _isEditing = !_isEditing;
-                  if (!_isEditing) {
-                    // 편집 모드 종료 시 저장
-                    final updatedMemo = _getUpdatedMemo();
-                    widget.viewModel.updateMemo(updatedMemo);
-                  }
-                });
-              },
+            const Divider(),
+            
+            // 카테고리
+            Row(
+              children: [
+                const Icon(Icons.category, size: 18, color: AppTheme.textColor1),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TextField(
+                    controller: _categoryController,
+                    enabled: _isEditing,
+                    style: const TextStyle(fontSize: 14),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      hintText: '카테고리',
+                      filled: false
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            
+            // 생성 시간
+            Row(
+              children: [
+                const Icon(Icons.access_time, size: 18, color: AppTheme.textColor1),
+                const SizedBox(width: 8),
+                Text(
+                  '생성: ${DateFormat('yyyy-MM-dd HH:mm').format(_createdAt)}',
+                  style: const TextStyle(fontSize: 14, color: AppTheme.textColor1),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            
+            // 태그
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4),
+                  child: Icon(Icons.tag, size: 18, color: AppTheme.textColor1),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: _tags.map((tag) => _buildTagChip(tag)).toList(),
+                      ),
+                      if (_isEditing) ...[
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: _tagController,
+                          onSubmitted: _addTag,
+                          decoration: const InputDecoration(
+                            hintText: '새 태그 추가 (입력 후 엔터)',
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            filled: false
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 16),
+            const Divider(),
+            
+            // 내용
+            TextField(
+              controller: _contentController,
+              enabled: _isEditing,
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              style: const TextStyle(fontSize: 16),
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: '내용을 입력하세요',
+                filled: false
+              ),
             ),
           ],
-        ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 제목
-              TextField(
-                controller: _titleController,
-                enabled: _isEditing,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  hintText: '제목',
-                  filled: false
-                ),
-              ),
-              const Divider(),
-              
-              // 카테고리
-              Row(
-                children: [
-                  const Icon(Icons.category, size: 18, color: AppTheme.textColor1),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextField(
-                      controller: _categoryController,
-                      enabled: _isEditing,
-                      style: const TextStyle(fontSize: 14),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: '카테고리',
-                        filled: false
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              
-              // 생성 시간
-              Row(
-                children: [
-                  const Icon(Icons.access_time, size: 18, color: AppTheme.textColor1),
-                  const SizedBox(width: 8),
-                  Text(
-                    '생성: ${DateFormat('yyyy-MM-dd HH:mm').format(_createdAt)}',
-                    style: const TextStyle(fontSize: 14, color: AppTheme.textColor1),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              
-              // 태그
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 4),
-                    child: Icon(Icons.tag, size: 18, color: AppTheme.textColor1),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: _tags.map((tag) => _buildTagChip(tag)).toList(),
-                        ),
-                        if (_isEditing) ...[
-                          const SizedBox(height: 8),
-                          TextField(
-                            controller: _tagController,
-                            onSubmitted: _addTag,
-                            decoration: const InputDecoration(
-                              hintText: '새 태그 추가 (입력 후 엔터)',
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                              filled: false
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              
-              const SizedBox(height: 16),
-              const Divider(),
-              
-              // 내용
-              TextField(
-                controller: _contentController,
-                enabled: _isEditing,
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-                style: const TextStyle(fontSize: 16),
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  hintText: '내용을 입력하세요',
-                  filled: false
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
