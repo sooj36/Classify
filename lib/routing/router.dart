@@ -20,7 +20,9 @@ import 'package:classify/ui/today_act/view_models/today_act_view_model.dart';
 import 'package:classify/ui/setting/widgets/privacy_policy_screen.dart';
 import 'package:classify/ui/study/view_models/study_view_model.dart';
 import 'package:classify/ui/study/view/study_screen.dart';
-import 'package:classify/ui/basics/profile_screen.dart';
+import 'package:classify/ui/profile/profile_screen.dart';
+import 'package:classify/ui/profile/profile_view_model.dart';
+import 'package:classify/data/repositories/sync/sync_monitor_repository_remote.dart';
 
 final router = GoRouter(
   initialLocation: firebaseAuth.currentUser != null ? Routes.today : Routes.login,
@@ -46,6 +48,11 @@ final router = GoRouter(
           ChangeNotifierProvider(
             create: (context) => StudyViewModel(
               memoRepository: context.read<MemoRepositoryRemote>(),
+            ),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => ProfileViewModel(
+              syncMonitorRepository: context.read<SyncMonitorRepositoryRemote>(),
             ),
           ),
         ],
@@ -83,7 +90,9 @@ final router = GoRouter(
           path: Routes.profile,
           pageBuilder: (context, state) => NoTransitionPage<void>(
             key: state.pageKey,
-            child: const ProfileScreen(),
+            child: ProfileScreen(
+              viewmodel: context.read<ProfileViewModel>(),
+            ),
           ),
         ),
       ],
