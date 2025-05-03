@@ -155,4 +155,9 @@ class SearchViewModel extends ChangeNotifier {
     }    
     notifyListeners();
   }
+
+  // 메모 삭제
+  void deleteMemo(String memoId, String category) {
+    _memoRepository.deleteMemo(memoId, category);
+  }
 }
