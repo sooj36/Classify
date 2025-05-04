@@ -11,7 +11,7 @@ connectFunctionsEmulator(functions, "127.0.0.1", 5001);
 
 // 함수 호출
 const analyzeMemo = httpsCallable(functions, "analyzeMemo");
-analyzeMemo({memoText: "하늘을 날 수 있다면 참 좋겠구나야", categories: ["할 일", "아이디어", "공부"]})
+analyzeMemo({memoText: "하늘을 날 수 있다면 참 좋겠구나야", categories: ["아이디어", "공부", "참조", "회고"]})
     .then((result) => {
       console.log("성공:", result.data);
     })

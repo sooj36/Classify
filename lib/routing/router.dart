@@ -1,3 +1,5 @@
+import 'package:classify/ui/todo/view_models/todo_view_model.dart'
+    show TodoViewModel;
 import 'package:go_router/go_router.dart';
 import 'package:classify/routing/routes.dart';
 import 'package:classify/ui/basics/root_screen.dart';
@@ -21,9 +23,11 @@ import 'package:classify/ui/setting/widgets/privacy_policy_screen.dart';
 import 'package:classify/ui/study/view_models/study_view_model.dart';
 import 'package:classify/ui/study/view/study_screen.dart';
 import 'package:classify/ui/basics/profile_screen.dart';
+import 'package:classify/ui/todo/view/todo_screen.dart';
 
 final router = GoRouter(
-  initialLocation: firebaseAuth.currentUser != null ? Routes.today : Routes.login,
+  initialLocation:
+      firebaseAuth.currentUser != null ? Routes.today : Routes.login,
   routes: [
     ShellRoute(
       builder: (context, state, child) => MultiProvider(
@@ -45,6 +49,11 @@ final router = GoRouter(
           ),
           ChangeNotifierProvider(
             create: (context) => StudyViewModel(
+              memoRepository: context.read<MemoRepositoryRemote>(),
+            ),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => TodoViewModel(
               memoRepository: context.read<MemoRepositoryRemote>(),
             ),
           ),
@@ -84,6 +93,15 @@ final router = GoRouter(
           pageBuilder: (context, state) => NoTransitionPage<void>(
             key: state.pageKey,
             child: const ProfileScreen(),
+          ),
+        ),
+        GoRoute(
+          path: Routes.todo,
+          pageBuilder: (context, state) => NoTransitionPage<void>(
+            key: state.pageKey,
+            child: TodoScreen(
+              viewModel: context.read<TodoViewModel>(),
+            ),
           ),
         ),
       ],

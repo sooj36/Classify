@@ -16,7 +16,6 @@ import 'package:uuid/uuid.dart';
       => Map 자료구조의 각 Entry에 대해 map 메서드가 인자로 받는 변환 함수 적용
 */
 
-
 class MemoRepositoryRemote extends MemoRepository {
   final GeminiService _geminiService;
   final FirestoreService _firestoreService;
@@ -27,26 +26,27 @@ class MemoRepositoryRemote extends MemoRepository {
     required GeminiService geminiService,
     required FirestoreService firestoreService,
     required HiveService hiveService,
-  }) : _geminiService = geminiService,
-       _firestoreService = firestoreService,
-       _hiveService = hiveService {
-        _initCategories();
-       }
+  })  : _geminiService = geminiService,
+        _firestoreService = firestoreService,
+        _hiveService = hiveService {
+    _initCategories();
+  }
 
   Future<void> _initCategories() async {
     try {
       _categories = _hiveService.getCategories();
-      
+
       // 카테고리가 비어있을 경우 기본 카테고리 생성
       if (_categories.isEmpty) {
         debugPrint("⚠️ 카테고리가 비어있어 기본 카테고리를 생성합니다.");
         _hiveService.createCategoryWhenSignup();
         _categories = _hiveService.getCategories();
       }
-      
+
       debugPrint("📋 현재 카테고리 목록: $_categories");
     } catch (e) {
-      debugPrint("❌ 카테고리 초기화 실패 in [_initCategories method] in [memo_repository_remote]: $e");
+      debugPrint(
+          "❌ 카테고리 초기화 실패 in [_initCategories method] in [memo_repository_remote]: $e");
       // 기본 카테고리 설정
       _categories = ["공부", "아이디어", "참조", "회고"];
     }
@@ -56,11 +56,11 @@ class MemoRepositoryRemote extends MemoRepository {
   Future<String?> analyzeAndSaveMemo(String memo) async {
     try {
       String uuid = const Uuid().v4();
-      MemoModel analyzedMemo = await _geminiService.analyzeMemo(memo, _categories, uuid);
+      MemoModel analyzedMemo =
+          await _geminiService.analyzeMemo(memo, _categories, uuid);
       debugPrint('🔍 분류된 메모: ${analyzedMemo.category}');
       debugPrint('🔍 분류된 메모: ${analyzedMemo.title}');
       debugPrint('🔍 분류된 메모: ${analyzedMemo.content}');
-
 
       _hiveService.saveMemo(analyzedMemo, uuid);
       debugPrint('✅ 하이브 저장 완료');
@@ -71,7 +71,8 @@ class MemoRepositoryRemote extends MemoRepository {
       debugPrint('✅ 파이어스토어 저장 완료');
       return null;
     } catch (e) {
-      debugPrint('❌ 메모 분석 및 저장 중 오류 in [analyzeAndSaveMemo method] in [memo_repository_remote]: $e');
+      debugPrint(
+          '❌ 메모 분석 및 저장 중 오류 in [analyzeAndSaveMemo method] in [memo_repository_remote]: $e');
       return e.toString();
     }
   }
@@ -79,7 +80,8 @@ class MemoRepositoryRemote extends MemoRepository {
   @override
   Future<String?> reAnalyzeAndSaveMemo(String memo, String uuid) async {
     try {
-      MemoModel reAnalyzedMemo = await _geminiService.analyzeMemo(memo, _categories, uuid);
+      MemoModel reAnalyzedMemo =
+          await _geminiService.analyzeMemo(memo, _categories, uuid);
       debugPrint('🔍 재분류된 메모: ${reAnalyzedMemo.category}');
       debugPrint('🔍 재분류된 메모: ${reAnalyzedMemo.title}');
       debugPrint('🔍 재분류된 메모: ${reAnalyzedMemo.content}');
@@ -93,26 +95,25 @@ class MemoRepositoryRemote extends MemoRepository {
       debugPrint('✅ 파이어스토어 저장 완료');
       return null;
     } catch (e) {
-      debugPrint('❌ 메모 재분석 및 저장 중 오류 in [reAnalyzeAndSaveMemo method] in [memo_repository_remote]: $e');
+      debugPrint(
+          '❌ 메모 재분석 및 저장 중 오류 in [reAnalyzeAndSaveMemo method] in [memo_repository_remote]: $e');
       return e.toString();
     }
   }
 
   @override
   Stream<Map<String, MemoModel>> watchMemoLocal() {
-    return _hiveService
-      .watchMemos()
-      .map((map) {
-        return Map.fromEntries(
-          map.entries.map((e) {
-            final memo = e.value as MemoModel; // Hive에서 가져온 value를 MemoModel로 캐스팅
-            return MapEntry(
-              e.key.toString(),
-              memo.copyWith(),
-            );
-          }),
-        );
-      }).asBroadcastStream();
+    return _hiveService.watchMemos().map((map) {
+      return Map.fromEntries(
+        map.entries.map((e) {
+          final memo = e.value as MemoModel; // Hive에서 가져온 value를 MemoModel로 캐스팅
+          return MapEntry(
+            e.key.toString(),
+            memo.copyWith(),
+          );
+        }),
+      );
+    }).asBroadcastStream();
   }
 
   @override
@@ -126,7 +127,8 @@ class MemoRepositoryRemote extends MemoRepository {
       await _firestoreService.deleteMemo(memoId);
       debugPrint('✅ firestore에서 삭제 완료');
     } catch (e) {
-      debugPrint('❌ 메모 삭제 실패 in [deleteMemo method] in [memo_repository_remote]: $e');
+      debugPrint(
+          '❌ 메모 삭제 실패 in [deleteMemo method] in [memo_repository_remote]: $e');
       rethrow;
     }
   }
@@ -137,12 +139,13 @@ class MemoRepositoryRemote extends MemoRepository {
       // Hive에 저장
       _hiveService.saveMemo(memo, memo.memoId);
       debugPrint('✅ 하이브 업데이트 완료');
-      
+
       // Firestore에 저장
       await _firestoreService.saveMemo(memo, memo.memoId);
       debugPrint('✅ 파이어스토어 업데이트 완료');
     } catch (e) {
-      debugPrint('❌ 메모 업데이트 실패 in [updateMemo method] in [memo_repository_remote]: $e');
+      debugPrint(
+          '❌ 메모 업데이트 실패 in [updateMemo method] in [memo_repository_remote]: $e');
       rethrow; // 에러를 상위로 전달
     }
   }
@@ -150,7 +153,8 @@ class MemoRepositoryRemote extends MemoRepository {
   @override
   Map<String, MemoModel> getMemos() {
     final rawMemos = _hiveService.getMemos();
-    return rawMemos.map((key, value) => MapEntry(key.toString(), value as MemoModel));
+    return rawMemos
+        .map((key, value) => MapEntry(key.toString(), value as MemoModel));
   }
 
   @override
@@ -159,14 +163,15 @@ class MemoRepositoryRemote extends MemoRepository {
       // Firestore에서 메모 및 카테고리 가져오기
       final memos = await _firestoreService.getUserMemos();
       final categories = await _firestoreService.getUserCategories();
-      
+
       // Hive에 데이터 동기화
       _hiveService.syncMemosFromServer(memos);
       _hiveService.syncCategoriesFromServer(categories);
       debugPrint('✅ 서버에서 동기화 완료');
     } catch (e) {
-      debugPrint('❌ 서버에서 동기화 실패 in [syncFromServer method] in [memo_repository_remote]: $e');
+      debugPrint(
+          '❌ 서버에서 동기화 실패 in [syncFromServer method] in [memo_repository_remote]: $e');
       rethrow;
     }
   }
-} 
+}

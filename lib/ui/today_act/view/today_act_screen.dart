@@ -6,7 +6,7 @@ import 'package:classify/ui/today_act/view/memo_detail_page.dart';
 
 class TodayActScreen extends StatefulWidget {
   final TodayActViewModel viewModel;
-  
+
   const TodayActScreen({
     super.key,
     required this.viewModel,
@@ -36,28 +36,28 @@ class _TodayActScreenState extends State<TodayActScreen> {
             if (widget.viewModel.error != null) {
               return Center(child: Text('에러 발생: ${widget.viewModel.error}'));
             }
-            
+
             if (widget.viewModel.isLoading) {
               return const Center(child: CircularProgressIndicator());
             }
-            
+
             final todayMemos = widget.viewModel.todayMemos;
-            
+
             if (todayMemos.isEmpty) {
               return _buildEmptyState();
             }
-            
+
             // 시간 순으로 정렬된 오늘의 메모 리스트 생성
             final sortedMemos = todayMemos.values.toList()
               ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-              
+
             return _buildTodayContent(sortedMemos);
           },
         ),
       ),
     );
   }
-  
+
   Widget _buildEmptyState() {
     return const Center(
       child: Column(
@@ -89,7 +89,7 @@ class _TodayActScreenState extends State<TodayActScreen> {
       ),
     );
   }
-  
+
   Widget _buildTodayContent(List<MemoModel> memos) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,7 +121,7 @@ class _TodayActScreenState extends State<TodayActScreen> {
             ],
           ),
         ),
-        
+
         // 메모 리스트
         Expanded(
           child: ListView.builder(
@@ -136,12 +136,12 @@ class _TodayActScreenState extends State<TodayActScreen> {
       ],
     );
   }
-  
+
   Widget _buildTimelineCard(MemoModel memo) {
     // 시간 포맷
     final timeFormat = DateFormat('HH:mm');
     final timeString = timeFormat.format(memo.createdAt);
-    
+
     return GestureDetector(
       onTap: () => _navigateToDetailScreen(memo),
       onLongPress: () => _showDeleteDialog(memo.memoId, memo.category),
@@ -200,23 +200,24 @@ class _TodayActScreenState extends State<TodayActScreen> {
                           ),
                         ),
                       ),
-                      if (memo.category == 'AI분류 실패')
-                        const SizedBox(width: 6),
+                      if (memo.category == 'AI분류 실패') const SizedBox(width: 6),
                       if (memo.category == 'AI분류 실패')
                         GestureDetector(
                           behavior: HitTestBehavior.opaque,
                           onTap: () async {
                             // 메모 내용 다시 분석 요청
-                            final result = await widget.viewModel.reAnalyzeMemo(memo);
+                            final result =
+                                await widget.viewModel.reAnalyzeMemo(memo);
                             if (result == null) {
                               // 성공
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('메모가 다시 분석되었습니다')),
                               );
                             } else {
-                              // 실패 
+                              // 실패
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('메모 분석 실패, 잠시 후 다시 시도하세요')),
+                                const SnackBar(
+                                    content: Text('메모 분석 실패, 잠시 후 다시 시도하세요')),
                               );
                             }
                           },
@@ -234,9 +235,9 @@ class _TodayActScreenState extends State<TodayActScreen> {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 12),
-              
+
               // 제목
               Text(
                 memo.title,
@@ -245,9 +246,9 @@ class _TodayActScreenState extends State<TodayActScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              
+
               const SizedBox(height: 8),
-              
+
               // 내용
               Text(
                 memo.content,
@@ -264,7 +265,7 @@ class _TodayActScreenState extends State<TodayActScreen> {
       ),
     );
   }
-  
+
   Color _getCategoryColor(String category) {
     switch (category) {
       case '공부':
@@ -279,7 +280,7 @@ class _TodayActScreenState extends State<TodayActScreen> {
         return Colors.red;
     }
   }
-  
+
   void _navigateToDetailScreen(MemoModel memo) {
     Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
@@ -290,7 +291,7 @@ class _TodayActScreenState extends State<TodayActScreen> {
       ),
     );
   }
-  
+
   void _showDeleteDialog(String memoId, String category) {
     showDialog(
       context: context,

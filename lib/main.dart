@@ -27,7 +27,7 @@ void main() async {
     debugPrint('✅ Firebase 초기화 성공!');
     await initSharedPreferences();
     debugPrint('✅ SharedPreferences 초기화 성공!');
-    initGemini(); 
+    initGemini();
     debugPrint('✅ Gemini 초기화 성공!');
     final dir = await getApplicationDocumentsDirectory();
     Hive.init(dir.path);
@@ -42,7 +42,6 @@ void main() async {
   }
   runApp(const MainApp());
 }
-
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});

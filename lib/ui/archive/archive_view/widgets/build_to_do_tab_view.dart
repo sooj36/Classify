@@ -3,17 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:classify/ui/archive/archive_view/view_models/archive_view_model.dart';
 import 'package:classify/utils/top_level_setting.dart';
 
-Widget buildTodoTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel) {
-  // '할 일' 카테고리만 필터링
-  final todoMemos = memos.values
-      .where((memo) => memo.category == '할 일')
-      .toList();
-  
+Widget buildTodoTabView(
+    Map<String, MemoModel> memos, ArchiveViewModel viewModel) {
+  // isDone 속성이 있는 메모만 필터링
+  final todoMemos = memos.values.where((memo) => memo.isDone != null).toList();
+
   // 메모가 없는 경우 처리
   if (todoMemos.isEmpty) {
     return const Center(
       child: Text(
-        "작성된 메모가 없습니다",
+        "작성된 할 일이 없습니다",
         style: TextStyle(
           fontSize: 16,
           color: Colors.grey,
@@ -21,17 +20,18 @@ Widget buildTodoTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel
       ),
     );
   }
-  
+
   // 최신순과 오래된순으로 정렬된 메모 리스트 생성
   final latestMemos = List<MemoModel>.from(todoMemos)
     ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-  
+
   final oldestMemos = List<MemoModel>.from(todoMemos)
     ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
-  
+
   // 현재 보여줄 메모 리스트 (기본값은 최신순)
-  ValueNotifier<List<MemoModel>> currentMemos = ValueNotifier<List<MemoModel>>(latestMemos);
-  
+  ValueNotifier<List<MemoModel>> currentMemos =
+      ValueNotifier<List<MemoModel>>(latestMemos);
+
   // 최신순인지 여부를 추적하는 플래그
   ValueNotifier<bool> isLatestSort = ValueNotifier<bool>(true);
 
@@ -44,26 +44,24 @@ Widget buildTodoTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             _buildSortButton(
-              isLatestSort: isLatestSort, 
-              isLatest: true, 
-              icon: Icons.arrow_downward, 
-              label: '최신순', 
-              onPressed: () {
-                currentMemos.value = latestMemos;
-                isLatestSort.value = true;
-              }
-            ),
+                isLatestSort: isLatestSort,
+                isLatest: true,
+                icon: Icons.arrow_downward,
+                label: '최신순',
+                onPressed: () {
+                  currentMemos.value = latestMemos;
+                  isLatestSort.value = true;
+                }),
             const SizedBox(width: 4),
             _buildSortButton(
-              isLatestSort: isLatestSort, 
-              isLatest: false, 
-              icon: Icons.arrow_upward, 
-              label: '오래된순', 
-              onPressed: () {
-                currentMemos.value = oldestMemos;
-                isLatestSort.value = false;
-              }
-            ),
+                isLatestSort: isLatestSort,
+                isLatest: false,
+                icon: Icons.arrow_upward,
+                label: '오래된순',
+                onPressed: () {
+                  currentMemos.value = oldestMemos;
+                  isLatestSort.value = false;
+                }),
           ],
         ),
         // 메모 리스트
@@ -77,7 +75,11 @@ Widget buildTodoTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel
                   context,
                   memosList[index],
                   onTaskCompleted: (memoId) {
-                    viewModel.deleteMemo(memoId, '할 일');
+                    // 할 일이 어떤 카테고리에 있든 삭제
+                    final memo = memos[memoId];
+                    if (memo != null) {
+                      viewModel.deleteMemo(memoId, memo.category);
+                    }
                   },
                 ),
               );
@@ -97,22 +99,30 @@ Widget _buildSortButton({
   required VoidCallback onPressed,
 }) {
   return ValueListenableBuilder<bool>(
-    valueListenable: isLatestSort,
-    builder: (context, value, _) {
-      final bool isSelected = isLatest ? value : !value;
-      return TextButton.icon(
-        onPressed: onPressed,
-        icon: Icon(icon, size: 16, color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1),
-        label: Text(label, style: TextStyle(color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1)),
-        style: TextButton.styleFrom(
-          backgroundColor: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.transparent,
-        ),
-      );
-    }
-  );
+      valueListenable: isLatestSort,
+      builder: (context, value, _) {
+        final bool isSelected = isLatest ? value : !value;
+        return TextButton.icon(
+          onPressed: onPressed,
+          icon: Icon(icon,
+              size: 16,
+              color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1),
+          label: Text(label,
+              style: TextStyle(
+                  color: isSelected
+                      ? AppTheme.primaryColor
+                      : AppTheme.textColor1)),
+          style: TextButton.styleFrom(
+            backgroundColor: isSelected
+                ? AppTheme.primaryColor.withOpacity(0.1)
+                : Colors.transparent,
+          ),
+        );
+      });
 }
 
-Widget todoCards(BuildContext context, MemoModel memo, {required Function(String) onTaskCompleted}) {
+Widget todoCards(BuildContext context, MemoModel memo,
+    {required Function(String) onTaskCompleted}) {
   return Card(
     margin: const EdgeInsets.only(bottom: 12.0),
     child: Padding(
