@@ -20,40 +20,17 @@ class _TodoScreenState extends State<TodoScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.viewModel.loadTodoData();
-      widget.viewModel.sortByLatest();
+      // widget.viewModel.loadTodoData();
+      // widget.viewModel.sortByLatest();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    // 임시 화면 - 나중에 실제 구현으로 교체 예정
     return Scaffold(
-      body: ListenableBuilder(
-        listenable: widget.viewModel,
-        builder: (context, _) {
-          if (widget.viewModel.error != null) {
-            return Center(child: Text('에러 발생: ${widget.viewModel.error}'));
-          }
-
-          if (widget.viewModel.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final todoList = widget.viewModel.todoList;
-
-          if (todoList.isEmpty) {
-            return _buildEmptyState();
-          }
-
-          return _buildTodoContent(todoList);
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showAddTodoDialog(context);
-        },
-        backgroundColor: AppTheme.errorColor,
-        child: const Icon(Icons.checklist, color: Colors.white),
+      body: const Center(
+        child: Text('Todo 화면 준비 중...'),
       ),
     );
   }
@@ -103,7 +80,7 @@ class _TodoScreenState extends State<TodoScreen> {
         children: [
           _buildHeader(),
           const SizedBox(height: 8),
-          _buildStatusFilter(),
+          // _buildStatusFilter(),
           const SizedBox(height: 16),
           Expanded(
             child: ListView.builder(
@@ -120,66 +97,18 @@ class _TodoScreenState extends State<TodoScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          '${widget.viewModel.todoCount}개',
-          style: const TextStyle(
-            fontSize: 16,
-            color: AppTheme.textColor2,
-          ),
-        ),
+        // Text(
+        //   '${widget.viewModel.todoCount}개',
+        //   style: const TextStyle(
+        //     fontSize: 16,
+        //     color: AppTheme.textColor2,
+        //   ),
+        // ),
       ],
     );
   }
 
-  Widget _buildStatusFilter() {
-    return Row(
-      children: [
-        for (final status in widget.viewModel.availableStatuses)
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: ChoiceChip(
-              label: Text(
-                status,
-                style: TextStyle(
-                  color: widget.viewModel.currentStatus == status
-                      ? Colors.white
-                      : AppTheme.textColor1,
-                ),
-              ),
-              selected: widget.viewModel.currentStatus == status,
-              onSelected: (selected) {
-                if (selected) {
-                  widget.viewModel.changeStatus(status);
-                }
-              },
-              backgroundColor: Colors.grey[200],
-              selectedColor: AppTheme.primaryColor,
-            ),
-          ),
-        const Spacer(),
-        PopupMenuButton<String>(
-          icon: const Icon(Icons.sort),
-          onSelected: (value) {
-            if (value == 'latest') {
-              widget.viewModel.sortByLatest();
-            } else {
-              widget.viewModel.sortByOldest();
-            }
-          },
-          itemBuilder: (context) => [
-            const PopupMenuItem(
-              value: 'latest',
-              child: Text('최신순'),
-            ),
-            const PopupMenuItem(
-              value: 'oldest',
-              child: Text('오래된순'),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+  // Widget _buildStatusFilter() {}
 
   Widget _buildTodoItem(MemoModel todo) {
     return Card(
@@ -190,7 +119,7 @@ class _TodoScreenState extends State<TodoScreen> {
           value: todo.isDone,
           activeColor: AppTheme.primaryColor,
           onChanged: (bool? value) {
-            widget.viewModel.toggleTodoStatus(todo);
+            // widget.viewModel.toggleTodoStatus(todo);
           },
         ),
         title: Text(
@@ -239,7 +168,7 @@ class _TodoScreenState extends State<TodoScreen> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              widget.viewModel.deleteTodo(todo.memoId);
+              // widget.viewModel.deleteTodo(todo.memoId);
             },
             child: const Text('삭제', style: TextStyle(color: Colors.red)),
           ),
@@ -255,7 +184,7 @@ class _TodoScreenState extends State<TodoScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('새 할일 추가'),
+        title: const Text('Todo List 추가'),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -263,11 +192,13 @@ class _TodoScreenState extends State<TodoScreen> {
               const SizedBox(height: 16),
               TextField(
                 controller: contentController,
+                autofocus: true,
                 decoration: const InputDecoration(
-                  labelText: '할일 내용',
+                  labelText: 'Todo',
                   hintText: '상세 내용을 입력하세요',
+                  hintStyle: TextStyle(color: Color.fromARGB(255, 97, 95, 95)),
                 ),
-                maxLines: 3,
+                maxLines: 5,
               ),
             ],
           ),
@@ -295,5 +226,7 @@ class _TodoScreenState extends State<TodoScreen> {
   }
 
   // 새 할일 추가 메서드
-  void _addNewTodo(String title, String content) {}
+  void _addNewTodo(String title, String content) {
+    // widget.viewModel.addTodo(title, content);
+  }
 }

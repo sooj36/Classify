@@ -43,11 +43,26 @@ class _RootScreenState extends State<RootScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    // 현재 라우트 경로 가져오기
+    final currentRoute = GoRouterState.of(context).matchedLocation;
+
+    // 디버그 출력 추가
+    debugPrint('🟢현재 경로: $currentRoute🟢');
+
+    // todo 화면에서만 색상을 다르게 설정
+    final appBarColor = currentRoute == Routes.todo
+        ? AppTheme.errorColor // TODO 화면
+        : AppTheme.primaryColor;
+
+    // 디버그 출력 추가
+    debugPrint(
+        '🟢AppBar 색상: ${appBarColor == AppTheme.errorColor ? "errorColor" : "primaryColor"}🟢');
+
     return Scaffold(
       appBar: AppBar(
         title: TextButton(
           onPressed: () {
-            context.push(Routes.todo);
+            context.go(Routes.todo);
           },
           child: Text(
             "할 일 목록",
@@ -57,7 +72,7 @@ class _RootScreenState extends State<RootScreen> {
             ),
           ),
         ),
-        backgroundColor: AppTheme.primaryColor,
+        backgroundColor: appBarColor,
         elevation: 0,
         actions: [
           IconButton(

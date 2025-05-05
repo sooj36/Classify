@@ -244,7 +244,7 @@ class FirestoreService {
 
   Future<void> saveTodo(TodoModel todo, String uuid) async {
     await _firestore.collection("users").doc(firebaseAuth.currentUser!.uid).collection("todo").doc(uuid).set({
-      'todo': todo.todo,
+      'todo': todo.todoContent,
       'isImportant': todo.isImportant,
       'lastModified': todo.lastModified,
       'createdAt': todo.createdAt,
@@ -256,7 +256,7 @@ class FirestoreService {
   // updateTodo 메서드 추가
   Future<void> updateTodo(TodoModel todo, String uuid) async {
     await _firestore.collection("users").doc(firebaseAuth.currentUser!.uid).collection("todo").doc(uuid).set({
-      'todo': todo.todo,
+      'todo': todo.todoContent,
       'isImportant': todo.isImportant,
       'lastModified': DateTime.now(), // 항상 현재 시간으로 업데이트
       'createdAt': todo.createdAt,
@@ -290,7 +290,7 @@ class FirestoreService {
       for (var doc in querySnapshot.docs) {
         final data = doc.data();
         todos[doc.id] = TodoModel(
-          todo: data['todo'] ?? '',
+          todoContent: data['todo'] ?? '',
           isImportant: data['isImportant'] ?? false,
           lastModified: data['lastModified'] is Timestamp 
               ? (data['lastModified'] as Timestamp).toDate() 

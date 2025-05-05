@@ -54,8 +54,8 @@ final router = GoRouter(
           ),
           ChangeNotifierProvider(
             create: (context) => TodoViewModel(
-              memoRepository: context.read<MemoRepositoryRemote>(),
-            ),
+                // memoRepository: context.read<MemoRepositoryRemote>(),
+                ),
           ),
         ],
         child: RootScreen(child: child),

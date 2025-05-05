@@ -17,7 +17,7 @@ class TodoModelAdapter extends TypeAdapter<TodoModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return TodoModel(
-      todo: fields[1] as String,
+      todoContent: fields[1] as String,
       isImportant: fields[2] as bool?,
       lastModified: fields[3] as DateTime?,
       createdAt: fields[0] as DateTime?,
@@ -33,7 +33,7 @@ class TodoModelAdapter extends TypeAdapter<TodoModel> {
       ..writeByte(0)
       ..write(obj.createdAt)
       ..writeByte(1)
-      ..write(obj.todo)
+      ..write(obj.todoContent)
       ..writeByte(2)
       ..write(obj.isImportant)
       ..writeByte(3)

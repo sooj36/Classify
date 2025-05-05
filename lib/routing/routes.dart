@@ -14,5 +14,5 @@ final class Routes {
   static const today = '/today';
   static const study = '/study';
   static const privacyPolicy = '/privacyPolicy';
-    static const todo = '/todo';
+  static const todo = '/todo';
 }
