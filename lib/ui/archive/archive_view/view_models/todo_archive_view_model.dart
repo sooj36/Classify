@@ -42,8 +42,7 @@ class TodoArchiveViewModel extends ChangeNotifier {
         data.forEach((key, todo) {
           debugPrint("""
             📝 Todo[$key]:
-              - title: ${todo.title}
-              - content: ${todo.content}
+              - content: ${todo.todoContent}
 """);
         });
         _cachedTodos = data;

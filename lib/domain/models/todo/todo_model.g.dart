@@ -22,7 +22,7 @@ class TodoModelAdapter extends TypeAdapter<TodoModel> {
       lastModified: fields[3] as DateTime?,
       createdAt: fields[0] as DateTime?,
       isDone: fields[4] as bool?,
-      memoId: fields[5] as String,
+      todoId: fields[5] as String,
     );
   }
 
@@ -41,7 +41,7 @@ class TodoModelAdapter extends TypeAdapter<TodoModel> {
       ..writeByte(4)
       ..write(obj.isDone)
       ..writeByte(5)
-      ..write(obj.memoId);
+      ..write(obj.todoId);
   }
 
   @override
