@@ -35,6 +35,11 @@ class _TodoScreenState extends State<TodoScreen> {
     );
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Widget _buildEmptyState() {
     return Padding(
       padding: const EdgeInsets.all(24.0),

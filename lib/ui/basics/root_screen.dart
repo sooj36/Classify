@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:classify/routing/routes.dart';
 import 'package:classify/utils/top_level_setting.dart';
+import 'package:classify/ui/todo/appBarColor_provider.dart';
+import 'package:provider/provider.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key, required this.child});
@@ -49,8 +51,11 @@ class _RootScreenState extends State<RootScreen> {
     // 디버그 출력 추가
     debugPrint('🟢현재 경로: $currentRoute🟢');
 
-    // todo 화면에서만 색상을 다르게 설정
-    final appBarColor = currentRoute == Routes.todo
+    // AppBarColorProvider에서 상태를 가져옴
+    final isTodoMode = Provider.of<AppbarcolorProvider>(context).isTodoMode;
+
+    // todo 화면 상태에 따라 색상을 다르게 설정
+    final appBarColor = isTodoMode
         ? AppTheme.errorColor // TODO 화면
         : AppTheme.primaryColor;
 
@@ -62,7 +67,7 @@ class _RootScreenState extends State<RootScreen> {
       appBar: AppBar(
         title: TextButton(
           onPressed: () {
-            context.go(Routes.todo);
+            context.push(Routes.todo);
           },
           child: Text(
             "할 일 목록",
