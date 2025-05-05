@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:classify/routing/routes.dart';
 import 'package:classify/utils/top_level_setting.dart';
-import 'package:classify/ui/todo/appBarColor_provider.dart';
 import 'package:provider/provider.dart';
 
 class RootScreen extends StatefulWidget {
@@ -48,21 +47,6 @@ class _RootScreenState extends State<RootScreen> {
     // 현재 라우트 경로 가져오기
     final currentRoute = GoRouterState.of(context).matchedLocation;
 
-    // 디버그 출력 추가
-    debugPrint('🟢현재 경로: $currentRoute🟢');
-
-    // AppBarColorProvider에서 상태를 가져옴
-    final isTodoMode = Provider.of<AppbarcolorProvider>(context).isTodoMode;
-
-    // todo 화면 상태에 따라 색상을 다르게 설정
-    final appBarColor = isTodoMode
-        ? AppTheme.errorColor // TODO 화면
-        : AppTheme.primaryColor;
-
-    // 디버그 출력 추가
-    debugPrint(
-        '🟢AppBar 색상: ${appBarColor == AppTheme.errorColor ? "errorColor" : "primaryColor"}🟢');
-
     return Scaffold(
       appBar: AppBar(
         title: TextButton(
@@ -77,7 +61,7 @@ class _RootScreenState extends State<RootScreen> {
             ),
           ),
         ),
-        backgroundColor: appBarColor,
+        backgroundColor: AppTheme.primaryColor,
         elevation: 0,
         actions: [
           IconButton(

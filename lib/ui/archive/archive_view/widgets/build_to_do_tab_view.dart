@@ -1,10 +1,11 @@
 import 'package:classify/domain/models/memo/memo_model.dart';
+import 'package:classify/domain/models/todo/todo_model.dart';
 import 'package:flutter/material.dart';
 import 'package:classify/ui/archive/archive_view/view_models/archive_view_model.dart';
 import 'package:classify/utils/top_level_setting.dart';
 
 Widget buildTodoTabView(
-    Map<String, MemoModel> memos, ArchiveViewModel viewModel) {
+    Map<String, TodoModel> memos, ArchiveViewModel viewModel) {
   // isDone 속성이 있는 메모만 필터링
   final todoMemos = memos.values.where((memo) => memo.isDone != null).toList();
 

@@ -32,7 +32,7 @@ class TodoModel extends HiveObject {
   final bool? isDone; //  완료여부
 
   @HiveField(5)
-  final String memoId; // 연결된 메모 ID
+  final String todoId; // 연결된 할일 ID
 
   TodoModel({
     required this.todoContent,
@@ -40,7 +40,7 @@ class TodoModel extends HiveObject {
     this.lastModified,
     DateTime? createdAt,
     this.isDone = false,
-    required this.memoId,
+    required this.todoId,
   }) : createdAt = createdAt ?? DateTime.now();
 
   TodoModel copyWith({
@@ -57,6 +57,6 @@ class TodoModel extends HiveObject {
         lastModified: lastModified ?? this.lastModified,
         createdAt: createdAt ?? this.createdAt,
         isDone: isDone ?? this.isDone,
-        memoId: memoId ?? this.memoId,
+        todoId: memoId ?? this.todoId,
       );
 }

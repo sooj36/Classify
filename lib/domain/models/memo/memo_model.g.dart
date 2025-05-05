@@ -24,7 +24,6 @@ class MemoModelAdapter extends TypeAdapter<MemoModel> {
       lastModified: fields[5] as DateTime?,
       createdAt: fields[0] as DateTime?,
       category: fields[6] as String,
-      isDone: fields[7] as bool?,
       memoId: fields[8] as String,
       question: fields[9] as String?,
     );
@@ -49,10 +48,8 @@ class MemoModelAdapter extends TypeAdapter<MemoModel> {
       ..writeByte(6)
       ..write(obj.category)
       ..writeByte(7)
-      ..write(obj.isDone)
-      ..writeByte(8)
       ..write(obj.memoId)
-      ..writeByte(9)
+      ..writeByte(8)
       ..write(obj.question);
   }
 

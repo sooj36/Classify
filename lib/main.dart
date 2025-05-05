@@ -80,6 +80,7 @@ class MainApp extends StatelessWidget {
             hiveService: context.read<HiveService>(),
           ),
         ),
+        // todoMode
       ],
       child: MaterialApp.router(
         scrollBehavior: ScrollConfiguration.of(context).copyWith(
