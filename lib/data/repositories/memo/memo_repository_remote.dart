@@ -119,7 +119,7 @@ class MemoRepositoryRemote extends MemoRepository {
   @override
   Future<void> deleteMemo(String memoId, String category) async {
     try {
-      _hiveService.deleteMemo(memoId);
+      _hiveService.deleteMemo(memoId, category);
       debugPrint('✅ 하이브에서 삭제 완료');
       if (category == 'AI분류 실패') {
         return;

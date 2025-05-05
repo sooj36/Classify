@@ -1,5 +1,5 @@
+import 'package:classify/domain/models/todo/todo_model.dart';
 import 'package:flutter/material.dart';
-import 'package:classify/domain/models/memo/memo_model.dart';
 import 'package:classify/ui/todo/view_models/todo_view_model.dart';
 import 'package:classify/utils/top_level_setting.dart';
 
@@ -77,7 +77,7 @@ class _TodoScreenState extends State<TodoScreen> {
     );
   }
 
-  Widget _buildTodoContent(List<MemoModel> todoList) {
+  Widget _buildTodoContent(List<TodoModel> todoList) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -115,7 +115,7 @@ class _TodoScreenState extends State<TodoScreen> {
 
   // Widget _buildStatusFilter() {}
 
-  Widget _buildTodoItem(MemoModel todo) {
+  Widget _buildTodoItem(TodoModel todo) {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
@@ -128,7 +128,7 @@ class _TodoScreenState extends State<TodoScreen> {
           },
         ),
         title: Text(
-          todo.title,
+          todo.todoContent,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
@@ -136,19 +136,6 @@ class _TodoScreenState extends State<TodoScreen> {
             color: todo.isDone == true ? Colors.grey : AppTheme.textColor1,
           ),
         ),
-        subtitle: todo.content.isNotEmpty
-            ? Text(
-                todo.content,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  decoration:
-                      todo.isDone == true ? TextDecoration.lineThrough : null,
-                  color:
-                      todo.isDone == true ? Colors.grey : AppTheme.textColor2,
-                ),
-              )
-            : null,
         trailing: IconButton(
           icon: const Icon(Icons.delete_outline),
           onPressed: () {
@@ -159,12 +146,12 @@ class _TodoScreenState extends State<TodoScreen> {
     );
   }
 
-  void _showDeleteConfirmation(MemoModel todo) {
+  void _showDeleteConfirmation(TodoModel todo) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('할 일 삭제'),
-        content: Text('\'${todo.title}\' 항목을 삭제하시겠습니까?'),
+        content: Text('\'${todo.todoContent}\' 항목을 삭제하시겠습니까?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -173,7 +160,6 @@ class _TodoScreenState extends State<TodoScreen> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              // widget.viewModel.deleteTodo(todo.memoId);
             },
             child: const Text('삭제', style: TextStyle(color: Colors.red)),
           ),

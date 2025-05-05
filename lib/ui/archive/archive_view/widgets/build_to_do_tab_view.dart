@@ -1,13 +1,14 @@
 import 'package:classify/domain/models/memo/memo_model.dart';
 import 'package:classify/domain/models/todo/todo_model.dart';
+import 'package:classify/ui/archive/archive_view/view_models/todo_archive_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:classify/ui/archive/archive_view/view_models/archive_view_model.dart';
 import 'package:classify/utils/top_level_setting.dart';
 
 Widget buildTodoTabView(
-    Map<String, TodoModel> memos, ArchiveViewModel viewModel) {
+    Map<String, TodoModel> todos, TodoArchiveViewModel viewModel) {
   // isDone 속성이 있는 메모만 필터링
-  final todoMemos = memos.values.where((memo) => memo.isDone != null).toList();
+  final todoMemos = todos.values.where((todo) => todo.isDone != null).toList();
 
   // 메모가 없는 경우 처리
   if (todoMemos.isEmpty) {
@@ -22,16 +23,16 @@ Widget buildTodoTabView(
     );
   }
 
-  // 최신순과 오래된순으로 정렬된 메모 리스트 생성
-  final latestMemos = List<MemoModel>.from(todoMemos)
+  // 최신순과 오래된순으로 정렬된 할일 리스트 생성
+  final latestTodos = List<TodoModel>.from(todoMemos)
     ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-  final oldestMemos = List<MemoModel>.from(todoMemos)
+  final oldestTodos = List<TodoModel>.from(todoMemos)
     ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
-  // 현재 보여줄 메모 리스트 (기본값은 최신순)
-  ValueNotifier<List<MemoModel>> currentMemos =
-      ValueNotifier<List<MemoModel>>(latestMemos);
+  // 현재 보여줄 할일 리스트 (기본값은 최신순)
+  ValueNotifier<List<TodoModel>> currentTodos =
+      ValueNotifier<List<TodoModel>>(latestTodos);
 
   // 최신순인지 여부를 추적하는 플래그
   ValueNotifier<bool> isLatestSort = ValueNotifier<bool>(true);
@@ -50,7 +51,7 @@ Widget buildTodoTabView(
                 icon: Icons.arrow_downward,
                 label: '최신순',
                 onPressed: () {
-                  currentMemos.value = latestMemos;
+                  currentTodos.value = latestTodos;
                   isLatestSort.value = true;
                 }),
             const SizedBox(width: 4),
@@ -60,26 +61,26 @@ Widget buildTodoTabView(
                 icon: Icons.arrow_upward,
                 label: '오래된순',
                 onPressed: () {
-                  currentMemos.value = oldestMemos;
+                  currentTodos.value = oldestTodos;
                   isLatestSort.value = false;
                 }),
           ],
         ),
         // 메모 리스트
         Expanded(
-          child: ValueListenableBuilder<List<MemoModel>>(
-            valueListenable: currentMemos,
-            builder: (context, memosList, _) {
+          child: ValueListenableBuilder<List<TodoModel>>(
+            valueListenable: currentTodos,
+            builder: (context, todosList, _) {
               return ListView.builder(
-                itemCount: memosList.length,
+                itemCount: todosList.length,
                 itemBuilder: (context, index) => todoCards(
                   context,
-                  memosList[index],
-                  onTaskCompleted: (memoId) {
+                  todosList[index],
+                  onTaskCompleted: (todoId) {
                     // 할 일이 어떤 카테고리에 있든 삭제
-                    final memo = memos[memoId];
+                    final memo = todos[todoId];
                     if (memo != null) {
-                      viewModel.deleteMemo(memoId, memo.category);
+                      viewModel.deleteTodo(todoId);
                     }
                   },
                 ),
@@ -122,7 +123,7 @@ Widget _buildSortButton({
       });
 }
 
-Widget todoCards(BuildContext context, MemoModel memo,
+Widget todoCards(BuildContext context, TodoModel todo,
     {required Function(String) onTaskCompleted}) {
   return Card(
     margin: const EdgeInsets.only(bottom: 12.0),
@@ -135,12 +136,12 @@ Widget todoCards(BuildContext context, MemoModel memo,
           Transform.scale(
             scale: 1.2,
             child: Checkbox(
-              value: memo.isDone,
+              value: todo.isDone,
               activeColor: AppTheme.primaryColor,
               onChanged: (bool? value) {
                 if (value == true) {
                   // 체크했을 때 할일 완료 처리 - 삭제 수행
-                  onTaskCompleted(memo.memoId);
+                  onTaskCompleted(todo.todoId);
                 }
               },
             ),
@@ -152,15 +153,7 @@ Widget todoCards(BuildContext context, MemoModel memo,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  memo.title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  memo.content,
+                  todo.todoContent,
                   style: const TextStyle(fontSize: 14),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,

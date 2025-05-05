@@ -101,7 +101,6 @@ class GeminiService {
         isImportant: false,
         lastModified: DateTime.now(),
         createdAt: DateTime.now(),
-        isDone: false,
       );
     }
   }
