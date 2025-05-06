@@ -90,13 +90,22 @@ class TodoRepositoryRemote extends TodoRepository {
       _hiveService.updateTodo(updatedTodo, todo.todoId);
       debugPrint('✅ 하이브 Todo 업데이트 완료');
 
-      // Firestore에 저장
-      await _todoFirestoreService.updateTodo(updatedTodo, todo.todoId);
-      debugPrint('✅ 파이어스토어 Todo 업데이트 완료');
+      // Firestore에 저장(null 체크 및 예외 처리 추가)
+      if (_todoFirestoreService != null) {
+        try {
+          await _todoFirestoreService.updateTodo(updatedTodo, todo.todoId);
+          debugPrint('✅ 파이어스토어 Todo 업데이트 완료');
+        } catch (firestoreError) {
+          // Firestore 오류 로깅만 하고 예외는 전파하지 않음
+          debugPrint('⚠️ 파이어스토어 업데이트 실패 (로컬만 업데이트됨): $firestoreError');
+        }
+      } else {
+        debugPrint('⚠️ 파이어스토어 서비스가 초기화되지 않음 (로컬만 업데이트됨)');
+      }
     } catch (e) {
       debugPrint(
           '❌ Todo 업데이트 실패 in [updateTodo method] in [todo_repository_remote]: $e');
-      rethrow; // 에러를 상위로 전달
+      // rethrow; // 에러를 상위로 전달
     }
   }
 
