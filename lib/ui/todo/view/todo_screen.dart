@@ -20,8 +20,8 @@ class _TodoScreenState extends State<TodoScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // widget.viewModel.loadTodoData();
-      // widget.viewModel.sortByLatest();
+      widget.viewModel.initCachedTodos();
+      widget.viewModel.sortByLatest();
     });
   }
 
