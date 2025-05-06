@@ -27,17 +27,18 @@ class _TodoScreenState extends State<TodoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // 임시 화면 - 나중에 실제 구현으로 교체 예정
+    final todoList = widget.viewModel.cachedTodoModels.values.toList();
+
     return Scaffold(
-      body: const Center(
-        child: Text('Todo 화면 준비 중...'),
+      appBar: AppBar(
+        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.sort))],
+      ),
+      body: todoList.isEmpty ? _buildEmptyState() : _buildTodoContent(todoList),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showAddTodoDialog(context),
+        child: const Icon(Icons.add),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   Widget _buildEmptyState() {
@@ -64,7 +65,7 @@ class _TodoScreenState extends State<TodoScreen> {
             ),
             const SizedBox(height: 8),
             const Text(
-              '새로운 할 일을 추가하려면\n메모 작성 시 완료 여부를 체크하세요',
+              '새로운 할 일을 추가해주세요 💫',
               style: TextStyle(
                 fontSize: 16,
                 color: AppTheme.textColor2,
@@ -219,5 +220,10 @@ class _TodoScreenState extends State<TodoScreen> {
   // 새 할일 추가 메서드
   void _addNewTodo(String title, String content) {
     // widget.viewModel.addTodo(title, content);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

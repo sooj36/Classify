@@ -1,3 +1,4 @@
+import 'package:classify/data/repositories/todo/todo_repository_remote.dart';
 import 'package:classify/ui/todo/view_models/todo_view_model.dart'
     show TodoViewModel;
 import 'package:go_router/go_router.dart';
@@ -54,8 +55,8 @@ final router = GoRouter(
           ),
           ChangeNotifierProvider(
             create: (context) => TodoViewModel(
-                // memoRepository: context.read<MemoRepositoryRemote>(),
-                ),
+              todoRepository: context.read<TodoRepositoryRemote>(),
+            ),
           ),
         ],
         child: RootScreen(child: child),

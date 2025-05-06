@@ -22,7 +22,7 @@ class TodoRepositoryRemote extends TodoRepository {
   final TodoHiveService _hiveService;
 
   TodoRepositoryRemote({
-    required FirestoreService firestoreService,
+    required TodoFirebaseService firestoreService,
     required TodoHiveService hiveService,
   })  : _todoFirestoreService = TodoFirebaseService(),
         _hiveService = hiveService;

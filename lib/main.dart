@@ -1,3 +1,6 @@
+import 'package:classify/data/repositories/todo/todo_repository_remote.dart';
+import 'package:classify/data/services/todo_services/todo_firebase_service.dart';
+import 'package:classify/data/services/todo_services/todo_hive_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -62,6 +65,12 @@ class MainApp extends StatelessWidget {
         Provider<HiveService>(
           create: (_) => HiveService(),
         ),
+        Provider<TodoFirebaseService>(
+          create: (_) => TodoFirebaseService(),
+        ),
+        Provider<TodoHiveService>(
+          create: (_) => TodoHiveService(),
+        ),
         Provider<GoogleLoginService>(
           create: (_) => GoogleLoginService(),
         ),
@@ -81,6 +90,11 @@ class MainApp extends StatelessWidget {
           ),
         ),
         // todoMode
+        ChangeNotifierProvider<TodoRepositoryRemote>(
+          create: (context) => TodoRepositoryRemote(
+              firestoreService: context.read<TodoFirebaseService>(),
+              hiveService: context.read<TodoHiveService>()),
+        ),
       ],
       child: MaterialApp.router(
         scrollBehavior: ScrollConfiguration.of(context).copyWith(
