@@ -9,6 +9,8 @@ class TodoViewModel extends ChangeNotifier {
   Map<String, TodoModel> _cachedTodoModels = {};
   bool _isLoading = false;
   String? _error;
+  // toggle
+  final ValueNotifier<Map<String, TodoModel>> _toggleCheck = ValueNotifier({});
 
   bool _isLatestSort = true;
 
@@ -22,6 +24,7 @@ class TodoViewModel extends ChangeNotifier {
   Map<String, TodoModel> get cachedTodoModels => _cachedTodoModels;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  ValueNotifier<Map<String, TodoModel>> toggleCheck() => _toggleCheck;
 
   void initCachedTodos() {
     _cachedTodoModels = _todoRepository.getTodos();
@@ -114,9 +117,13 @@ class TodoViewModel extends ChangeNotifier {
           lastModified: DateTime.now(),
         );
 
+        // 상태 업데이트
+        _toggleCheck.value = {..._toggleCheck.value, todoId : updatedTodo};
+
         // 로컬 캐시 업데이트
-        _cachedTodoModels[todoId] = updatedTodo;
-        notifyListeners();
+        // 상태 변경을 수동으로 알려야하고, 변경이 여러 곳에서 발생할 수 있음
+        // _cachedTodoModels[todoId] = updatedTodo;
+        // notifyListeners();
 
         // todo Repo 통해 저장
         await _todoRepository.updateTodo(updatedTodo);

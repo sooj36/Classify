@@ -98,26 +98,26 @@ class AppTheme {
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     ),
-    textTheme: TextTheme(
-      titleLarge: const TextStyle(
+    textTheme: const TextTheme(
+      titleLarge: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.w600,
         color: textColor1,
       ),
-      titleMedium: const TextStyle(
+      titleMedium: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w500,
         color: textColor1,
       ),
-      bodyLarge: const TextStyle(
+      bodyLarge: TextStyle(
         fontSize: 16,
         color: textColor1,
       ),
-      bodyMedium: const TextStyle(
+      bodyMedium: TextStyle(
         fontSize: 14,
         color: textColor1,
       ),
-      bodySmall: const TextStyle(
+      bodySmall: TextStyle(
         fontSize: 12,
         color: textColor1,
       ),
