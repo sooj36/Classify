@@ -54,7 +54,7 @@ class _RootScreenState extends State<RootScreen> {
             context.push(Routes.todo);
           },
           child: Text(
-            "할 일 목록",
+            "Todo",
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
               color: Colors.white,

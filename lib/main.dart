@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:classify/data/repositories/todo/todo_repository_remote.dart';
 import 'package:classify/data/services/todo_services/todo_firebase_service.dart';
 import 'package:classify/data/services/todo_services/todo_hive_service.dart';
@@ -33,6 +35,25 @@ void main() async {
     initGemini();
     debugPrint('✅ Gemini 초기화 성공!');
     final dir = await getApplicationDocumentsDirectory();
+
+    // // fix/HiveError
+    // // 기존 Hive 파일 삭제 시도
+    // try {
+    //   final memoBixFile = File('${dir.path}/memo.hive');
+    //   if (await memoBixFile.exists()) {
+    //     await memoBixFile.delete();
+    //     debugPrint('🔧🧰✅ memo.hive 파일 삭제 완료');
+    //   }
+
+    //   final todoBoxFile = File('${dir.path}/todo.hive');
+    //   if (await todoBoxFile.exists()) {
+    //     await todoBoxFile.delete();
+    //     debugPrint('🔧🧰✅ 손상된 todo.hive 파일 삭제 완료');
+    //   }
+    // } catch (e) {
+    //   debugPrint('🔧🧰❌ Hive 파일 삭제 실패: $e');
+
+    // Hive 초기화
     Hive.init(dir.path);
     Hive.registerAdapter(MemoModelAdapter());
     await Hive.openBox<MemoModel>('memo');
@@ -44,6 +65,7 @@ void main() async {
     debugPrint('❌ 앱 초기화 실패: $e');
   }
   runApp(const MainApp());
+  // } catch (e) {}
 }
 
 class MainApp extends StatelessWidget {

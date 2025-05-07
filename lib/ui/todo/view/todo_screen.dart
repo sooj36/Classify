@@ -42,18 +42,30 @@ class _TodoScreenState extends State<TodoScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          // leading: IconButton(
+          //   icon: const Icon(Icons.arrow_back, color: AppTheme.textColor1),
+          //   onPressed: () => Navigator.of(context).pop(),
+          // ), // 원복 예정
           title: TabBar(
+            indicatorColor: AppTheme.decorationColor1,
+            labelColor: AppTheme.primaryColor,
+            unselectedLabelColor: AppTheme.textColor2,
+            indicator: UnderlineTabIndicator(
+              borderSide: BorderSide(width: 2.0, color: AppTheme.primaryColor),
+            ),
             tabs: const [
-              Tab(text: '진행 중'),
-              Tab(text: '완료'),
+              Tab(text: 'In Progress'),
+              Tab(text: 'Done'),
             ],
           ),
+          backgroundColor: Colors.amber, // 임시
+          elevation: 0,
           actions: [
             IconButton(
               onPressed: () {
-                _showAddTodoDialog(context);
+                //검색 기능
               },
-              icon: const Icon(Icons.sort),
+              icon: const Icon(Icons.search, color: AppTheme.textColor1),
             ),
           ],
         ),
@@ -152,6 +164,7 @@ class _TodoScreenState extends State<TodoScreen> {
         Text(
           '${widget.viewModel.cachedTodoModels.length}개',
           style: const TextStyle(
+            fontFamily: 'Pretendard',
             fontSize: 16,
             fontStyle: FontStyle.italic,
             color: AppTheme.textColor2,
@@ -228,12 +241,18 @@ class _TodoScreenState extends State<TodoScreen> {
               const SizedBox(height: 8),
               Text(
                 '${todoObject.createdAt.year}.${todoObject.createdAt.month}.${todoObject.createdAt.day}',
-                style: TextStyle(fontSize: 12, color: AppTheme.textColor1),
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w300,
+                    color: AppTheme.textColor1),
               ),
               const SizedBox(height: 1),
               Text(
                 '${todoObject.createdAt.hour.toString().padLeft(2, '0')}:${todoObject.createdAt.minute.toString().padLeft(2, '0')}',
-                style: TextStyle(fontSize: 12, color: AppTheme.textColor1),
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w300,
+                    color: AppTheme.textColor1),
               ),
               const SizedBox(height: 8),
             ],
