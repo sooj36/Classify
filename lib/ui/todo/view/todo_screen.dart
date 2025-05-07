@@ -204,8 +204,8 @@ class _TodoScreenState extends State<TodoScreen> {
                     value: todoObject.isDone,
                     onChanged: (bool? value) {
                       widget.viewModel.toggleCompleted(todoObject.todoId);
-                      // // 강제 UI 업데이트
-                      // setState(() {});
+                      // 강제 UI 업데이트
+                      setState(() {});
                     },
                   ),
                   IconButton(
@@ -305,7 +305,7 @@ class _TodoScreenState extends State<TodoScreen> {
                   hintText: '상세 내용을 입력하세요',
                   hintStyle: TextStyle(color: Color.fromARGB(255, 97, 95, 95)),
                 ),
-                maxLines: 3,
+                maxLines: 5,
               ),
             ],
           ),
