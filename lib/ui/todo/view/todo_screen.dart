@@ -40,6 +40,13 @@ class TodoScreen extends StatelessWidget {
             IconButton(
               onPressed: () {
                 //검색 기능
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('검색 기능이 곧 추가될 예정입니다'),
+                    duration: Duration(seconds: 1),
+                    behavior: SnackBarBehavior.fixed,
+                  ),
+                );
               },
               icon: const Icon(Icons.search, color: AppTheme.textColor1),
             ),
@@ -178,6 +185,13 @@ Widget _buildTodoGridItem(
       borderRadius: BorderRadius.circular(12),
       onTap: () {
         // todo 상세 보기 등 추가
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('상세보기 기능이 곧 추가될 예정입니다.'),
+            duration: Duration(seconds: 1),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       },
       child: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -188,7 +202,7 @@ Widget _buildTodoGridItem(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Checkbox(
-                  value: todoObject.isDone,
+                  value: todoObject.isDone ?? false,
                   onChanged: (_) =>
                       viewModel.toggleCompleted(todoObject.todoId),
                 ),
