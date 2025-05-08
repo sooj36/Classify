@@ -29,9 +29,13 @@ class TodoFirebaseService {
   }
 
   Future<void> saveTodo(TodoModel todoModel, String uuid) async {
+    if (firebaseAuth.currentUser == null) {
+      debugPrint('⚠️ 로그인되지 않아 파이어스토어에 저장하지 않음');
+      return;
+    }
     await _firestore
         .collection("users")
-        .doc(firebaseAuth.currentUser!.uid)
+        .doc(firebaseAuth.currentUser!.uid) // null 체크 연산자 사용
         .collection("todo")
         .doc(uuid)
         .set({

@@ -18,17 +18,40 @@ class TodoViewModel extends ChangeNotifier {
     required TodoRepository todoRepository,
   })  : _todoRepository = todoRepository,
         _isLoading = false,
-        _error = null;
+        _error = null {
+    // 생성자에서 즉시 로컬 데이터 로드
+    _loadLocalData();
+  }
 
   Stream<Map<String, TodoModel>> get todoModels => _todoModels;
   Map<String, TodoModel> get cachedTodoModels => _cachedTodoModels;
   bool get isLoading => _isLoading;
   String? get error => _error;
-  ValueNotifier<Map<String, TodoModel>> toggleCheck() => _toggleCheck;
+  ValueNotifier<Map<String, TodoModel>> get toggleCheck => _toggleCheck;
+
+  // 로컬 데이터 즉시 로드
+  void _loadLocalData() {
+    try {
+      // 로컬 hive 데이터 로드
+      _cachedTodoModels = _todoRepository.getTodos();
+
+      // ValueNotifier 초기화 (UI 업데이트)
+      _toggleCheck.value = _cachedTodoModels;
+
+      // 스트림 연결 (실시간 업데이트)
+      connectStreamToCachedTodos();
+      debugPrint("✅ 로컬 Todo 데이터 즉시 로드 완료: ${_cachedTodoModels.length}개");
+    } catch (e) {
+      debugPrint("❌ 로컬 데이터 로드 실패: $e");
+      _error = e.toString();
+    }
+  }
 
   void initCachedTodos() {
     _cachedTodoModels = _todoRepository.getTodos();
+    _toggleCheck.value = _cachedTodoModels;
     notifyListeners();
+    debugPrint("✅ 캐시된 Todo 데이터 초기화 완료: ${_cachedTodoModels.length}개");
   }
 
   Future<void> connectStreamToCachedTodos() async {
@@ -42,15 +65,30 @@ class TodoViewModel extends ChangeNotifier {
       _todoModels.listen((data) {
         debugPrint("⭐ 데이터 받음: ${data.length}개 Todo");
         _cachedTodoModels = data;
+        _toggleCheck.value = data; // ValueNotifier 동기화
         _isLoading = false;
         notifyListeners();
       });
+
+      // 백그라운드에서 서버 동기화 시도 (실패해도 로컬 데이터는 유지)
+      //**1. 로컬 데이터 표시하면서 서버와 동기화 시도
+      //2. 동기화 실패해도 로컬 유지
+      //3. offline-first 접근 방식 */
+      _trySyncFromServer();
     } catch (e) {
       debugPrint(
           "❌ 에러 발생: $e in [connectStreamToCachedTodos method] in [todo_view_model]");
       _error = e.toString();
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future _trySyncFromServer() async {
+    try {
+      await _todoRepository.syncFromServer();
+    } catch (e) {
+      debugPrint("⚠️ 서버 동기화 실패 (무시됨): $e");
     }
   }
 
@@ -69,8 +107,11 @@ class TodoViewModel extends ChangeNotifier {
       );
 
       await _todoRepository.createAndSaveTodo(newTodo);
-
+      // 로컬 캐시 업데이트
       _cachedTodoModels[todoId] = newTodo;
+
+      // ValueNotifier 업데이트 - UI가 실시간으로 반영되도록 함
+      _toggleCheck.value = {..._toggleCheck.value, todoId: newTodo};
 
       _isLoading = false;
       notifyListeners();
@@ -99,7 +140,7 @@ class TodoViewModel extends ChangeNotifier {
       await _todoRepository.updateTodo(todoModel);
       debugPrint("✅ 할일 업데이트 완료: ${todoModel.todoId}");
     } catch (e) {
-      debugPrint("❌ 할일일 업데이트 중 오류 발생: $e");
+      debugPrint("❌ 할일 업데이트 중 오류 발생: $e");
       _error = e.toString();
       notifyListeners();
     }
@@ -118,7 +159,7 @@ class TodoViewModel extends ChangeNotifier {
         );
 
         // 상태 업데이트
-        _toggleCheck.value = {..._toggleCheck.value, todoId : updatedTodo};
+        _toggleCheck.value = {..._toggleCheck.value, todoId: updatedTodo};
 
         // 로컬 캐시 업데이트
         // 상태 변경을 수동으로 알려야하고, 변경이 여러 곳에서 발생할 수 있음

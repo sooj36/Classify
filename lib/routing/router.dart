@@ -101,7 +101,7 @@ final router = GoRouter(
           pageBuilder: (context, state) => NoTransitionPage<void>(
             key: state.pageKey,
             child: TodoScreen(
-              viewModel: context.read<TodoViewModel>(),
+              todoViewModel: context.read<TodoViewModel>(),
             ),
           ),
         ),

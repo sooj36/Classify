@@ -52,11 +52,11 @@ class TodoModel extends HiveObject {
     String? memoId,
   }) =>
       TodoModel(
-        todoContent: todo ?? this.todoContent,
-        isImportant: isImportant ?? this.isImportant,
-        lastModified: lastModified ?? this.lastModified,
-        createdAt: createdAt ?? this.createdAt,
-        isDone: isDone ?? this.isDone,
-        todoId: memoId ?? this.todoId,
+        todoContent: todo ?? todoContent,
+        isImportant: isImportant ?? isImportant,
+        lastModified: lastModified ?? lastModified,
+        createdAt: createdAt ?? createdAt,
+        isDone: isDone ?? isDone,
+        todoId: memoId ?? todoId,
       );
 }

@@ -4,6 +4,7 @@ import 'package:classify/data/services/hive_service.dart';
 import 'package:classify/data/services/todo_services/todo_firebase_service.dart';
 import 'package:classify/data/services/todo_services/todo_hive_service.dart';
 import 'package:classify/domain/models/todo/todo_model.dart';
+import 'package:classify/global/global.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
@@ -19,13 +20,13 @@ import 'package:uuid/uuid.dart';
 
 class TodoRepositoryRemote extends TodoRepository {
   final TodoFirebaseService _todoFirestoreService;
-  final TodoHiveService _hiveService;
+  final TodoHiveService _todoHiveService;
 
   TodoRepositoryRemote({
-    required TodoFirebaseService firestoreService,
-    required TodoHiveService hiveService,
-  })  : _todoFirestoreService = TodoFirebaseService(),
-        _hiveService = hiveService;
+    required TodoFirebaseService todoFirestoreService,
+    required TodoHiveService todoHiveService,
+  })  : _todoFirestoreService = todoFirestoreService,
+        _todoHiveService = todoHiveService;
 
   @override
   Future<String?> createAndSaveTodo(TodoModel todoId) async {
@@ -37,13 +38,16 @@ class TodoRepositoryRemote extends TodoRepository {
           todoId.todoId.isEmpty ? todoId.copyWith(todo: uuid) : todoId;
 
       // Hive에 저장
-      _hiveService.saveTodo(newTodo, uuid);
+      _todoHiveService.saveTodo(newTodo, uuid);
       debugPrint('✅ 하이브 Todo 저장 완료');
 
-      // Firestore에 저장
-      await _todoFirestoreService.saveTodo(newTodo, uuid);
-      debugPrint('✅ 파이어스토어 Todo 저장 완료');
-
+      // 인증 상태 확인 후, Firestore에 저장
+      if (firebaseAuth.currentUser != null) {
+        await _todoFirestoreService.saveTodo(newTodo, uuid);
+        debugPrint('✅ 파이어스토어 Todo 저장 완료');
+      } else {
+        debugPrint('⚠️ 로그인되지 않아 파이어스토어에 저장하지 않음');
+      }
       return null;
     } catch (e) {
       debugPrint(
@@ -54,7 +58,7 @@ class TodoRepositoryRemote extends TodoRepository {
 
   @override
   Stream<Map<String, TodoModel>> watchTodoLocal() {
-    return _hiveService.watchTodos().map((map) {
+    return _todoHiveService.watchTodos().map((map) {
       return Map.fromEntries(
         map.entries.map((e) {
           final todo = e.value as TodoModel; // Hive에서 가져온 value를 TodoModel로 캐스팅
@@ -70,9 +74,21 @@ class TodoRepositoryRemote extends TodoRepository {
   @override
   Future<void> deleteTodo(String todoId) async {
     try {
-      await _todoFirestoreService.deleteTodo(todoId);
-      _hiveService.deleteTodo(todoId);
-      debugPrint('✅ Todo 삭제 완료');
+      // (리펙토링) hive 선 삭제, 로그인 삭제후 firebase에서 삭제
+      _todoHiveService.deleteTodo(todoId);
+      debugPrint('✅ Hive에서 Todo 삭제 완료');
+
+      if (firebaseAuth.currentUser != null) {
+        try {
+          await _todoFirestoreService.deleteTodo(todoId);
+        } catch (e) {
+          debugPrint('⚠️ Firestore 삭제 실패 (로컬만 삭제됨): $e');
+        }
+
+        debugPrint('✅ Firestore에서 Todo 삭제 완료');
+      } else {
+        debugPrint('⚠️ 로그인되지 않아 Firestore에서 삭제하지 않음');
+      }
     } catch (e) {
       debugPrint(
           '❌ Todo 삭제 실패 in [deleteTodo method] in [todo_repository_remote]: $e');
@@ -87,11 +103,13 @@ class TodoRepositoryRemote extends TodoRepository {
       final updatedTodo = todo.copyWith(lastModified: DateTime.now());
 
       // Hive에 저장
-      _hiveService.updateTodo(updatedTodo, todo.todoId);
+      _todoHiveService.updateTodo(updatedTodo, todo.todoId);
       debugPrint('✅ 하이브 Todo 업데이트 완료');
 
       // Firestore에 저장(null 체크 및 예외 처리 추가)
-      if (_todoFirestoreService != null) {
+      // if (_todoFirestoreService != null) {
+      // 로그인 상태 확인 후 Firebase에 저장
+      if (firebaseAuth.currentUser != null) {
         try {
           await _todoFirestoreService.updateTodo(updatedTodo, todo.todoId);
           debugPrint('✅ 파이어스토어 Todo 업데이트 완료');
@@ -100,7 +118,7 @@ class TodoRepositoryRemote extends TodoRepository {
           debugPrint('⚠️ 파이어스토어 업데이트 실패 (로컬만 업데이트됨): $firestoreError');
         }
       } else {
-        debugPrint('⚠️ 파이어스토어 서비스가 초기화되지 않음 (로컬만 업데이트됨)');
+        debugPrint('⚠️ 로그인되지 않아 파이어스토어에 업데이트하지 않음');
       }
     } catch (e) {
       debugPrint(
@@ -111,24 +129,37 @@ class TodoRepositoryRemote extends TodoRepository {
 
   @override
   Map<String, TodoModel> getTodos() {
-    final rawTodos = _hiveService.getTodos();
+    final rawTodos = _todoHiveService.getTodos();
     return rawTodos
         .map((key, value) => MapEntry(key.toString(), value as TodoModel));
   }
 
   @override
   Future<void> syncFromServer() async {
+    // 로그인되지 않은 경우 로컬 데이터만 사용
+    if (firebaseAuth.currentUser == null) {
+      debugPrint('⚠️ 로그인되지 않아 로컬 Hive 데이터만 사용합니다');
+      return;
+    }
+
     try {
       // Firestore에서 Todo 데이터 가져오기
       final todos = await _todoFirestoreService.getUserTodos();
 
+      if (todos.isEmpty) {
+        debugPrint('ℹ️ 서버에 데이터가 없어 로컬 데이터를 유지합니다');
+        return;
+      }
+
       // Hive에 데이터 동기화
-      _hiveService.syncTodosFromServer(todos);
-      debugPrint('✅ Todo 데이터 서버에서 동기화 완료');
+      _todoHiveService.syncTodosFromServer(todos);
+      debugPrint('✅ Todo 데이터 서버에서 동기화 완료: ${todos.length}개');
     } catch (e) {
       debugPrint(
           '❌ Todo 서버에서 동기화 실패 in [syncFromServer method] in [todo_repository_remote]: $e');
-      rethrow;
+      debugPrint('ℹ️ 로컬 Hive 데이터를 유지합니다');
+      // 예외를 전파하지 않고 로컬 데이터 유지
+      // rethrow;
     }
   }
 }

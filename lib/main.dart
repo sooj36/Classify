@@ -35,37 +35,84 @@ void main() async {
     initGemini();
     debugPrint('✅ Gemini 초기화 성공!');
     final dir = await getApplicationDocumentsDirectory();
+    debugPrint("✅ 1. 앱 디렉토리 가져오기 성공: ${dir.path}");
 
-    // // fix/HiveError
-    // // 기존 Hive 파일 삭제 시도
+    // 하이브 파일 삭제
+    // >> box not found. did you forget to call hive.openbox() 경우 해결코드
     // try {
-    //   final memoBixFile = File('${dir.path}/memo.hive');
-    //   if (await memoBixFile.exists()) {
-    //     await memoBixFile.delete();
-    //     debugPrint('🔧🧰✅ memo.hive 파일 삭제 완료');
+    //   final memoBoxFile = File('${dir.path}/memo.hive');
+    //   if (await memoBoxFile.exists()) {
+    //     await memoBoxFile.delete();
+    //     debugPrint('🔧🧰 memo.hive 파일 삭제 완료 ✅');
     //   }
 
     //   final todoBoxFile = File('${dir.path}/todo.hive');
     //   if (await todoBoxFile.exists()) {
     //     await todoBoxFile.delete();
-    //     debugPrint('🔧🧰✅ 손상된 todo.hive 파일 삭제 완료');
+    //     debugPrint('🔧🧰 todo.hive 파일 삭제 완료 ✅');
+    //   }
+
+    //   final todoLockFile = File('${dir.path}/todo.lock');
+    //   if (await todoLockFile.exists()) {
+    //     await todoLockFile.delete();
+    //     debugPrint('🔧🧰 todo.lock 파일 삭제 완료 ✅');
     //   }
     // } catch (e) {
-    //   debugPrint('🔧🧰❌ Hive 파일 삭제 실패: $e');
+    //   debugPrint('🔧🧰 Hive 파일 삭제 실패: $e ❌');
+    // }
 
     // Hive 초기화
     Hive.init(dir.path);
-    Hive.registerAdapter(MemoModelAdapter());
+    debugPrint("✅ 2. Hive 초기화 성공");
+
+    // MemoModel 관련 초기화
+    debugPrint("⏳ 3. MemoModelAdapter 등록 시작");
+    if (!Hive.isAdapterRegistered(1)) {
+      Hive.registerAdapter(MemoModelAdapter());
+    }
+    debugPrint("✅ 3. MemoModelAdapter 등록 성공");
+
+    debugPrint("⏳ 4. memo 박스 열기 시작");
     await Hive.openBox<MemoModel>('memo');
+    debugPrint("✅ 4. memo 박스 열기 성공");
+
+    // 카테고리 관련 초기화
+    debugPrint("⏳ 5. category 박스 열기 시작");
     await Hive.openBox<List<String>>("category");
-    Hive.registerAdapter(TodoModelAdapter());
-    await Hive.openBox<TodoModel>('todo');
-    debugPrint("✅ Hive 초기화 성공!");
+    debugPrint("✅ 5. category 박스 열기 성공");
+
+    // TodoModel 관련 초기화
+    debugPrint("⏳ 6. TodoModelAdapter 등록 시작");
+    if (!Hive.isAdapterRegistered(2)) {
+      Hive.registerAdapter(TodoModelAdapter());
+    }
+    debugPrint("✅ 6. TodoModelAdapter 등록 성공");
+
+    debugPrint("⏳ 7. todo 박스 열기 시작");
+    try {
+      await Hive.openBox<TodoModel>('todo');
+      debugPrint("✅ 7. todo 박스 열기 성공");
+    } catch (e) {
+      debugPrint("❌ 7. todo 박스 열기 실패: $e");
+      // 박스 다시 생성 시도
+      try {
+        await Hive.deleteBoxFromDisk('todo');
+        debugPrint("🔄 todo 박스 삭제 후 다시 생성 시도");
+        await Hive.openBox<TodoModel>('todo');
+        debugPrint("✅ todo 박스 재생성 성공");
+      } catch (e2) {
+        debugPrint("❌ todo 박스 재생성 실패: $e2");
+        throw Exception("Todo 박스 생성 실패: $e2");
+      }
+    }
+
+    debugPrint("✅ 8. Hive 전체 초기화 완료!");
   } catch (e) {
     debugPrint('❌ 앱 초기화 실패: $e');
+    // 어떤 단계에서 실패했는지 스택 트레이스 출력
+    debugPrint('❌ 스택 트레이스: ${StackTrace.current}');
   }
   runApp(const MainApp());
-  // } catch (e) {}
 }
 
 class MainApp extends StatelessWidget {
@@ -114,8 +161,8 @@ class MainApp extends StatelessWidget {
         // todoMode
         ChangeNotifierProvider<TodoRepositoryRemote>(
           create: (context) => TodoRepositoryRemote(
-              firestoreService: context.read<TodoFirebaseService>(),
-              hiveService: context.read<TodoHiveService>()),
+              todoFirestoreService: context.read<TodoFirebaseService>(),
+              todoHiveService: context.read<TodoHiveService>()),
         ),
       ],
       child: MaterialApp.router(
