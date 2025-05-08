@@ -111,7 +111,7 @@ class TodoViewModel extends ChangeNotifier {
       _cachedTodoModels[todoId] = newTodo;
 
       // ValueNotifier 업데이트 - UI가 실시간으로 반영되도록 함
-      _toggleCheck.value = {..._toggleCheck.value, todoId: newTodo};
+      _toggleCheck.value = {..._toggleCheck.value, newTodo.todoId: newTodo};
 
       _isLoading = false;
       notifyListeners();
@@ -130,15 +130,29 @@ class TodoViewModel extends ChangeNotifier {
     _todoRepository.deleteTodo(todoId);
   }
 
-  void updateTodo(TodoModel todoModel) async {
+  Future<void> updateTodo(TodoModel todoModel) async {
     try {
+      debugPrint('== updateTodo 시작: ${todoModel.todoId} ==');
+      debugPrint('업데이트할 상태: ${todoModel.isDone}');
+
       // 로컬 캐시 업데이트
       _cachedTodoModels[todoModel.todoId] = todoModel;
+      debugPrint('캐시 업데이트 완료');
+
+      // ValueNotifier 업데이트 - UI가 즉시 갱신되도록 함
+      _toggleCheck.value = {
+        ..._toggleCheck.value,
+        todoModel.todoId: todoModel,
+      };
+      debugPrint(
+          'ValueNotifier 업데이트 완료: ${_toggleCheck.value[todoModel.todoId]?.isDone}');
+
       notifyListeners();
+      debugPrint('notifyListeners 호출 완료');
 
       // Todo Repository 통해 Hive & Firebase에 저장
       await _todoRepository.updateTodo(todoModel);
-      debugPrint("✅ 할일 업데이트 완료: ${todoModel.todoId}");
+      debugPrint("✅ 할일 업데이트 완료: ${todoModel.todoId}, 상태: ${todoModel.isDone}");
     } catch (e) {
       debugPrint("❌ 할일 업데이트 중 오류 발생: $e");
       _error = e.toString();
@@ -152,23 +166,35 @@ class TodoViewModel extends ChangeNotifier {
       // 해당 ID의 TODO 찾기
       final targetTodo = _cachedTodoModels[todoId];
       if (targetTodo != null) {
+        debugPrint("현재 완료 상태: ${targetTodo.isDone}");
+
         // 완료 상태 반전
+        final bool newDoneState = !(targetTodo.isDone ?? false);
+        debugPrint("새 완료 상태: $newDoneState");
+
         final updatedTodo = targetTodo.copyWith(
-          isDone: !(targetTodo.isDone ?? false),
+          isDone: newDoneState,
           lastModified: DateTime.now(),
         );
 
-        // 상태 업데이트
-        _toggleCheck.value = {..._toggleCheck.value, todoId: updatedTodo};
+        // 상태 업데이트(UI 반영)
+        debugPrint(
+            "업데이트 전 _toggleCheck 값: ${_toggleCheck.value[todoId]?.isDone}");
+        _toggleCheck.value = {
+          ..._toggleCheck.value,
+          updatedTodo.todoId: updatedTodo
+        };
+        debugPrint(
+            "업데이트 후 _toggleCheck 값: ${_toggleCheck.value[todoId]?.isDone}");
 
-        // 로컬 캐시 업데이트
-        // 상태 변경을 수동으로 알려야하고, 변경이 여러 곳에서 발생할 수 있음
-        // _cachedTodoModels[todoId] = updatedTodo;
-        // notifyListeners();
+        // 로컬 캐시 직접 업데이트(안정성 강화 목적)
+        _cachedTodoModels[todoId] = updatedTodo;
 
-        // todo Repo 통해 저장
+        // todo Repo 저장소 통해 저장
         await _todoRepository.updateTodo(updatedTodo);
-        debugPrint("✅ Todo 완료 상태 변경: $todoId, 완료: ${updatedTodo.isDone}");
+        debugPrint("✅ Todo 완료 상태 변경: $todoId, 완료: $newDoneState");
+      } else {
+        debugPrint("❌ 해당 ID의 Todo를 찾을 수 없음: $todoId");
       }
     } catch (e) {
       debugPrint("❌ Todo 완료 상태 변경 중 오류 발생: $e");

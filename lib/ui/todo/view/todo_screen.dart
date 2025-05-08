@@ -2,6 +2,7 @@ import 'package:classify/domain/models/todo/todo_model.dart';
 import 'package:flutter/material.dart';
 import 'package:classify/ui/todo/view_models/todo_view_model.dart';
 import 'package:classify/utils/top_level_setting.dart';
+import 'package:flutter/scheduler.dart';
 
 class TodoScreen extends StatelessWidget {
   final TodoViewModel todoViewModel;
@@ -53,9 +54,9 @@ class TodoScreen extends StatelessWidget {
           ],
         ),
         body: ValueListenableBuilder<Map<String, TodoModel>>(
-          valueListenable: this.todoViewModel.toggleCheck,
-          builder: (context, todos, child) {
-            final todoList = todos.values.toList()
+          valueListenable: todoViewModel.toggleCheck,
+          builder: (context, todoMap, child) {
+            final todoList = todoMap.values.toList()
               ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
             return TabBarView(
@@ -203,8 +204,53 @@ Widget _buildTodoGridItem(
               children: [
                 Checkbox(
                   value: todoObject.isDone ?? false,
-                  onChanged: (_) =>
-                      viewModel.toggleCompleted(todoObject.todoId),
+                  onChanged: (newValue) {
+                    // 디버그 로그 추가
+                    debugPrint('===== 체크박스 클릭 =====');
+                    debugPrint('todoId: ${todoObject.todoId}');
+                    debugPrint('현재 상태: ${todoObject.isDone}');
+                    debugPrint('새 상태: $newValue');
+
+                    viewModel.toggleCompleted(todoObject.todoId);
+                    // 간단한 상태 변경
+                    TodoModel updatedTodo = todoObject.copyWith(
+                      isDone: newValue, //
+                      lastModified: DateTime.now(),
+                    );
+                    debugPrint('업데이트된 상태: ${updatedTodo.isDone}');
+
+// 체크박스 onChanged 이벤트 핸들러 내부에서
+                    viewModel.updateTodo(updatedTodo).then((_) {
+                      // 다음 프레임에서 탭 전환 실행
+                      SchedulerBinding.instance.addPostFrameCallback((_) {
+                        if (newValue == true) {
+                          DefaultTabController.of(context).animateTo(1);
+                        } else {
+                          DefaultTabController.of(context).animateTo(0);
+                        }
+                      });
+                    });
+
+                    debugPrint('===== 체크박스 처리 진행 중 =====');
+
+                    // // 탭 전환을 약간 지연시켜 UI가 먼저 업데이트되도록 함
+                    // Future.delayed(Duration(milliseconds: 100), () {
+                    //   // 탭 전환
+                    //   debugPrint('탭 전환 시작');
+                    //   if (newValue == true) {
+                    //     debugPrint('Done 탭으로 이동 시도 (인덱스 1)');
+                    //     DefaultTabController.of(context)
+                    //         .animateTo(1); // TO DONE
+                    //   } else {
+                    //     debugPrint('In Progress 탭으로 이동 시도 (인덱스 0)');
+                    //     DefaultTabController.of(context)
+                    //         .animateTo(0); // To In Progress
+                    //   }
+                    //   debugPrint('탭 전환 완료');
+                    // });
+
+                    debugPrint('===== 체크박스 처리 진행 중 =====');
+                  },
                 ),
                 IconButton(
                   onPressed: () {
