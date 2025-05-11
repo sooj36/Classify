@@ -17,6 +17,10 @@ class _TodoScreenState extends State<TodoScreen> {
   List<TodoModel> oldestTodos = [];
   bool isLatestSort = true;
 
+  String _formatDateTime(DateTime dateTime) {
+    return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -199,6 +203,18 @@ class _TodoScreenState extends State<TodoScreen> {
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Text(
+                        '${_formatDateTime(todo.lastModified ?? todo.createdAt)}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
