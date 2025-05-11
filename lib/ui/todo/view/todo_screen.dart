@@ -84,6 +84,47 @@ class _TodoScreenState extends State<TodoScreen> {
     );
   }
 
+  void _showEditTodoDialog(TodoModel todo) {
+    final TextEditingController todoController =
+        TextEditingController(text: todo.todoContent);
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: TextField(
+              controller: todoController,
+              decoration: const InputDecoration(hintText: '할 일을 채워주세요'),
+              autofocus: true,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('취소'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (todoController.text.trim().isNotEmpty) {
+                    // 수정된 Todo 모델 생성
+                    final updatedTodo = todo.copyWith(
+                      todoContent: todoController.text,
+                      lastModified: DateTime.now(),
+                    );
+                    // ViewModel을 통해 업데이트
+                    widget.todoViewModel.updateTodo(updatedTodo);
+                    Navigator.pop(context);
+                    setState(() {
+                      _sortTodos();
+                    });
+                  }
+                },
+                child: const Text('수정'),
+              ),
+            ],
+          );
+        });
+  }
+
   Widget _buildTodoList(List<TodoModel> todos) {
     if (todos.isEmpty) {
       return Center(
@@ -113,7 +154,7 @@ class _TodoScreenState extends State<TodoScreen> {
       itemCount: todos.length,
       itemBuilder: (context, index) =>
           todoCards(context, todos[index], onTaskCompleted: (todoId) {
-        widget.todoViewModel.toggleTodoStatus(todoId); 
+        widget.todoViewModel.toggleTodoStatus(todoId);
         setState(() {
           // _sortTodos();
         });
@@ -123,41 +164,46 @@ class _TodoScreenState extends State<TodoScreen> {
 
   Widget todoCards(BuildContext context, TodoModel todo,
       {required Function(String) onTaskCompleted}) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Transform.scale(
-              scale: 1.2,
-              child: Checkbox(
-                value: todo.isDone,
-                onChanged: (bool? value) {
-                  if (value == true) {
-                    // 토글 클릭 시 !
-                    // onTaskCompleted(todo.todoId); 
-                    widget.todoViewModel.toggleTodoStatus(todo.todoId);
-                  }
-                },
+    return InkWell(
+      onTap: () {
+        _showEditTodoDialog(todo);
+      },
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Transform.scale(
+                scale: 1.2,
+                child: Checkbox(
+                  value: todo.isDone,
+                  onChanged: (bool? value) {
+                    if (value == true) {
+                      // 토글 클릭 시 !
+                      // onTaskCompleted(todo.todoId);
+                      widget.todoViewModel.toggleTodoStatus(todo.todoId);
+                    }
+                  },
+                ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    todo.todoContent,
-                    style: const TextStyle(fontSize: 14),
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      todo.todoContent,
+                      style: const TextStyle(fontSize: 14),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -107,7 +107,6 @@ class TodoViewModel extends ChangeNotifier {
     try {
       // 로컬 캐시 업데이트
       _cachedTodos[todoModel.todoId] = todoModel;
-      // await
       // 저장소 업데이트
       await _todoRepository.updateTodo(todoModel);
       notifyListeners();
