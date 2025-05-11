@@ -240,6 +240,8 @@ class _TodoScreenState extends State<TodoScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          leading: const SizedBox.shrink(), // 뒤로가기 버튼 제거
+          toolbarHeight: 20, // 높이
           elevation: 2,
           backgroundColor: AppTheme.decorationColor1,
           bottom: const TabBar(
@@ -331,9 +333,13 @@ class _TodoScreenState extends State<TodoScreen> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: _showAddTodoDialog,
-          backgroundColor: AppTheme.secondaryColor1,
-          child: const Icon(Icons.add_box_sharp),
+          backgroundColor: AppTheme.secondaryColor1.withOpacity(0.7),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(35),
+          ),
+          child: const Icon(Icons.today_outlined),
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }

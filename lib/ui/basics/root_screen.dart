@@ -51,7 +51,8 @@ class _RootScreenState extends State<RootScreen> {
       appBar: AppBar(
         title: TextButton(
           onPressed: () {
-            context.go(Routes.todo);
+            // todo go
+            context.push(Routes.todo);
           },
           child: Text(
             "Todo목록",
