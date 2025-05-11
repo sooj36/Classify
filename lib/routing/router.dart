@@ -2,6 +2,7 @@ import 'package:classify/data/repositories/todo/todo_repository_remote.dart';
 import 'package:classify/domain/models/todo/todo_model.dart';
 import 'package:classify/ui/todo/view_models/todo_view_model.dart'
     show TodoViewModel;
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:classify/routing/routes.dart';
 import 'package:classify/ui/basics/root_screen.dart';
@@ -27,11 +28,26 @@ import 'package:classify/ui/study/view/study_screen.dart';
 import 'package:classify/ui/basics/profile_screen.dart';
 import 'package:classify/ui/todo/view/todo_screen.dart';
 
+// todo 페이지 진입 시, appbar 안보이게 설정
+final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> _shellNavigatorKey =
+    GlobalKey<NavigatorState>();
+
 final router = GoRouter(
+  // 루트 네비게이터 키 추가
+  navigatorKey: _rootNavigatorKey,
   initialLocation:
       firebaseAuth.currentUser != null ? Routes.today : Routes.login,
   routes: [
+    // todo 라우트를 shellRoute 밖으로 이동
+    GoRoute(
+      path: Routes.todo,
+      builder: (context, state) => TodoScreen(
+        todoViewModel: Provider.of<TodoViewModel>(context, listen: false),
+      ),
+    ),
     ShellRoute(
+      navigatorKey: _shellNavigatorKey,
       builder: (context, state, child) => MultiProvider(
         providers: [
           ChangeNotifierProvider(
@@ -54,11 +70,11 @@ final router = GoRouter(
               memoRepository: context.read<MemoRepositoryRemote>(),
             ),
           ),
-          ChangeNotifierProvider(
-            create: (context) => TodoViewModel(
-              todoRepository: context.read<TodoRepositoryRemote>(),
-            ),
-          ),
+          // ChangeNotifierProvider(
+          //   create: (context) => TodoViewModel(
+          //     todoRepository: context.read<TodoRepositoryRemote>(),
+          //   ),
+          // ),
         ],
         child: RootScreen(child: child),
       ),
@@ -97,15 +113,15 @@ final router = GoRouter(
             child: const ProfileScreen(),
           ),
         ),
-        GoRoute(
-          path: Routes.todo,
-          pageBuilder: (context, state) => NoTransitionPage<void>(
-            key: state.pageKey,
-            child:  TodoScreen(
-              todoViewModel: context.read<TodoViewModel>(),
-            ),
-          ),
-        ),
+        // GoRoute(
+        //   path: Routes.todo,
+        //   pageBuilder: (context, state) => NoTransitionPage<void>(
+        //     key: state.pageKey,
+        //     child: TodoScreen(
+        //       todoViewModel: context.read<TodoViewModel>(),
+        //     ),
+        //   ),
+        // ),
       ],
     ),
     // 독립적인 전체 화면 라우트들

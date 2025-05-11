@@ -51,11 +51,10 @@ class _RootScreenState extends State<RootScreen> {
       appBar: AppBar(
         title: TextButton(
           onPressed: () {
-            context.push(Routes.todo);
-            
+            context.go(Routes.todo);
           },
           child: Text(
-            "Todo",
+            "Todo목록",
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
               color: Colors.white,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:classify/data/repositories/todo/todo_repository_remote.dart';
 import 'package:classify/data/services/todo_services/todo_firebase_service.dart';
 import 'package:classify/data/services/todo_services/todo_hive_service.dart';
+import 'package:classify/ui/todo/view_models/todo_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -73,7 +74,6 @@ void main() async {
     debugPrint("✅ 3. MemoModelAdapter 등록 성공");
 
     await Hive.openBox<MemoModel>('memo');
-
 
     // 카테고리 관련 초기화
     await Hive.openBox<List<String>>("category");
@@ -158,6 +158,13 @@ class MainApp extends StatelessWidget {
           create: (context) => TodoRepositoryRemote(
               todoFirestoreService: context.read<TodoFirebaseService>(),
               todoHiveService: context.read<TodoHiveService>()),
+        ),
+
+        // todoViewModel 최상위 MultiProvider에 추가
+        ChangeNotifierProvider<TodoViewModel>(
+          create: (context) => TodoViewModel(
+            todoRepository: context.read<TodoRepositoryRemote>(),
+          ),
         ),
       ],
       child: MaterialApp.router(
