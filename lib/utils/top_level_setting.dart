@@ -23,12 +23,14 @@ class PlatformWidget extends StatelessWidget {
 //최상위 앱 테마를 설정
 class AppTheme {
   // 메인 컬러
-  static const Color primaryColor = Color(0xFF2E7D32); // 깊은 초록색 - 앱의 기본 브랜드 색상
+  static const Color primaryColor = Color(0xFF48B66F); // 깊은 초록색 - 앱의 기본 브랜드 색상 0xFF2E7D32
   static const Color secondaryColor1 =
       Color(0xFF388E3C); // 미디엄 초록색 - 메인 컬러보다 약간 밝은 변형
   static const Color secondaryColor2 =
       Color(0xFF00796B); // 티얼 그린 - 푸른 기가 살짝 도는 초록색
   static const Color accentColor = Color(0xFF8BC34A); // 라임 그린 - 강조가 필요한 요소에 사용
+
+  static const Color additionalColor  = Color(0xFF48B66F);
 
   // 배경 및 장식 컬러
   static const Color backgroundColor = Color(0xFFFFFFFF); // 화이트 - 기본 배경 색상

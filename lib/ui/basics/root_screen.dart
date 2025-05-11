@@ -52,6 +52,7 @@ class _RootScreenState extends State<RootScreen> {
         title: TextButton(
           onPressed: () {
             context.push(Routes.todo);
+            
           },
           child: Text(
             "Todo",

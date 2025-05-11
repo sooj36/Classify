@@ -44,19 +44,19 @@ class TodoModel extends HiveObject {
   }) : createdAt = createdAt ?? DateTime.now();
 
   TodoModel copyWith({
-    String? todo,
+    String? todoContent,
     bool? isImportant,
     DateTime? lastModified,
     DateTime? createdAt,
     bool? isDone,
-    String? memoId,
+    String? todoId,
   }) =>
       TodoModel(
-        todoContent: todo ?? todoContent,
-        isImportant: isImportant ?? isImportant,
-        lastModified: lastModified ?? lastModified,
-        createdAt: createdAt ?? createdAt,
-        isDone: isDone ?? isDone,
-        todoId: memoId ?? todoId,
+        todoContent: todoContent ?? this.todoContent,
+        isImportant: isImportant ?? this.isImportant,
+        lastModified: lastModified ?? this.lastModified,
+        createdAt: createdAt ?? this.createdAt,
+        isDone: isDone ?? this.isDone,
+        todoId: todoId ?? this.todoId,
       );
 }

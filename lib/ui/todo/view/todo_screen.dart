@@ -1,17 +1,167 @@
 import 'package:classify/domain/models/todo/todo_model.dart';
-import 'package:flutter/material.dart';
 import 'package:classify/ui/todo/view_models/todo_view_model.dart';
 import 'package:classify/utils/top_level_setting.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:flutter/material.dart';
 
-class TodoScreen extends StatelessWidget {
+class TodoScreen extends StatefulWidget {
   final TodoViewModel todoViewModel;
-  // bool isImportant = false;
 
-  const TodoScreen({
-    super.key,
-    required this.todoViewModel,
-  });
+  const TodoScreen({super.key, required this.todoViewModel});
+
+  @override
+  State<TodoScreen> createState() => _TodoScreenState();
+}
+
+class _TodoScreenState extends State<TodoScreen> {
+  List<TodoModel> latestTodos = [];
+  List<TodoModel> oldestTodos = [];
+  bool isLatestSort = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.todoViewModel.initCachedTodos();
+      widget.todoViewModel.connectStreamToCachedTodos();
+    });
+    // 리스너 추가
+    widget.todoViewModel.addListener(_todoListener);
+  }
+
+  void _todoListener() {
+    if (mounted) {
+      _sortTodos();
+      setState(() {});
+    }
+  }
+
+  void _sortTodos() {
+    if (widget.todoViewModel.cachedTodos.isNotEmpty) {
+      latestTodos =
+          List<TodoModel>.from(widget.todoViewModel.cachedTodos.values)
+            ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      oldestTodos =
+          List<TodoModel>.from(widget.todoViewModel.cachedTodos.values)
+            ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    }
+  }
+
+  void _showAddTodoDialog() {
+    final TextEditingController todoController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('할 일 추가'),
+          content: TextField(
+            controller: todoController,
+            decoration: const InputDecoration(
+              hintText: '할 일을 입력하세요',
+            ),
+            autofocus: true,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('취소'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (todoController.text.trim().isNotEmpty) {
+                  widget.todoViewModel.createTodo(todoController.text);
+                  Navigator.pop(context);
+                  setState(() {
+                    _sortTodos();
+                  });
+                }
+              },
+              child: const Text('추가'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildTodoList(List<TodoModel> todos) {
+    if (todos.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.note_alt_outlined,
+              size: 48,
+              color: Colors.grey[400],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "할 일이 없습니다",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: todos.length,
+      itemBuilder: (context, index) =>
+          todoCards(context, todos[index], onTaskCompleted: (todoId) {
+        widget.todoViewModel.toggleTodoStatus(todoId); 
+        setState(() {
+          // _sortTodos();
+        });
+      }),
+    );
+  }
+
+  Widget todoCards(BuildContext context, TodoModel todo,
+      {required Function(String) onTaskCompleted}) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Transform.scale(
+              scale: 1.2,
+              child: Checkbox(
+                value: todo.isDone,
+                onChanged: (bool? value) {
+                  if (value == true) {
+                    // 토글 클릭 시 !
+                    // onTaskCompleted(todo.todoId); 
+                    widget.todoViewModel.toggleTodoStatus(todo.todoId);
+                  }
+                },
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    todo.todoContent,
+                    style: const TextStyle(fontSize: 14),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,363 +169,108 @@ class TodoScreen extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          // leading: IconButton(
-          //   icon: const Icon(Icons.arrow_back, color: AppTheme.textColor1),
-          //   onPressed: () => Navigator.of(context).pop(),
-          // ), // 원복 예정
-          title: const TabBar(
-            indicatorColor: AppTheme.decorationColor1,
-            labelColor: AppTheme.primaryColor,
-            unselectedLabelColor: AppTheme.textColor2,
-            indicator: UnderlineTabIndicator(
-              borderSide: BorderSide(width: 2.0, color: AppTheme.primaryColor),
+          elevation: 2,
+          backgroundColor: AppTheme.decorationColor1,
+          bottom: const TabBar(
+            indicatorColor: AppTheme.additionalColor,
+            indicatorWeight: 3,
+            labelColor: AppTheme.secondaryColor2,
+            labelStyle: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+            ),
+            unselectedLabelStyle: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
             ),
             tabs: [
-              Tab(text: 'In Progress'),
-              Tab(text: 'Done'),
+              Tab(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.pending_actions),
+                    SizedBox(width: 8),
+                    Text('IN PROGRESS'),
+                  ],
+                ),
+              ),
+              Tab(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.task_alt),
+                    SizedBox(width: 8),
+                    Text('DONE'),
+                  ],
+                ),
+              ),
             ],
           ),
-          backgroundColor: Colors.amber, // 임시
-          elevation: 0,
-          actions: [
-            IconButton(
-              onPressed: () {
-                //검색 기능
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('검색 기능이 곧 추가될 예정입니다'),
-                    duration: Duration(seconds: 1),
-                    behavior: SnackBarBehavior.fixed,
-                  ),
-                );
-              },
-              icon: const Icon(Icons.search, color: AppTheme.textColor1),
-            ),
-          ],
         ),
-        body: ValueListenableBuilder<Map<String, TodoModel>>(
-          valueListenable: todoViewModel.toggleCheck,
-          builder: (context, todoMap, child) {
-            final todoList = todoMap.values.toList()
-              ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        body: ListenableBuilder(
+          listenable: widget.todoViewModel,
+          builder: (context, _) {
+            if (widget.todoViewModel.error != null) {
+              return Center(
+                child: Text('에러 발생: ${widget.todoViewModel.error}'),
+              );
+            }
+
+            if (widget.todoViewModel.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (widget.todoViewModel.cachedTodos.isEmpty) {
+              return const Center(
+                child: Text(
+                  "작성된 할 일이 없습니다\n추가해주세요",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
+                ),
+              );
+            }
+
+            // _sortTodos();
 
             return TabBarView(
               children: [
-                // 미완료 탭
-                _buildTabContent(
-                    todoList.where((todo) => todo.isDone != true).toList(),
-                    todoViewModel),
-
-                // 완료 탭
-                _buildTabContent(
-                    todoList.where((todo) => todo.isDone == true).toList(),
-                    todoViewModel),
+                _buildTodoList(
+                  isLatestSort
+                      ? latestTodos
+                          .where((todo) => todo.isDone == false)
+                          .toList()
+                      : oldestTodos
+                          .where((todo) => todo.isDone == false)
+                          .toList(),
+                ),
+                _buildTodoList(
+                  isLatestSort
+                      ? latestTodos
+                          .where((todo) => todo.isDone == true)
+                          .toList()
+                      : oldestTodos
+                          .where((todo) => todo.isDone == true)
+                          .toList(),
+                ),
               ],
             );
           },
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => _showAddTodoDialog(context, todoViewModel),
-          child: const Icon(Icons.add_box_outlined),
+          onPressed: _showAddTodoDialog,
+          backgroundColor: AppTheme.secondaryColor1,
+          child: const Icon(Icons.add_box_sharp),
         ),
       ),
     );
   }
-}
 
-Widget _buildTabContent(List<TodoModel> filteredList, TodoViewModel viewModel) {
-  return filteredList.isEmpty
-      ? _buildEmptyState()
-      : _buildTodoContent(filteredList, viewModel);
-}
-
-Widget _buildEmptyState() {
-  return Padding(
-    padding: const EdgeInsets.all(24.0),
-    child: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.check_circle_outline,
-            size: 80,
-            color: Colors.grey[400],
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            '할 일이 없습니다',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppTheme.textColor1,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            '새로운 할 일을 추가해주세요 💫',
-            style: TextStyle(
-              fontSize: 16,
-              color: AppTheme.textColor2,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-Widget _buildTodoContent(List<TodoModel> todoList, TodoViewModel viewModel) {
-  return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildHeader(todoList.length),
-        const SizedBox(height: 8),
-        Expanded(
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 0.9,
-            ),
-            itemCount: todoList.length,
-            itemBuilder: (context, index) =>
-                _buildTodoGridItem(context, todoList[index], viewModel),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget _buildHeader(int count) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.end,
-    children: [
-      Text(
-        // '${widget.viewModel.cachedTodoModels.length}개',
-        '$count개',
-        style: const TextStyle(
-          fontSize: 16,
-          fontStyle: FontStyle.italic,
-          color: AppTheme.textColor2,
-        ),
-      ),
-    ],
-  );
-}
-
-Widget _buildTodoGridItem(
-    BuildContext context, TodoModel todoObject, TodoViewModel viewModel) {
-  return Card(
-    elevation: 2,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(15),
-      side: BorderSide(
-        color: todoObject.isImportant == true
-            ? AppTheme.errorColor
-            : AppTheme.darkAccentColor,
-        width: 1.5,
-      ),
-    ),
-    child: InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: () {
-        // todo 상세 보기 등 추가
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('상세보기 기능이 곧 추가될 예정입니다.'),
-            duration: Duration(seconds: 1),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Checkbox(
-                  value: todoObject.isDone ?? false,
-                  onChanged: (newValue) {
-                    // 디버그 로그 추가
-                    debugPrint('===== 체크박스 클릭 =====');
-                    debugPrint('todoId: ${todoObject.todoId}');
-                    debugPrint('현재 상태: ${todoObject.isDone}');
-                    debugPrint('새 상태: $newValue');
-
-                    viewModel.toggleCompleted(todoObject.todoId);
-                    // 간단한 상태 변경
-                    TodoModel updatedTodo = todoObject.copyWith(
-                      isDone: newValue, //
-                      lastModified: DateTime.now(),
-                    );
-                    debugPrint('업데이트된 상태: ${updatedTodo.isDone}');
-
-// 체크박스 onChanged 이벤트 핸들러 내부에서
-                    viewModel.updateTodo(updatedTodo).then((_) {
-                      // 다음 프레임에서 탭 전환 실행
-                      SchedulerBinding.instance.addPostFrameCallback((_) {
-                        if (newValue == true) {
-                          DefaultTabController.of(context).animateTo(1);
-                        } else {
-                          DefaultTabController.of(context).animateTo(0);
-                        }
-                      });
-                    });
-
-                    debugPrint('===== 체크박스 처리 진행 중 =====');
-
-                    // // 탭 전환을 약간 지연시켜 UI가 먼저 업데이트되도록 함
-                    // Future.delayed(Duration(milliseconds: 100), () {
-                    //   // 탭 전환
-                    //   debugPrint('탭 전환 시작');
-                    //   if (newValue == true) {
-                    //     debugPrint('Done 탭으로 이동 시도 (인덱스 1)');
-                    //     DefaultTabController.of(context)
-                    //         .animateTo(1); // TO DONE
-                    //   } else {
-                    //     debugPrint('In Progress 탭으로 이동 시도 (인덱스 0)');
-                    //     DefaultTabController.of(context)
-                    //         .animateTo(0); // To In Progress
-                    //   }
-                    //   debugPrint('탭 전환 완료');
-                    // });
-
-                    debugPrint('===== 체크박스 처리 진행 중 =====');
-                  },
-                ),
-                IconButton(
-                  onPressed: () {
-                    _showDeleteConfirmation(context, todoObject, viewModel);
-                  },
-                  icon: const Icon(
-                    Icons.delete_outline,
-                    size: 20,
-                  ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
-              ],
-            ),
-            Expanded(
-              child: Text(
-                todoObject.todoContent,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  decoration: todoObject.isDone == true
-                      ? TextDecoration.lineThrough
-                      : null,
-                  color: todoObject.isDone == true
-                      ? const Color.fromARGB(255, 10, 16, 10)
-                      : const Color.fromARGB(255, 7, 15, 14),
-                ),
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '${todoObject.createdAt.year}.${todoObject.createdAt.month}.${todoObject.createdAt.day}',
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w300,
-                color: AppTheme.textColor1,
-              ),
-            ),
-            const SizedBox(height: 1),
-            Text(
-              '${todoObject.createdAt.hour.toString().padLeft(2, '0')}:${todoObject.createdAt.minute.toString().padLeft(2, '0')}',
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w300,
-                color: AppTheme.textColor1,
-              ),
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-void _showDeleteConfirmation(
-    BuildContext context, TodoModel todoObject, TodoViewModel viewModel) {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text('할 일 삭제'),
-      content: Text('\'${todoObject.todoContent}\' 항목을 삭제하시겠습니까?'),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('취소'),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-            viewModel.deleteTodo(todoObject.todoId);
-          },
-          child: const Text('삭제', style: TextStyle(color: Colors.red)),
-        ),
-      ],
-    ),
-  );
-}
-
-// 할일 추가 다이얼로그
-void _showAddTodoDialog(BuildContext context, TodoViewModel todoViewModel) {
-  final TextEditingController contentController = TextEditingController();
-
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text('Todo List 추가'),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 16),
-            TextField(
-              controller: contentController,
-              autofocus: true,
-              decoration: const InputDecoration(
-                labelText: 'Todo',
-                hintText: '상세 내용을 입력하세요',
-                hintStyle: TextStyle(color: Color.fromARGB(255, 97, 95, 95)),
-              ),
-              maxLines: 5,
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('취소'),
-        ),
-        TextButton(
-          onPressed: () {
-            if (contentController.text.trim().isNotEmpty) {
-              // ViewModel의 addTodo 메서드 호출
-
-              todoViewModel.addTodo(contentController.text.trim());
-              Navigator.pop(context);
-            }
-          },
-          child:
-              const Text('추가', style: TextStyle(color: AppTheme.primaryColor)),
-        ),
-      ],
-    ),
-  );
+  @override
+  void dispose() {
+    // widget.todoViewModel.dispose();
+    widget.todoViewModel.removeListener(_todoListener);
+    super.dispose();
+  }
 }

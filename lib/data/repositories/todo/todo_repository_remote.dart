@@ -35,7 +35,7 @@ class TodoRepositoryRemote extends TodoRepository {
       String uuid = const Uuid().v4();
       // 새로운 TodoModel 생성 (memoId가 없는 경우를 대비)
       final newTodo =
-          todoId.todoId.isEmpty ? todoId.copyWith(todo: uuid) : todoId;
+          todoId.todoId.isEmpty ? todoId.copyWith(todoId: uuid) : todoId;
 
       // Hive에 저장
       _todoHiveService.saveTodo(newTodo, uuid);
@@ -74,21 +74,10 @@ class TodoRepositoryRemote extends TodoRepository {
   @override
   Future<void> deleteTodo(String todoId) async {
     try {
-      // (리펙토링) hive 선 삭제, 로그인 삭제후 firebase에서 삭제
       _todoHiveService.deleteTodo(todoId);
       debugPrint('✅ Hive에서 Todo 삭제 완료');
 
-      if (firebaseAuth.currentUser != null) {
-        try {
-          await _todoFirestoreService.deleteTodo(todoId);
-        } catch (e) {
-          debugPrint('⚠️ Firestore 삭제 실패 (로컬만 삭제됨): $e');
-        }
-
-        debugPrint('✅ Firestore에서 Todo 삭제 완료');
-      } else {
-        debugPrint('⚠️ 로그인되지 않아 Firestore에서 삭제하지 않음');
-      }
+      await _todoFirestoreService.deleteTodo(todoId);
     } catch (e) {
       debugPrint(
           '❌ Todo 삭제 실패 in [deleteTodo method] in [todo_repository_remote]: $e');

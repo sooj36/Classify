@@ -37,7 +37,7 @@ void main() async {
     final dir = await getApplicationDocumentsDirectory();
     debugPrint("✅ 1. 앱 디렉토리 가져오기 성공: ${dir.path}");
 
-    // 하이브 파일 삭제
+    // // 하이브 파일 삭제
     // >> box not found. did you forget to call hive.openbox() 경우 해결코드
     // try {
     //   final memoBoxFile = File('${dir.path}/memo.hive');
@@ -72,23 +72,18 @@ void main() async {
     }
     debugPrint("✅ 3. MemoModelAdapter 등록 성공");
 
-    debugPrint("⏳ 4. memo 박스 열기 시작");
     await Hive.openBox<MemoModel>('memo');
-    debugPrint("✅ 4. memo 박스 열기 성공");
+
 
     // 카테고리 관련 초기화
-    debugPrint("⏳ 5. category 박스 열기 시작");
     await Hive.openBox<List<String>>("category");
-    debugPrint("✅ 5. category 박스 열기 성공");
 
     // TodoModel 관련 초기화
-    debugPrint("⏳ 6. TodoModelAdapter 등록 시작");
     if (!Hive.isAdapterRegistered(2)) {
       Hive.registerAdapter(TodoModelAdapter());
     }
     debugPrint("✅ 6. TodoModelAdapter 등록 성공");
 
-    debugPrint("⏳ 7. todo 박스 열기 시작");
     try {
       await Hive.openBox<TodoModel>('todo');
       debugPrint("✅ 7. todo 박스 열기 성공");

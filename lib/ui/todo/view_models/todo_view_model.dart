@@ -4,80 +4,117 @@ import 'package:classify/domain/models/todo/todo_model.dart';
 import 'package:flutter/material.dart';
 
 class TodoViewModel extends ChangeNotifier {
-  }
+  final TodoRepository _todoRepository;
+  late Stream<Map<String, TodoModel>> _todoObjects;
+  Map<String, TodoModel> _cachedTodos = {};
+  bool _isLoading = false;
+  String? _error;
 
+  TodoViewModel({required TodoRepository todoRepository})
+      : _todoRepository = todoRepository,
+        _isLoading = false,
+        _error = null;
 
-  //정렬 (최신순)
-  void sortByLatest() {
-    _isLatestSort = true;
-    List<TodoModel> sortedList = _cachedTodoModels.values.toList()
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+// getter
+  Stream<Map<String, TodoModel>> get todoObjects => _todoObjects;
+  Map<String, TodoModel> get cachedTodos => _cachedTodos;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
 
-    _cachedTodoModels = {for (var todo in sortedList) todo.todoId: todo};
+  void initCachedTodos() {
+    _cachedTodos = _todoRepository.getTodos();
     notifyListeners();
   }
 
-  // 정렬 (오래된순)
-  void sortByOldest() {
-    _isLatestSort = false;
-    // MAP 형태 데이터를 리스트로 변환하여 오름차순 정렬
-    List<TodoModel> sortedList = _cachedTodoModels.values.toList()
-      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+  Future<void> connectStreamToCachedTodos() async {
+    try {
+      //
+      _isLoading = true;
+      notifyListeners();
 
-    // 다시 MAP 생성
-    _cachedTodoModels = {for (var todo in sortedList) todo.todoId: todo};
-    notifyListeners();
-  }
+      // todo에 스트림 할당
+      _todoObjects = _todoRepository.watchTodoLocal();
 
-  // 완료된 항목만 필터링
-  Map<String, TodoModel> filterByCompleted() {
-    return Map.fromEntries(
-        _cachedTodoModels.entries.where((entry) => entry.value.isDone == true));
-  }
+      _todoObjects.listen((data) {
+        data.forEach((key, todo) {
+          debugPrint("""
+            📝 Todo[$key]:
+              - content: ${todo.todoContent}
+""");
+        });
+        _cachedTodos = data;
+        _isLoading = false;
+        notifyListeners();
+      });
 
-  // 미완료된 항목만 필터링
-  Map<String, TodoModel> filterByIncomplete() {
-    return Map.fromEntries(
-        _cachedTodoModels.entries.where((entry) => entry.value.isDone != true));
-  }
-
-  // 모든 필터 초기화(필터 해제)
-  Map<String, TodoModel> getAllTodos() {
-    return _cachedTodoModels;
-  }
-
-  // 검색
-  Map<String, TodoModel> searchTodos(String query) {
-    if (query.isEmpty) {
-      return _cachedTodoModels;
+      // 초기 데이터 기다림 (first는 listen과 별도로 작동)
+      _cachedTodos = await _todoObjects.first;
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      debugPrint(
+          "❌ 에러 발생: $e in [connectStreamToCachedTodos method] in [todo_archive_view_model]");
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
     }
-
-    final lowercaseQuery = query.toLowerCase().trim(); // 소문자로 변환
-
-    // 검색어가 포함된 Todo 항목만 필터링
-    return Map.fromEntries(_cachedTodoModels.entries.where((entry) {
-      final todoObject = entry.value;
-      final content = todoObject.todoContent.toLowerCase();
-
-      // 내용에 검색어가 포함되어 있는지 확인
-      return content.contains(lowercaseQuery);
-    }));
   }
 
-  // 로딩 상태 설정
-  void setLoading(bool isLoading) {
-    _isLoading = isLoading;
+  // 새로운 할 일 생성 메서드
+  Future<void> createTodo(String content) async {
+    try {
+      if (content.trim().isEmpty) {
+        _error = "할 일 내용을 입력해주세요";
+        notifyListeners();
+        return;
+      }
+
+      final newTodo = TodoModel(
+          todoContent: content,
+          todoId: '',
+          isDone: false,
+          isImportant: false,
+          createdAt: DateTime.now(),
+          lastModified: DateTime.now());
+
+      final result = await _todoRepository.createAndSaveTodo(newTodo);
+
+      if (result != null) {
+        _error = result;
+        notifyListeners();
+      }
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+    }
+  }
+
+  void toggleTodoStatus(String todoId) {
+    final todo = cachedTodos[todoId];
+    if (todo != null) {
+      final bool isDone = todo.isDone ?? false; // null 체크
+      final updatedTodo = todo.copyWith(isDone: !isDone);
+      updateTodo(updatedTodo);
+    }
+  }
+
+  void deleteTodo(String todoId) {
+    _todoRepository.deleteTodo(todoId);
     notifyListeners();
   }
 
-  // 오류 상태 설정
-  void setError(String errorMessage) {
-    _error = errorMessage;
-    notifyListeners();
+  Future<void> updateTodo(TodoModel todoModel) async {
+    try {
+      // 로컬 캐시 업데이트
+      _cachedTodos[todoModel.todoId] = todoModel;
+      // await
+      // 저장소 업데이트
+      await _todoRepository.updateTodo(todoModel);
+      notifyListeners();
+    } catch (e) {
+      debugPrint("❌ 할일 업데이트 중 오류 발생: $e");
+      _error = e.toString();
+      notifyListeners();
+    }
   }
-
-  // 오류 상태 초기화
-  void clearError() {
-    _error = null;
-    notifyListeners();
-  }
+}
