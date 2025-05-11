@@ -153,7 +153,7 @@ class _TodoScreenState extends State<TodoScreen> {
       );
     }
 
-    return ListView.builder(
+    return GridView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: todos.length,
       itemBuilder: (context, index) =>
@@ -163,6 +163,12 @@ class _TodoScreenState extends State<TodoScreen> {
           // _sortTodos();
         });
       }),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 10.0, // 가로 간격
+        mainAxisSpacing: 10.0, // 세로 간격
+        childAspectRatio: 1.0, // 가로:세로 비율
+      ),
     );
   }
 
@@ -174,52 +180,55 @@ class _TodoScreenState extends State<TodoScreen> {
       },
       child: Card(
         margin: const EdgeInsets.only(bottom: 12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Transform.scale(
+        child: Stack(
+          children: [
+            // 체크박스 (왼쪽 상단)
+            Positioned(
+              top: 8,
+              left: 8,
+              child: Transform.scale(
                 scale: 1.2,
                 child: Checkbox(
                   value: todo.isDone,
                   onChanged: (bool? value) {
-                    if (value == true) {
-                      // 토글 클릭 시 !
-                      // onTaskCompleted(todo.todoId);
-                      widget.todoViewModel.toggleTodoStatus(todo.todoId);
-                    }
+                    // if (value == true) {
+                    widget.todoViewModel.toggleTodoStatus(todo.todoId);
+                    // }
                   },
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      todo.todoContent,
-                      style: const TextStyle(fontSize: 14),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 8),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: Text(
-                        '${_formatDateTime(todo.lastModified ?? todo.createdAt)}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    )
-                  ],
+            ),
+
+            // 할 일 내용 (중앙)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 48, 16, 32),
+              child: Center(
+                child: Text(
+                  todo.todoContent,
+                  style: const TextStyle(fontSize: 15.3),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                 ),
               ),
-            ],
-          ),
+            ),
+
+            // 시간 (오른쪽 하단)
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  _formatDateTime(todo.lastModified ?? todo.createdAt),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
