@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:classify/domain/models/memo/memo_model.dart';
 import 'package:classify/ui/study/view_models/study_view_model.dart';
@@ -88,12 +90,20 @@ class _StudyScreenState extends State<StudyScreen> {
               onPressed: () {
                 widget.viewModel.refreshRandomStudyMemos();
               },
-              icon: const Icon(Icons.refresh, color: Colors.white),
+              icon: const Icon(Icons.refresh, color: AppTheme.textColor1),
               label: const Center(
-                  child: Text('새로고침', style: TextStyle(color: Colors.white))),
+                  child: Text('새로고침',
+                      style: TextStyle(color: AppTheme.textColor1))),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
+                backgroundColor: AppTheme.backgroundColor,
                 foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(13),
+                  side: BorderSide(
+                    color: AppTheme.additionalColor,
+                    width: 2,
+                  ),
+                ),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),

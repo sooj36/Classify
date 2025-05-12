@@ -57,20 +57,64 @@ class _TodoScreenState extends State<TodoScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('할 일 추가'),
-          content: TextField(
-            controller: todoController,
-            decoration: const InputDecoration(
-              hintText: '할 일을 입력하세요',
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text(
+            '할 일 추가',
+            style: TextStyle(
+              color: AppTheme.primaryColor,
+              fontWeight: FontWeight.bold,
             ),
-            autofocus: true,
+            textAlign: TextAlign.center,
+          ),
+          content: Container(
+            width: double.maxFinite,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: todoController,
+                  decoration: InputDecoration(
+                    hintText: '할 일을 입력하세요',
+                    hintStyle: const TextStyle(
+                      color: AppTheme.textColor2,
+                      fontSize: 13,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(color: AppTheme.decorationColor1),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide:
+                          const BorderSide(color: AppTheme.primaryColor, width: 2),
+                    ),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    filled: true,
+                    fillColor: Colors.grey[50],
+                  ),
+                  autofocus: true,
+                  maxLines: 3, // 여러 줄 입력 가능하도록 설정
+                  minLines: 3, // 최소 3줄 높이 유지
+                  textInputAction: TextInputAction.newline, // 엔터키 동작 설정
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('취소'),
+              child: Text(
+                '취소',
+                style: TextStyle(
+                  color: Colors.grey[700],
+                ),
+              ),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 if (todoController.text.trim().isNotEmpty) {
                   widget.todoViewModel.createTodo(todoController.text);
@@ -80,9 +124,19 @@ class _TodoScreenState extends State<TodoScreen> {
                   });
                 }
               },
-              child: const Text('추가'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryColor,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              ),
+              child: Text('추가'),
             ),
           ],
+          actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          buttonPadding: const EdgeInsets.symmetric(horizontal: 8),
         );
       },
     );
@@ -193,6 +247,8 @@ class _TodoScreenState extends State<TodoScreen> {
 
   Widget todoCards(BuildContext context, TodoModel todo,
       {required Function(String) onTaskCompleted}) {
+    final bool isDone = todo.isDone ?? false;
+
     return InkWell(
       onTap: () {
         _showEditTodoDialog(todo);
@@ -224,7 +280,7 @@ class _TodoScreenState extends State<TodoScreen> {
               child: Center(
                 child: Text(
                   todo.todoContent,
-                  style: const TextStyle(fontSize: 15.3),
+                  style: const TextStyle(fontSize: 16),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
@@ -240,18 +296,115 @@ class _TodoScreenState extends State<TodoScreen> {
                 child: Text(
                   _formatDateTime(todo.lastModified ?? todo.createdAt),
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 10,
                     color: Colors.grey[600],
                     fontStyle: FontStyle.italic,
                   ),
                 ),
               ),
             ),
+            // 중요도 표시 (오른쪽 상단)
+            if (todo.isImportant == true)
+              Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: AppTheme.errorColor.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.label_important,
+                      color: Colors.amber,
+                      size: 16,
+                    ),
+                  ))
           ],
         ),
       ),
     );
   }
+  // Widget todoCards(BuildContext context, TodoModel todo,
+  //     {required Function(String) onTaskCompleted}) {
+  //   final bool isDone = todo.isDone ?? false;
+
+  //   return InkWell(
+  //     onTap: () {
+  //       _showEditTodoDialog(todo);
+  //     },
+  //     child: Card(
+  //       margin: const EdgeInsets.only(bottom: 12),
+  //       child: Stack(
+  //         children: [
+  //           // 체크박스 (왼쪽 상단)
+  //           Positioned(
+  //             top: 8,
+  //             left: 8,
+  //             child: Transform.scale(
+  //               scale: 1.2,
+  //               child: Checkbox(
+  //                 value: todo.isDone,
+  //                 onChanged: (bool? value) {
+  //                   // if (value == true) {
+  //                   widget.todoViewModel.toggleTodoStatus(todo.todoId);
+  //                   // }
+  //                 },
+  //               ),
+  //             ),
+  //           ),
+
+  //           // 할 일 내용 (중앙)
+  //           Padding(
+  //             padding: const EdgeInsets.fromLTRB(16, 48, 16, 32),
+  //             child: Center(
+  //               child: Text(
+  //                 todo.todoContent,
+  //                 style: const TextStyle(fontSize: 16),
+  //                 maxLines: 3,
+  //                 overflow: TextOverflow.ellipsis,
+  //                 textAlign: TextAlign.center,
+  //               ),
+  //             ),
+  //           ),
+
+  //           // 시간 (오른쪽 하단)
+  //           Align(
+  //             alignment: Alignment.bottomRight,
+  //             child: Padding(
+  //               padding: const EdgeInsets.all(8.0),
+  //               child: Text(
+  //                 _formatDateTime(todo.lastModified ?? todo.createdAt),
+  //                 style: TextStyle(
+  //                   fontSize: 10,
+  //                   color: Colors.grey[600],
+  //                   fontStyle: FontStyle.italic,
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //           // 중요도 표시 (오른쪽 상단)
+  //           if (todo.isImportant == true)
+  //             Positioned(
+  //                 top: 8,
+  //                 right: 8,
+  //                 child: Container(
+  //                   padding: const EdgeInsets.all(4),
+  //                   decoration: BoxDecoration(
+  //                     color: AppTheme.errorColor.withOpacity(0.5),
+  //                     borderRadius: BorderRadius.circular(8),
+  //                   ),
+  //                   child: const Icon(
+  //                     Icons.label_important,
+  //                     color: Colors.amber,
+  //                     size: 16,
+  //                   ),
+  //                 ))
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -269,7 +422,7 @@ class _TodoScreenState extends State<TodoScreen> {
           ),
           backgroundColor: AppTheme.backgroundColor,
           bottom: const TabBar(
-            indicatorColor: AppTheme.pointTextColor,
+            indicatorColor: AppTheme.secondaryColor1,
             indicatorWeight: 3,
             labelColor: AppTheme.secondaryColor2,
             labelStyle: TextStyle(
@@ -289,7 +442,7 @@ class _TodoScreenState extends State<TodoScreen> {
                     SizedBox(width: 8),
                     Text(
                       'IN PROGRESS',
-                      style: TextStyle(color: AppTheme.pointTextColor),
+                      style: TextStyle(color: AppTheme.additionalColor),
                     ),
                   ],
                 ),
@@ -302,7 +455,7 @@ class _TodoScreenState extends State<TodoScreen> {
                     SizedBox(width: 8),
                     Text(
                       'DONE',
-                      style: TextStyle(color: AppTheme.pointTextColor),
+                      style: TextStyle(color: AppTheme.additionalColor),
                     ),
                   ],
                 ),
@@ -364,11 +517,16 @@ class _TodoScreenState extends State<TodoScreen> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: _showAddTodoDialog,
-          backgroundColor: AppTheme.secondaryColor1.withOpacity(0.7),
+          backgroundColor: AppTheme.backgroundColor,
+          elevation: 4,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(35),
-          ),
-          child: const Icon(Icons.today_outlined),
+              borderRadius: BorderRadius.circular(35),
+              side: const BorderSide(
+                color: AppTheme.additionalColor,
+                width: 2.0,
+              )),
+          child: const Icon(Icons.mark_email_read_rounded,
+              color: AppTheme.textColor1),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),

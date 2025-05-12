@@ -121,7 +121,11 @@ class _RootScreenState extends State<RootScreen> {
         child:
             // Image.asset('assets/logo_icon.png',
             //     width: 30, height: 30, fit: BoxFit.fill)
-            const Icon(Icons.bookmark_added_outlined, color: Colors.black),
+            const Icon(
+          Icons.add_outlined,
+          color: Colors.black,
+          size: 27,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
