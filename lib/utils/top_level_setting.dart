@@ -31,7 +31,7 @@ class AppTheme {
       Color(0xFF00796B); // 티얼 그린 - 푸른 기가 살짝 도는 초록색
   static const Color accentColor = Color(0xFF8BC34A); // 라임 그린 - 강조가 필요한 요소에 사용
 
-  static const Color additionalColor = Color(0xFF48B66F);
+  static const Color additionalColor = Color(0xFF369F61); //  0xFF48B66F
 
   // 포인트 텍스트 컬러
   static const Color pointTextColor = Color(0xFFA1824A);
@@ -49,6 +49,9 @@ class AppTheme {
   static const Color textColor1 = Color(0xFF212121); // 거의 검은색 - 주요 텍스트에 사용
   static const Color textColor2 =
       Color(0xFF757575); // 중간 회색 - 부가 설명이나 덜 중요한 텍스트에 사용
+
+  static const Color textColor3 = Color.fromARGB(255, 195, 192, 192);
+
   static const Color darkAccentColor =
       Color(0xFF4CAF50); // 표준 초록색 - 다크 모드에서 사용할 밝은 액센트
   static const Color errorColor =

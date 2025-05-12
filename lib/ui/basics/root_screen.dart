@@ -49,42 +49,54 @@ class _RootScreenState extends State<RootScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 50,
+        toolbarHeight: 63,
         title: TextButton(
-          onPressed: () {
-            // todo go
-            context.push(Routes.todo);
-          },
-          child: Text(
-            "T O d O",
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: AppTheme.primaryColor,
-            ),
-          ),
-        ),
+            onPressed: () {
+              // todo go
+              context.push(Routes.todo);
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Image.asset(
+                  // 고화질로 수정 예정
+                  'assets/logo_icon.png',
+                  width: 30,
+                  height: 30,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  "T O d O",
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.pointTextColor,
+                  ),
+                ),
+              ],
+            )),
         backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
         shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(13), // 하단 모서리만 둥글게
-            ),
-            side: BorderSide(
-              color: AppTheme.primaryColor,
-              width: 2.5,
-            )),
-        // iconTheme: const IconThemeData(color: AppTheme.additionalColor),
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(35), // 하단 모서리만 둥글게
+          ),
+          //
+          side: BorderSide(
+            color: AppTheme.additionalColor,
+            width: 2.0,
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.search_outlined,
-                color: AppTheme.additionalColor),
+                color: AppTheme.pointTextColor),
             onPressed: () {
               context.push(Routes.search);
             },
           ),
           IconButton(
             icon: const Icon(Icons.settings_outlined,
-                color: AppTheme.additionalColor),
+                color: AppTheme.pointTextColor),
             onPressed: () {
               context.push(Routes.setting);
             },
@@ -96,10 +108,20 @@ class _RootScreenState extends State<RootScreen> {
         onPressed: () {
           context.push(Routes.sendMemo);
         },
-        backgroundColor: AppTheme.additionalColor,
-        elevation: 4,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add_outlined, color: Colors.white),
+        // backgroundColor: AppTheme.additionalColor,
+        backgroundColor: Colors.white70,
+        elevation: 0,
+        shape: const CircleBorder(
+          side: BorderSide(
+            color: AppTheme.additionalColor,
+            // color: Colors.black,
+            width: 1.8,
+          ),
+        ),
+        child:
+            // Image.asset('assets/logo_icon.png',
+            //     width: 30, height: 30, fit: BoxFit.fill)
+            const Icon(Icons.bookmark_added_outlined, color: Colors.black),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
@@ -123,8 +145,8 @@ class _RootScreenState extends State<RootScreen> {
                       icon: Icon(
                         Icons.today_outlined,
                         color: _selectedIndex == 0
-                            ? AppTheme.primaryColor
-                            : AppTheme.textColor2,
+                            ? AppTheme.pointTextColor
+                            : AppTheme.textColor3,
                         size: 26,
                       ),
                       tooltip: '오늘',
@@ -136,8 +158,8 @@ class _RootScreenState extends State<RootScreen> {
                       icon: Icon(
                         Icons.archive_outlined,
                         color: _selectedIndex == 1
-                            ? AppTheme.primaryColor
-                            : AppTheme.textColor2,
+                            ? AppTheme.pointTextColor
+                            : AppTheme.textColor3,
                         size: 26,
                       ),
                       tooltip: '보관함',
@@ -160,8 +182,8 @@ class _RootScreenState extends State<RootScreen> {
                       icon: Icon(
                         Icons.school_outlined,
                         color: _selectedIndex == 2
-                            ? AppTheme.primaryColor
-                            : AppTheme.textColor2,
+                            ? AppTheme.pointTextColor
+                            : AppTheme.textColor3,
                         size: 26,
                       ),
                       tooltip: '공부',
@@ -173,8 +195,8 @@ class _RootScreenState extends State<RootScreen> {
                       icon: Icon(
                         Icons.person_outline,
                         color: _selectedIndex == 3
-                            ? AppTheme.primaryColor
-                            : AppTheme.textColor2,
+                            ? AppTheme.pointTextColor
+                            : AppTheme.textColor3,
                         size: 26,
                       ),
                       tooltip: '프로필',

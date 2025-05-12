@@ -50,6 +50,8 @@ flutter:
     - assets/woman_model.jpg
     - assets/icons8-구글-로고-144.png
     - assets/bad_logo_icon.png
+    - assets/logo_icon_with_text.png
+    - assets/logo_icon.png      
 
   # fonts:
   #   - family: Pretendard

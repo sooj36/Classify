@@ -74,7 +74,7 @@ class _TodayActScreenState extends State<TodayActScreen> {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.grey,
+              color: Colors.white,
             ),
           ),
           SizedBox(height: 8),
@@ -82,7 +82,7 @@ class _TodayActScreenState extends State<TodayActScreen> {
             '새로운 메모를 작성해보세요!',
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey,
+              color: Colors.white,
             ),
           ),
         ],

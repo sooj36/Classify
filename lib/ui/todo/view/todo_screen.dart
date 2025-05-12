@@ -141,21 +141,12 @@ class _TodoScreenState extends State<TodoScreen> {
               Stack(
                 alignment: Alignment.center,
                 children: [
-                  // 배경 원
-                  Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryColor.withOpacity(0.1),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
+                    borderRadius: BorderRadius.circular(70),
                     child: Image.asset(
                       'assets/bad_logo_icon.png',
-                      width: 100, // 이미지 크기 조절
-                      height: 100, // 이미지 크기 조절
+                      width: 150, // 이미지 크기 조절
+                      height: 150, // 이미지 크기 조절
                       fit: BoxFit.fill, // 이미지가 지정된 영역에 맞게 조절
                     ),
                   )
@@ -169,10 +160,10 @@ class _TodoScreenState extends State<TodoScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                "아직 완료된 할 일이 없어요 !",
+                "비어 있어요 !",
                 style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[600],
+                  fontSize: 18,
+                  color: AppTheme.textColor2,
                 ),
               ),
             ],
@@ -337,9 +328,10 @@ class _TodoScreenState extends State<TodoScreen> {
                 child: Text(
                   "작성된 할 일이 없습니다\n추가해주세요",
                   style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
+                    fontSize: 17,
+                    color: AppTheme.textColor2,
                   ),
+                  textAlign: TextAlign.center,
                 ),
               );
             }

@@ -11,12 +11,11 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  
   @override
   Widget build(BuildContext context) {
     // 현재 로그인된 사용자 정보 가져오기
     final User? user = firebaseAuth.currentUser;
-    
+
     if (user == null) {
       return const Scaffold(
         body: Center(
@@ -24,7 +23,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       );
     }
-    
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -33,21 +32,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 20),
-              
+
               // 프로필 이미지
               CircleAvatar(
                 radius: 60,
                 backgroundColor: AppTheme.primaryColor.withAlpha(1),
-                backgroundImage: user.photoURL != null
-                    ? NetworkImage(user.photoURL!)
-                    : null,
+                backgroundImage:
+                    user.photoURL != null ? NetworkImage(user.photoURL!) : null,
                 child: user.photoURL == null
-                    ? const Icon(Icons.person, size: 60, color: AppTheme.primaryColor)
+                    ? const Icon(Icons.person,
+                        size: 60, color: AppTheme.primaryColor)
                     : null,
               ),
-              
+
               const SizedBox(height: 20),
-              
+
               // 사용자 이름
               Text(
                 user.displayName ?? "이름 없음",
@@ -55,36 +54,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
-              ),  
+              ),
               const SizedBox(height: 30),
               const Divider(),
-              
+
               // 계정 정보 섹션
               _buildInfoSection("계정 정보"),
-              
-              
+
               _buildInfoTile(
                 icon: Icons.email_outlined,
                 title: "이메일",
                 subtitle: user.email ?? "이메일 없음",
               ),
-            
-              
+
               const SizedBox(height: 10),
               const Divider(),
               const SizedBox(height: 20),
-              
+
               // 인증 정보 섹션
               _buildInfoSection("인증 정보"),
-              
+
               _buildInfoTile(
                 icon: Icons.login_outlined,
                 title: "인증 방식",
                 subtitle: user.providerData.isNotEmpty
-                    ? user.providerData.map((provider) => provider.providerId).join(", ")
+                    ? user.providerData
+                        .map((provider) => provider.providerId)
+                        .join(", ")
                     : "알 수 없음",
               ),
-              
+
               _buildInfoTile(
                 icon: Icons.calendar_today_outlined,
                 title: "계정 생성일",
@@ -92,7 +91,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ? _formatDateTime(user.metadata.creationTime!)
                     : "알 수 없음",
               ),
-              
+
               _buildInfoTile(
                 icon: Icons.schedule_outlined,
                 title: "마지막 로그인",
@@ -100,7 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ? _formatDateTime(user.metadata.lastSignInTime!)
                     : "알 수 없음",
               ),
-              
+
               const SizedBox(height: 40),
             ],
           ),
@@ -108,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-  
+
   Widget _buildInfoSection(String title) {
     return Align(
       alignment: Alignment.centerLeft,
@@ -119,13 +118,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: AppTheme.primaryColor,
+            color: AppTheme.additionalColor,
           ),
         ),
       ),
     );
   }
-  
+
   Widget _buildInfoTile({
     required IconData icon,
     required String title,
@@ -171,7 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-  
+
   String _formatDateTime(DateTime dateTime) {
     return "${dateTime.year}년 ${dateTime.month}월 ${dateTime.day}일 ${dateTime.hour}:${dateTime.minute}";
   }
