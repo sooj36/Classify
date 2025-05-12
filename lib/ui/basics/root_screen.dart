@@ -49,30 +49,42 @@ class _RootScreenState extends State<RootScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 50,
         title: TextButton(
           onPressed: () {
             // todo go
             context.push(Routes.todo);
           },
           child: Text(
-            "Todo목록",
+            "T O d O",
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: AppTheme.primaryColor,
             ),
           ),
         ),
-        backgroundColor: AppTheme.primaryColor,
+        backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(13), // 하단 모서리만 둥글게
+            ),
+            side: BorderSide(
+              color: AppTheme.primaryColor,
+              width: 2.5,
+            )),
+        // iconTheme: const IconThemeData(color: AppTheme.additionalColor),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search, color: Colors.white),
+            icon: const Icon(Icons.search_outlined,
+                color: AppTheme.additionalColor),
             onPressed: () {
               context.push(Routes.search);
             },
           ),
           IconButton(
-            icon: const Icon(Icons.settings, color: Colors.white),
+            icon: const Icon(Icons.settings_outlined,
+                color: AppTheme.additionalColor),
             onPressed: () {
               context.push(Routes.setting);
             },
@@ -84,9 +96,10 @@ class _RootScreenState extends State<RootScreen> {
         onPressed: () {
           context.push(Routes.sendMemo);
         },
-        backgroundColor: AppTheme.accentColor,
+        backgroundColor: AppTheme.additionalColor,
         elevation: 4,
-        child: const Icon(Icons.add, color: Colors.white),
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add_outlined, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
@@ -108,7 +121,7 @@ class _RootScreenState extends State<RootScreen> {
                     // Today 아이콘
                     IconButton(
                       icon: Icon(
-                        Icons.today,
+                        Icons.today_outlined,
                         color: _selectedIndex == 0
                             ? AppTheme.primaryColor
                             : AppTheme.textColor2,
@@ -121,7 +134,7 @@ class _RootScreenState extends State<RootScreen> {
                     // Archive 아이콘
                     IconButton(
                       icon: Icon(
-                        Icons.archive,
+                        Icons.archive_outlined,
                         color: _selectedIndex == 1
                             ? AppTheme.primaryColor
                             : AppTheme.textColor2,
@@ -145,7 +158,7 @@ class _RootScreenState extends State<RootScreen> {
                     // Study 아이콘
                     IconButton(
                       icon: Icon(
-                        Icons.school,
+                        Icons.school_outlined,
                         color: _selectedIndex == 2
                             ? AppTheme.primaryColor
                             : AppTheme.textColor2,
@@ -158,7 +171,7 @@ class _RootScreenState extends State<RootScreen> {
                     // Profile 아이콘
                     IconButton(
                       icon: Icon(
-                        Icons.person,
+                        Icons.person_outline,
                         color: _selectedIndex == 3
                             ? AppTheme.primaryColor
                             : AppTheme.textColor2,

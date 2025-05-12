@@ -132,23 +132,51 @@ class _TodoScreenState extends State<TodoScreen> {
   Widget _buildTodoList(List<TodoModel> todos) {
     if (todos.isEmpty) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.note_alt_outlined,
-              size: 48,
-              color: Colors.grey[400],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              "할 일이 없습니다",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // 귀여운 일러스트레이션 효과
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  // 배경 원
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryColor.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: Image.asset(
+                      'assets/bad_logo_icon.png',
+                      width: 100, // 이미지 크기 조절
+                      height: 100, // 이미지 크기 조절
+                      fit: BoxFit.fill, // 이미지가 지정된 영역에 맞게 조절
+                    ),
+                  )
+
+                  // Icon(
+                  //   Icons.note_alt_outlined,
+                  //   size: 48,
+                  //   color: Colors.grey[400],
+                  // ),
+                ],
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              Text(
+                "아직 완료된 할 일이 없어요 !",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -242,10 +270,15 @@ class _TodoScreenState extends State<TodoScreen> {
         appBar: AppBar(
           leading: const SizedBox.shrink(), // 뒤로가기 버튼 제거
           toolbarHeight: 20, // 높이
-          elevation: 2,
-          backgroundColor: AppTheme.decorationColor1,
+          elevation: 0,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(15), // 하단 모서리만 둥글게
+            ),
+          ),
+          backgroundColor: AppTheme.backgroundColor,
           bottom: const TabBar(
-            indicatorColor: AppTheme.additionalColor,
+            indicatorColor: AppTheme.pointTextColor,
             indicatorWeight: 3,
             labelColor: AppTheme.secondaryColor2,
             labelStyle: TextStyle(
@@ -261,9 +294,12 @@ class _TodoScreenState extends State<TodoScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.pending_actions),
+                    Icon(Icons.pending_actions_outlined),
                     SizedBox(width: 8),
-                    Text('IN PROGRESS'),
+                    Text(
+                      'IN PROGRESS',
+                      style: TextStyle(color: AppTheme.pointTextColor),
+                    ),
                   ],
                 ),
               ),
@@ -271,9 +307,12 @@ class _TodoScreenState extends State<TodoScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.task_alt),
+                    Icon(Icons.task_alt_outlined),
                     SizedBox(width: 8),
-                    Text('DONE'),
+                    Text(
+                      'DONE',
+                      style: TextStyle(color: AppTheme.pointTextColor),
+                    ),
                   ],
                 ),
               ),

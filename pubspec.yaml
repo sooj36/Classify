@@ -46,8 +46,11 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/
     - assets/woman_model.jpg
     - assets/icons8-구글-로고-144.png
+    - assets/bad_logo_icon.png
+
   # fonts:
   #   - family: Pretendard
   #     fonts:

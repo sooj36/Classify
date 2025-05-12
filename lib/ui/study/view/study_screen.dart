@@ -6,7 +6,7 @@ import 'package:classify/utils/top_level_setting.dart';
 
 class StudyScreen extends StatefulWidget {
   final StudyViewModel viewModel;
-  
+
   const StudyScreen({
     super.key,
     required this.viewModel,
@@ -35,23 +35,23 @@ class _StudyScreenState extends State<StudyScreen> {
           if (widget.viewModel.error != null) {
             return Center(child: Text('에러 발생: ${widget.viewModel.error}'));
           }
-          
+
           if (widget.viewModel.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          
+
           final randomStudyMemos = widget.viewModel.randomStudyMemos;
-          
+
           if (randomStudyMemos.isEmpty) {
             return _buildEmptyState();
           }
-          
+
           return _buildStudyContent(randomStudyMemos);
         },
       ),
     );
   }
-  
+
   Widget _buildEmptyState() {
     return Padding(
       padding: const EdgeInsets.all(24.0),
@@ -89,11 +89,13 @@ class _StudyScreenState extends State<StudyScreen> {
                 widget.viewModel.refreshRandomStudyMemos();
               },
               icon: const Icon(Icons.refresh, color: Colors.white),
-              label: const Center(child: Text('새로고침', style: TextStyle(color: Colors.white))),
+              label: const Center(
+                  child: Text('새로고침', style: TextStyle(color: Colors.white))),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primaryColor,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
             ),
           ],
@@ -101,7 +103,7 @@ class _StudyScreenState extends State<StudyScreen> {
       ),
     );
   }
-  
+
   Widget _buildStudyContent(List<MemoModel> randomStudyMemos) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -113,24 +115,35 @@ class _StudyScreenState extends State<StudyScreen> {
           Expanded(
             child: ListView(
               children: [
-                ...randomStudyMemos.map((memo) => 
-                  _buildQuestionCard(context, memo)
-                ),
+                ...randomStudyMemos
+                    .map((memo) => _buildQuestionCard(context, memo)),
                 const SizedBox(height: 16),
                 Center(
                   child: ElevatedButton.icon(
                     onPressed: () {
                       widget.viewModel.refreshRandomStudyMemos();
                     },
-                    icon: const Icon(Icons.refresh, color: Colors.white),
-                    label: const Text('새로고침', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    icon: const Icon(Icons.refresh_outlined,
+                        color: AppTheme.pointTextColor),
+                    label: const Text('새로고침',
+                        style: TextStyle(
+                            color: AppTheme.pointTextColor,
+                            fontWeight: FontWeight.bold)),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryColor,
-                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.white, // 배경색 흰색으로 변경
+                      foregroundColor: AppTheme.primaryColor, // 전경색 변경
                       minimumSize: const Size(200, 48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24), // 라운드 처리
+                        side: BorderSide(
+                          color: AppTheme.primaryColor, // 테두리 색상
+                          width: 2, // 테두리 두께
+                        ),
+                      ),
+                      elevation: 0, // 그림자 제거 (선택사항)
                     ),
                   ),
-                ),
+                )
               ],
             ),
           ),
@@ -138,18 +151,18 @@ class _StudyScreenState extends State<StudyScreen> {
       ),
     );
   }
-  
+
   Widget _buildHeader() {
     return const Text(
-      '랜덤 학습 질문',
+      'Random Study Question',
       style: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.bold,
-        color: AppTheme.textColor1,
+        color: AppTheme.pointTextColor,
       ),
     );
   }
-  
+
   Widget _buildQuestionCard(BuildContext context, MemoModel memo) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16.0),
@@ -176,16 +189,17 @@ class _StudyScreenState extends State<StudyScreen> {
                       color: AppTheme.primaryColor.withAlpha(26),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.question_mark, color: AppTheme.primaryColor),
+                    child: const Icon(Icons.question_mark,
+                        color: AppTheme.additionalColor),
                   ),
                   const SizedBox(width: 12),
                   const Expanded(
                     child: Text(
-                      '질문',
+                      'Question',
                       style: TextStyle(
-                        color: AppTheme.primaryColor,
+                        color: Colors.transparent,
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 18,
                       ),
                     ),
                   ),
@@ -221,7 +235,7 @@ class _StudyScreenState extends State<StudyScreen> {
       ),
     );
   }
-  
+
   void _showContentDialog(BuildContext context, MemoModel memo) {
     showDialog(
       context: context,
@@ -236,7 +250,10 @@ class _StudyScreenState extends State<StudyScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('질문:', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primaryColor)),
+                const Text('질문:',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.primaryColor)),
                 const SizedBox(height: 8),
                 Text(
                   memo.question ?? '',
@@ -245,7 +262,10 @@ class _StudyScreenState extends State<StudyScreen> {
                 const SizedBox(height: 20),
                 const Divider(),
                 const SizedBox(height: 8),
-                const Text('답변:', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primaryColor)),
+                const Text('답변:',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.primaryColor)),
                 const SizedBox(height: 8),
                 Text(
                   memo.content,
@@ -284,7 +304,7 @@ class _StudyScreenState extends State<StudyScreen> {
       },
     );
   }
-  
+
   void _showDeleteDialog(BuildContext context, MemoModel memo) {
     showDialog(
       context: context,
@@ -309,4 +329,4 @@ class _StudyScreenState extends State<StudyScreen> {
       },
     );
   }
-} 
+}
