@@ -69,7 +69,7 @@ class _StudyScreenState extends State<StudyScreen> {
               '질문이 있는 공부 메모가 없습니다',
               style: TextStyle(
                 fontSize: 18,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w300,
                 color: AppTheme.textColor1,
               ),
               textAlign: TextAlign.center,

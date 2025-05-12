@@ -60,6 +60,7 @@ class AppTheme {
   // 테마 설정
   static final ThemeData lightTheme = ThemeData(
     primaryColor: primaryColor,
+    fontFamily: 'Paperlogy',
     colorScheme: const ColorScheme.light(
       primary: primaryColor,
       secondary: secondaryColor1,
