@@ -66,9 +66,9 @@ class _RootScreenState extends State<RootScreen> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  "TODO*",
+                  "할일",
                   style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w600,
                     color: AppTheme.pointTextColor,
                   ),
                 ),
