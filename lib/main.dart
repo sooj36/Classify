@@ -40,27 +40,27 @@ void main() async {
 
     // // 하이브 파일 삭제
     // >> box not found. did you forget to call hive.openbox() 경우 해결코드
-    try {
-      final memoBoxFile = File('${dir.path}/memo.hive');
-      if (await memoBoxFile.exists()) {
-        await memoBoxFile.delete();
-        debugPrint('🔧🧰 memo.hive 파일 삭제 완료 ✅');
-      }
+    // try {
+    //   final memoBoxFile = File('${dir.path}/memo.hive');
+    //   if (await memoBoxFile.exists()) {
+    //     await memoBoxFile.delete();
+    //     debugPrint('🔧🧰 memo.hive 파일 삭제 완료 ✅');
+    //   }
 
-      final todoBoxFile = File('${dir.path}/todo.hive');
-      if (await todoBoxFile.exists()) {
-        await todoBoxFile.delete();
-        debugPrint('🔧🧰 todo.hive 파일 삭제 완료 ✅');
-      }
+    //   final todoBoxFile = File('${dir.path}/todo.hive');
+    //   if (await todoBoxFile.exists()) {
+    //     await todoBoxFile.delete();
+    //     debugPrint('🔧🧰 todo.hive 파일 삭제 완료 ✅');
+    //   }
 
-      final todoLockFile = File('${dir.path}/todo.lock');
-      if (await todoLockFile.exists()) {
-        await todoLockFile.delete();
-        debugPrint('🔧🧰 todo.lock 파일 삭제 완료 ✅');
-      }
-    } catch (e) {
-      debugPrint('🔧🧰 Hive 파일 삭제 실패: $e ❌');
-    }
+    //   final todoLockFile = File('${dir.path}/todo.lock');
+    //   if (await todoLockFile.exists()) {
+    //     await todoLockFile.delete();
+    //     debugPrint('🔧🧰 todo.lock 파일 삭제 완료 ✅');
+    //   }
+    // } catch (e) {
+    //   debugPrint('🔧🧰 Hive 파일 삭제 실패: $e ❌');
+    // }
 
     // Hive 초기화
     Hive.init(dir.path);

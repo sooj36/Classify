@@ -179,78 +179,6 @@ class _TodoScreenState extends State<TodoScreen> {
                     ],
                   ),
                 ),
-                // Container(
-                //   decoration: BoxDecoration(
-                //     border: Border.all(color: AppTheme.textColor2),
-                //     borderRadius: BorderRadius.circular(15),
-                //   ),
-                //   padding: const EdgeInsets.all(10),
-                //   child: Column(
-                //     crossAxisAlignment: CrossAxisAlignment.start,
-                //     children: [
-                //       const SizedBox(
-                //         height: 1,
-                //       ),
-                //       Row(
-                //         children: [
-                //           Expanded(
-                //             child: RadioListTile<ImportancePriority>(
-                //               title: const Row(
-                //                 children: [
-                //                   Icon(
-                //                     Icons.label_important_outline,
-                //                     color: AppTheme.errorColor,
-                //                     size: 16,
-                //                   ),
-                //                   SizedBox(width: 4),
-                //                   Text(
-                //                     "매우 중요",
-                //                     style: TextStyle(fontSize: 12),
-                //                   ),
-                //                 ],
-                //               ),
-                //               value: ImportancePriority.important,
-                //               groupValue: selectedImportance,
-                //               onChanged: (ImportancePriority? value) {
-                //                 setState(() {
-                //                   selectedImportance = value;
-                //                 });
-                //               },
-                //               contentPadding: EdgeInsets.zero,
-                //               dense: true,
-                //             ),
-                //           ),
-                //           Expanded(
-                //               child: RadioListTile<ImportancePriority>(
-                //             title: const Row(
-                //               children: [
-                //                 Icon(
-                //                   Icons.label_important_outline,
-                //                   color: AppTheme.importantColor,
-                //                   size: 16,
-                //                 ),
-                //                 SizedBox(width: 4),
-                //                 Text(
-                //                   "중요",
-                //                   style: TextStyle(fontSize: 12),
-                //                 ),
-                //               ],
-                //             ),
-                //             value: ImportancePriority.veryImportant,
-                //             groupValue: selectedImportance,
-                //             onChanged: (ImportancePriority? value) {
-                //               setState(() {
-                //                 selectedImportance = value;
-                //               });
-                //             },
-                //             contentPadding: EdgeInsets.zero,
-                //             dense: true,
-                //           // ))
-                //         ],
-                //       )
-                //     ],
-                //   ),
-                // ) // 삭제
               ],
             ),
           ),
@@ -474,6 +402,23 @@ class _TodoScreenState extends State<TodoScreen> {
                 ),
               ),
             ),
+            // 중요도 표시
+            if (todo.isImportant == true)
+              Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: AppTheme.errorColor.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.label_important,
+                      color: Colors.amber,
+                      size: 16,
+                    ),
+                  ))
           ],
         ),
       ),

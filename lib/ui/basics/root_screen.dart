@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:classify/routing/routes.dart';
 import 'package:classify/utils/top_level_setting.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
 class RootScreen extends StatefulWidget {
@@ -49,41 +50,101 @@ class _RootScreenState extends State<RootScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 63,
+        toolbarHeight: 65,
         title: TextButton(
-            onPressed: () {
-              // todo go
-              context.push(Routes.todo);
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Image.asset(
-                  // 고화질로 수정 예정
-                  'assets/logo_icon.png',
-                  width: 30,
-                  height: 30,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  "할일",
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.pointTextColor,
+          onPressed: () {
+            // todo go
+            context.push(Routes.todo);
+          },
+          // child: Container(
+          //   padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+          //   decoration: BoxDecoration(
+          //     color: AppTheme.backgroundColor,
+          //     borderRadius: BorderRadius.circular(25),
+          //     border: Border.all(
+          //         color: AppTheme.textColor1.withOpacity(0.9),
+          //         width: 0.7), // 할일 테두리
+          //     boxShadow: [
+          //       BoxShadow(
+          //         color: Colors.black.withOpacity(0.08),
+          //         blurRadius: 3,
+          //         offset: const Offset(0, 1),
+          //       ),
+          //     ],
+          //   ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Image.asset(
+              //   // 고화질로 수정 예정
+              //   'assets/logo_icon.png',
+              //   width: 30,
+              //   height: 30,
+              // ),
+              // const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 8),
+                decoration: BoxDecoration(
+                  color: AppTheme.backgroundColor,
+                  borderRadius: BorderRadius.circular(25),
+                  border: Border.all(
+                    color: AppTheme.textColor1.withOpacity(0.9),
+                    width: 0.9,
+                  ), // 할일 테두리
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.12),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      AppTheme.backgroundColor,
+                      AppTheme.backgroundColor.withOpacity(0.9),
+                    ],
                   ),
                 ),
-              ],
-            )),
+                child: Text(
+                  "todo",
+                  style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w400,
+                      color: AppTheme.textColor1,
+                      fontSize: 15),
+                ),
+              ),
+            ],
+          ),
+          // ),
+        ),
         backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(35), // 하단 모서리만 둥글게
           ),
-          //
-          side: BorderSide(
-            color: AppTheme.additionalColor,
-            width: 2.0,
+          // side: BorderSide(
+          //   color: AppTheme.additionalColor,
+          //   width: 3.0,
+          // ),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(10.0),
+          child: Column(
+            children: [
+              Container(
+                height: 5.0,
+                color: AppTheme.additionalColor,
+                margin: const EdgeInsets.only(bottom: 1),
+              ),
+              // Container(
+              //   height: 5.0,
+              //   color: AppTheme.additionalColor,
+              //   margin: const EdgeInsets.only(bottom: 1),
+              // ),
+            ],
           ),
         ),
         actions: [
