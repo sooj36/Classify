@@ -3,6 +3,8 @@ import 'package:classify/ui/todo/view_models/todo_view_model.dart';
 import 'package:classify/utils/top_level_setting.dart';
 import 'package:flutter/material.dart';
 
+enum ImportancePriority { veryImportant, important, none }
+
 class TodoScreen extends StatefulWidget {
   final TodoViewModel todoViewModel;
 
@@ -76,6 +78,8 @@ class _TodoScreenState extends State<TodoScreen> {
   void _showAddTodoDialog() {
     final TextEditingController todoController = TextEditingController();
 
+    ImportancePriority? selectedImportance;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -84,14 +88,15 @@ class _TodoScreenState extends State<TodoScreen> {
             borderRadius: BorderRadius.circular(20),
           ),
           title: const Text(
-            '할 일 추가',
+            '행동하라, 기록하라, 이루어라\n계획 한 줄, 성취 한 걸음',
             style: TextStyle(
               color: AppTheme.primaryColor,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
             ),
             textAlign: TextAlign.center,
           ),
-          content: Container(
+          content: SizedBox(
             width: double.maxFinite,
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -112,7 +117,7 @@ class _TodoScreenState extends State<TodoScreen> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
                       borderSide: const BorderSide(
-                          color: AppTheme.primaryColor, width: 2),
+                          color: AppTheme.primaryColor, width: 1),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 16),
@@ -124,7 +129,128 @@ class _TodoScreenState extends State<TodoScreen> {
                   minLines: 3, // 최소 3줄 높이 유지
                   textInputAction: TextInputAction.newline, // 엔터키 동작 설정
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 16),
+
+                // 중요도 선택
+                Container(
+                  margin: const EdgeInsets.only(top: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          // 일반 옵션
+                          _buildImportanceOption(
+                            context,
+                            isSelected: selectedImportance == null,
+                            onTap: () =>
+                                setState(() => selectedImportance = null),
+                            icon: Icons.circle_outlined,
+                            color: Colors.grey,
+                            label: '일반',
+                          ),
+
+                          // 중요 옵션
+                          _buildImportanceOption(
+                            context,
+                            isSelected: selectedImportance ==
+                                ImportancePriority.important,
+                            onTap: () => setState(() => selectedImportance =
+                                ImportancePriority.important),
+                            icon: Icons.label_important_outline,
+                            color: AppTheme.importantColor,
+                            label: '중요',
+                          ),
+
+                          // 매우 중요 옵션
+                          _buildImportanceOption(
+                            context,
+                            isSelected: selectedImportance ==
+                                ImportancePriority.veryImportant,
+                            onTap: () => setState(() => selectedImportance =
+                                ImportancePriority.veryImportant),
+                            icon: Icons.priority_high,
+                            color: Colors.red,
+                            label: '매우 중요',
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                // Container(
+                //   decoration: BoxDecoration(
+                //     border: Border.all(color: AppTheme.textColor2),
+                //     borderRadius: BorderRadius.circular(15),
+                //   ),
+                //   padding: const EdgeInsets.all(10),
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       const SizedBox(
+                //         height: 1,
+                //       ),
+                //       Row(
+                //         children: [
+                //           Expanded(
+                //             child: RadioListTile<ImportancePriority>(
+                //               title: const Row(
+                //                 children: [
+                //                   Icon(
+                //                     Icons.label_important_outline,
+                //                     color: AppTheme.errorColor,
+                //                     size: 16,
+                //                   ),
+                //                   SizedBox(width: 4),
+                //                   Text(
+                //                     "매우 중요",
+                //                     style: TextStyle(fontSize: 12),
+                //                   ),
+                //                 ],
+                //               ),
+                //               value: ImportancePriority.important,
+                //               groupValue: selectedImportance,
+                //               onChanged: (ImportancePriority? value) {
+                //                 setState(() {
+                //                   selectedImportance = value;
+                //                 });
+                //               },
+                //               contentPadding: EdgeInsets.zero,
+                //               dense: true,
+                //             ),
+                //           ),
+                //           Expanded(
+                //               child: RadioListTile<ImportancePriority>(
+                //             title: const Row(
+                //               children: [
+                //                 Icon(
+                //                   Icons.label_important_outline,
+                //                   color: AppTheme.importantColor,
+                //                   size: 16,
+                //                 ),
+                //                 SizedBox(width: 4),
+                //                 Text(
+                //                   "중요",
+                //                   style: TextStyle(fontSize: 12),
+                //                 ),
+                //               ],
+                //             ),
+                //             value: ImportancePriority.veryImportant,
+                //             groupValue: selectedImportance,
+                //             onChanged: (ImportancePriority? value) {
+                //               setState(() {
+                //                 selectedImportance = value;
+                //               });
+                //             },
+                //             contentPadding: EdgeInsets.zero,
+                //             dense: true,
+                //           // ))
+                //         ],
+                //       )
+                //     ],
+                //   ),
+                // ) // 삭제
               ],
             ),
           ),
@@ -141,7 +267,19 @@ class _TodoScreenState extends State<TodoScreen> {
             ElevatedButton(
               onPressed: () {
                 if (todoController.text.trim().isNotEmpty) {
-                  widget.todoViewModel.createTodo(todoController.text);
+                  // 중요도 설정
+                  bool isVeryImportant =
+                      selectedImportance == ImportancePriority.veryImportant;
+
+                  bool isImportant =
+                      selectedImportance == ImportancePriority.important;
+
+                  //
+                  widget.todoViewModel.createTodo(
+                    todoController.text,
+                    isImportant: isImportant,
+                    isVeryImportant: isVeryImportant,
+                  );
                   Navigator.pop(context);
                   setState(() {
                     // _sortTodos();
@@ -157,7 +295,7 @@ class _TodoScreenState extends State<TodoScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               ),
-              child: Text('추가'),
+              child: const Text('추가'),
             ),
           ],
           actionsPadding:
@@ -314,14 +452,14 @@ class _TodoScreenState extends State<TodoScreen> {
                 child: Text(
                   todo.todoContent,
                   style: const TextStyle(fontSize: 16),
-                  maxLines: 3,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
+                  textAlign: TextAlign.start,
                 ),
               ),
             ),
 
-            // 시간 (오른쪽 하단)
+            // 시간
             Align(
               alignment: Alignment.bottomRight,
               child: Padding(
@@ -336,23 +474,50 @@ class _TodoScreenState extends State<TodoScreen> {
                 ),
               ),
             ),
-            // 중요도 표시 (오른쪽 상단)
-            if (todo.isImportant == true)
-              Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: AppTheme.errorColor.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.label_important,
-                      color: Colors.amber,
-                      size: 16,
-                    ),
-                  ))
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImportanceOption(
+    BuildContext context, {
+    required bool isSelected,
+    required VoidCallback onTap,
+    required IconData icon,
+    required Color color,
+    required String label,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? color.withOpacity(0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? color : Colors.grey.withOpacity(0.3),
+            width: isSelected ? 1.5 : 1,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? color : Colors.grey,
+              size: 20,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                color: isSelected ? color : Colors.grey[600],
+                fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
+              ),
+            ),
           ],
         ),
       ),

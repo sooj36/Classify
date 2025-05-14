@@ -55,7 +55,10 @@ class AppTheme {
   static const Color darkAccentColor =
       Color(0xFF4CAF50); // 표준 초록색 - 다크 모드에서 사용할 밝은 액센트
   static const Color errorColor =
-      Color(0xFFFF5722); // 딥 오렌지 - 오류 메시지나 중요 알림에 사용
+      Color(0xFFFF5722); // 딥 오렌지 - 오류 메시지나 중요 알림에 사용 / 매우 중요
+
+  static const Color importantColor =
+      Color.fromARGB(255, 243, 174, 45); // 딥 오렌지 - 오류 메시지나 중요 알림에 사용 / 중요
 
   // 테마 설정
   static final ThemeData lightTheme = ThemeData(

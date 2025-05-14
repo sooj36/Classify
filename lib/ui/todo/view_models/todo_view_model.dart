@@ -61,7 +61,8 @@ class TodoViewModel extends ChangeNotifier {
   }
 
   // 새로운 할 일 생성 메서드
-  Future<void> createTodo(String content) async {
+  Future<void> createTodo(String content,
+      {bool isImportant = false, bool isVeryImportant = false}) async {
     try {
       if (content.trim().isEmpty) {
         _error = "할 일 내용을 입력해주세요";
@@ -73,7 +74,7 @@ class TodoViewModel extends ChangeNotifier {
           todoContent: content,
           todoId: '',
           isDone: false,
-          isImportant: false,
+          isImportant: isImportant || isVeryImportant,
           createdAt: DateTime.now(),
           lastModified: DateTime.now());
 
