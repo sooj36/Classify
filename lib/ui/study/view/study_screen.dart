@@ -64,13 +64,13 @@ class _StudyScreenState extends State<StudyScreen> {
             Icon(
               Icons.school_outlined,
               size: 80,
-              color: Colors.grey[400],
+              color: AppTheme.accentColor.withOpacity(0.7),
             ),
             const SizedBox(height: 16),
             const Text(
-              '질문이 있는 공부 메모가 없습니다',
+              '질문이 있는 공부 메모가 없어요 !',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 17,
                 fontWeight: FontWeight.w300,
                 color: AppTheme.textColor1,
               ),
@@ -78,9 +78,9 @@ class _StudyScreenState extends State<StudyScreen> {
             ),
             const SizedBox(height: 8),
             const Text(
-              '메모를 작성할 때 질문 필드를 추가하면\n랜덤으로 공부 질문을 볼 수 있습니다',
+              '메모를 작성할 때 질문 필드를 추가하면\n랜덤으로 공부 질문을 볼 수 있어요 !',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 15,
                 color: AppTheme.textColor2,
               ),
               textAlign: TextAlign.center,
@@ -93,13 +93,14 @@ class _StudyScreenState extends State<StudyScreen> {
               icon: const Icon(Icons.refresh, color: AppTheme.textColor1),
               label: const Center(
                   child: Text('새로고침',
-                      style: TextStyle(color: AppTheme.textColor1))),
+                      style:
+                          TextStyle(color: AppTheme.textColor1, fontSize: 15))),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.backgroundColor,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(13),
-                  side: BorderSide(
+                  side: const BorderSide(
                     color: AppTheme.additionalColor,
                     width: 2,
                   ),

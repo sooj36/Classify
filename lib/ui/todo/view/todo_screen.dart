@@ -299,7 +299,7 @@ class _TodoScreenState extends State<TodoScreen> {
               ),
               const SizedBox(height: 16),
               const Text(
-                "비어 있어요 !",
+                "빈 캔버스와 같은 이 공간,\n당신의 성취로 채워보세요",
                 style: TextStyle(
                   fontSize: 18,
                   color: AppTheme.textColor2,

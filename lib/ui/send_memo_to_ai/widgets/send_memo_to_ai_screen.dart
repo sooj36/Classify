@@ -78,23 +78,29 @@ class _SendMemoToAiScreenState extends State<SendMemoToAiScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('C L A S S i fy'),
-        centerTitle: true,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          TextButton(
-            onPressed: _saveMemo,
-            child: const Text(
-              '저장',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.backgroundColor,
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: ActionChip(
+              label: const Text(
+                '저장',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.backgroundColor,
+                ),
               ),
+              backgroundColor: AppTheme.primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: BorderSide(color: AppTheme.textColor1, width: 1),
+              ),
+              onPressed: _saveMemo,
             ),
           ),
         ],
@@ -103,7 +109,6 @@ class _SendMemoToAiScreenState extends State<SendMemoToAiScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // 메모 입력 영역 (Expanded로 감싸서 확장되도록 함)
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
@@ -119,10 +124,11 @@ class _SendMemoToAiScreenState extends State<SendMemoToAiScreen> {
                   textAlignVertical: TextAlignVertical.top,
                   style: const TextStyle(fontSize: 16),
                   decoration: const InputDecoration(
-                    hintText: '기록하지 않으면 내 것이 아닙니다 ! !',
+                    hintText: '텍스트를 입력해주세요...',
                     hintStyle: TextStyle(color: Colors.grey),
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   ),
                 ),
               ),
