@@ -34,20 +34,43 @@ class _TodoScreenState extends State<TodoScreen> {
 
   void _todoListener() {
     if (mounted) {
-      _sortTodos();
+      // _sortTodos();
       setState(() {});
     }
   }
 
-  void _sortTodos() {
-    if (widget.todoViewModel.cachedTodos.isNotEmpty) {
-      latestTodos =
-          List<TodoModel>.from(widget.todoViewModel.cachedTodos.values)
-            ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      oldestTodos =
-          List<TodoModel>.from(widget.todoViewModel.cachedTodos.values)
-            ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
-    }
+  // void _sortTodos() {
+  //   if (widget.todoViewModel.cachedTodos.isNotEmpty) {
+  //     latestTodos =
+  //         List<TodoModel>.from(widget.todoViewModel.cachedTodos.values)
+  //           ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  //     oldestTodos =
+  //         List<TodoModel>.from(widget.todoViewModel.cachedTodos.values)
+  //           ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+  //   }
+  // }
+
+  List<TodoModel> _sortInProgressTodos(
+      List<TodoModel> todoList, bool isLatestSort) {
+    final sortedList = List<TodoModel>.from(todoList);
+    sortedList.sort((a, b) => isLatestSort
+        ? b.createdAt.compareTo(a.createdAt)
+        : a.createdAt.compareTo(b.createdAt));
+    return sortedList;
+  }
+
+// 완료된 할 일 정렬 (완료 날짜 기준)
+  List<TodoModel> _sortDoneTodos(List<TodoModel> todoList, bool isLatestSort) {
+    final sortedList = List<TodoModel>.from(todoList);
+    sortedList.sort((a, b) {
+      // lastModified가 완료 시간을 나타냄
+      final aTime = a.lastModified ?? a.createdAt;
+      final bTime = b.lastModified ?? b.createdAt;
+      return isLatestSort
+          ? bTime.compareTo(aTime) // 최신순
+          : aTime.compareTo(bTime); // 오래된순
+    });
+    return sortedList;
   }
 
   void _showAddTodoDialog() {
@@ -83,15 +106,16 @@ class _TodoScreenState extends State<TodoScreen> {
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: const BorderSide(color: AppTheme.decorationColor1),
+                      borderSide:
+                          const BorderSide(color: AppTheme.decorationColor1),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide:
-                          const BorderSide(color: AppTheme.primaryColor, width: 2),
+                      borderSide: const BorderSide(
+                          color: AppTheme.primaryColor, width: 2),
                     ),
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 16),
                     filled: true,
                     fillColor: Colors.grey[50],
                   ),
@@ -120,7 +144,7 @@ class _TodoScreenState extends State<TodoScreen> {
                   widget.todoViewModel.createTodo(todoController.text);
                   Navigator.pop(context);
                   setState(() {
-                    _sortTodos();
+                    // _sortTodos();
                   });
                 }
               },
@@ -130,12 +154,14 @@ class _TodoScreenState extends State<TodoScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               ),
               child: Text('추가'),
             ),
           ],
-          actionsPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          actionsPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           buttonPadding: const EdgeInsets.symmetric(horizontal: 8),
         );
       },
@@ -172,7 +198,7 @@ class _TodoScreenState extends State<TodoScreen> {
                     widget.todoViewModel.updateTodo(updatedTodo);
                     Navigator.pop(context);
                     setState(() {
-                      _sortTodos();
+                      // _sortInProgressTodos(todoList?, isLatestSort)
                     });
                   }
                 },
@@ -191,7 +217,6 @@ class _TodoScreenState extends State<TodoScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // 귀여운 일러스트레이션 효과
               Stack(
                 alignment: Alignment.center,
                 children: [
@@ -199,21 +224,15 @@ class _TodoScreenState extends State<TodoScreen> {
                     borderRadius: BorderRadius.circular(70),
                     child: Image.asset(
                       'assets/bad_logo_icon.png',
-                      width: 150, // 이미지 크기 조절
-                      height: 150, // 이미지 크기 조절
-                      fit: BoxFit.fill, // 이미지가 지정된 영역에 맞게 조절
+                      width: 150,
+                      height: 150,
+                      fit: BoxFit.fill,
                     ),
                   )
-
-                  // Icon(
-                  //   Icons.note_alt_outlined,
-                  //   size: 48,
-                  //   color: Colors.grey[400],
-                  // ),
                 ],
               ),
               const SizedBox(height: 16),
-              Text(
+              const Text(
                 "비어 있어요 !",
                 style: TextStyle(
                   fontSize: 18,
@@ -226,22 +245,14 @@ class _TodoScreenState extends State<TodoScreen> {
       );
     }
 
-    return GridView.builder(
+    return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: todos.length,
       itemBuilder: (context, index) =>
           todoCards(context, todos[index], onTaskCompleted: (todoId) {
         widget.todoViewModel.toggleTodoStatus(todoId);
-        setState(() {
-          // _sortTodos();
-        });
+        setState(() {});
       }),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 10.0, // 가로 간격
-        mainAxisSpacing: 10.0, // 세로 간격
-        childAspectRatio: 1.0, // 가로:세로 비율
-      ),
     );
   }
 
@@ -257,19 +268,41 @@ class _TodoScreenState extends State<TodoScreen> {
         margin: const EdgeInsets.only(bottom: 12),
         child: Stack(
           children: [
-            // 체크박스 (왼쪽 상단)
+            // 중요도 + 체크박스
             Positioned(
               top: 8,
               left: 8,
-              child: Transform.scale(
-                scale: 1.2,
-                child: Checkbox(
-                  value: todo.isDone,
-                  onChanged: (bool? value) {
-                    // if (value == true) {
-                    widget.todoViewModel.toggleTodoStatus(todo.todoId);
-                    // }
-                  },
+              bottom: 0,
+              child: Center(
+                child: Column(
+                  // mainAxisAlignment: MainAxisSize.min,
+                  children: [
+                    if (todo.isImportant == true)
+                      Container(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: AppTheme.errorColor.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: const Icon(
+                            Icons.label_important_outline_rounded,
+                            color: Colors.amber,
+                            size: 12,
+                          ),
+                        ),
+                      ),
+                    Transform.scale(
+                      scale: 1.2,
+                      child: Checkbox(
+                        value: todo.isDone,
+                        onChanged: (bool? value) {
+                          widget.todoViewModel.toggleTodoStatus(todo.todoId);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -325,95 +358,33 @@ class _TodoScreenState extends State<TodoScreen> {
       ),
     );
   }
-  // Widget todoCards(BuildContext context, TodoModel todo,
-  //     {required Function(String) onTaskCompleted}) {
-  //   final bool isDone = todo.isDone ?? false;
-
-  //   return InkWell(
-  //     onTap: () {
-  //       _showEditTodoDialog(todo);
-  //     },
-  //     child: Card(
-  //       margin: const EdgeInsets.only(bottom: 12),
-  //       child: Stack(
-  //         children: [
-  //           // 체크박스 (왼쪽 상단)
-  //           Positioned(
-  //             top: 8,
-  //             left: 8,
-  //             child: Transform.scale(
-  //               scale: 1.2,
-  //               child: Checkbox(
-  //                 value: todo.isDone,
-  //                 onChanged: (bool? value) {
-  //                   // if (value == true) {
-  //                   widget.todoViewModel.toggleTodoStatus(todo.todoId);
-  //                   // }
-  //                 },
-  //               ),
-  //             ),
-  //           ),
-
-  //           // 할 일 내용 (중앙)
-  //           Padding(
-  //             padding: const EdgeInsets.fromLTRB(16, 48, 16, 32),
-  //             child: Center(
-  //               child: Text(
-  //                 todo.todoContent,
-  //                 style: const TextStyle(fontSize: 16),
-  //                 maxLines: 3,
-  //                 overflow: TextOverflow.ellipsis,
-  //                 textAlign: TextAlign.center,
-  //               ),
-  //             ),
-  //           ),
-
-  //           // 시간 (오른쪽 하단)
-  //           Align(
-  //             alignment: Alignment.bottomRight,
-  //             child: Padding(
-  //               padding: const EdgeInsets.all(8.0),
-  //               child: Text(
-  //                 _formatDateTime(todo.lastModified ?? todo.createdAt),
-  //                 style: TextStyle(
-  //                   fontSize: 10,
-  //                   color: Colors.grey[600],
-  //                   fontStyle: FontStyle.italic,
-  //                 ),
-  //               ),
-  //             ),
-  //           ),
-  //           // 중요도 표시 (오른쪽 상단)
-  //           if (todo.isImportant == true)
-  //             Positioned(
-  //                 top: 8,
-  //                 right: 8,
-  //                 child: Container(
-  //                   padding: const EdgeInsets.all(4),
-  //                   decoration: BoxDecoration(
-  //                     color: AppTheme.errorColor.withOpacity(0.5),
-  //                     borderRadius: BorderRadius.circular(8),
-  //                   ),
-  //                   child: const Icon(
-  //                     Icons.label_important,
-  //                     color: Colors.amber,
-  //                     size: 16,
-  //                   ),
-  //                 ))
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
+    final tabController = DefaultTabController.maybeOf(context);
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
           leading: const SizedBox.shrink(), // 뒤로가기 버튼 제거
-          toolbarHeight: 20, // 높이
+          actions: [
+            // 정렬 버튼 추가
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  isLatestSort = !isLatestSort;
+                });
+              },
+              icon: Icon(
+                isLatestSort ? Icons.one_k_outlined : Icons.two_k_outlined,
+                color: AppTheme.additionalColor,
+              ),
+              tooltip: tabController?.index == 0
+                  ? (isLatestSort ? '최신 작성순' : '오래된 작성순')
+                  : (isLatestSort ? '최근 완료순' : '오래전 완료순'),
+            ),
+          ],
+          toolbarHeight: 40, // 높이
           elevation: 0,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -489,27 +460,21 @@ class _TodoScreenState extends State<TodoScreen> {
               );
             }
 
-            // _sortTodos();
-
             return TabBarView(
               children: [
                 _buildTodoList(
-                  isLatestSort
-                      ? latestTodos
-                          .where((todo) => todo.isDone == false)
-                          .toList()
-                      : oldestTodos
+                  _sortInProgressTodos(
+                      widget.todoViewModel.cachedTodos.values
                           .where((todo) => todo.isDone == false)
                           .toList(),
+                      isLatestSort),
                 ),
                 _buildTodoList(
-                  isLatestSort
-                      ? latestTodos
-                          .where((todo) => todo.isDone == true)
-                          .toList()
-                      : oldestTodos
+                  _sortDoneTodos(
+                      widget.todoViewModel.cachedTodos.values
                           .where((todo) => todo.isDone == true)
                           .toList(),
+                      isLatestSort),
                 ),
               ],
             );
