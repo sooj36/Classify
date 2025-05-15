@@ -20,9 +20,20 @@ class _TodayActScreenState extends State<TodayActScreen> {
   @override
   void initState() {
     super.initState();
+
+    // 로드 시작 시간 기록
+    final startTime = DateTime.now();
+    debugPrint("⏱️ 데이터 로드 시작: ${startTime.toIso8601String()}");
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.viewModel.initCachedMemos();
-      widget.viewModel.connectStreamToCachedMemos();
+      widget.viewModel.connectStreamToCachedMemos().then((_) {
+        //
+        final endTime = DateTime.now();
+        final duration = endTime.difference(startTime);
+        debugPrint("⏱️ 데이터 로드 완료: ${endTime.toIso8601String()}");
+        debugPrint("⏱️ 총 소요 시간: ${duration.inMilliseconds}ms");
+      });
     });
   }
 
@@ -66,8 +77,8 @@ class _TodayActScreenState extends State<TodayActScreen> {
           ClipRRect(
             borderRadius: BorderRadius.circular(70),
             child: Image.asset(
-              'assets/bad_logo_icon.png',
-              width: 150,
+              'assets/11.png',
+              width: 100,
               height: 150,
               fit: BoxFit.fill,
             ),

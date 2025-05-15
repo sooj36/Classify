@@ -52,6 +52,9 @@ flutter:
     - assets/bad_logo_icon.png
     - assets/logo_icon_with_text.png
     - assets/logo_icon.png      
+    - assets/11.png   
+    - assets/22.png      
+    - assets/splash_image.png     
 
   fonts:
     - family: Paperlogy
