@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:classify/data/repositories/todo/todo_repository.dart';
 import 'package:classify/domain/models/todo/todo_model.dart';
@@ -9,6 +10,7 @@ class TodoViewModel extends ChangeNotifier {
   Map<String, TodoModel> _cachedTodos = {};
   bool _isLoading = false;
   String? _error;
+  Timer? _cleanupTimer;
 
   TodoViewModel({required TodoRepository todoRepository})
       : _todoRepository = todoRepository,
@@ -51,6 +53,9 @@ class TodoViewModel extends ChangeNotifier {
       _cachedTodos = await _todoObjects.first;
       _isLoading = false;
       notifyListeners();
+
+      // 자동 정리 기능
+      startAutoCleanup();
     } catch (e) {
       debugPrint(
           "❌ 에러 발생: $e in [connectStreamToCachedTodos method] in [todo_archive_view_model]");
@@ -74,7 +79,8 @@ class TodoViewModel extends ChangeNotifier {
           todoContent: content,
           todoId: '',
           isDone: false,
-          isImportant: isImportant || isVeryImportant,
+          isImportant: isImportant,
+          isveryImportant: isVeryImportant,
           createdAt: DateTime.now(),
           lastModified: DateTime.now());
 
@@ -116,5 +122,47 @@ class TodoViewModel extends ChangeNotifier {
       _error = e.toString();
       notifyListeners();
     }
+  }
+
+  // 24시간 뒤 자동 삭제
+  void cleanupOldDoneTodos() {
+    final now = DateTime.now();
+    final todosToDelete = <String>[];
+
+    _cachedTodos.forEach((todoId, todo) {
+      if (todo.isDone == true) {
+        final completedTime = todo.lastModified ?? todo.createdAt;
+        final difference = now.difference(completedTime);
+
+        // 24시간(1일)이 지났는지 확인
+        if (difference.inHours >= 24) {
+          todosToDelete.add(todoId);
+        }
+      }
+    });
+
+    // 삭제 대상 할 일들 처리
+    for (final todoId in todosToDelete) {
+      deleteTodo(todoId);
+    }
+
+    if (todosToDelete.isNotEmpty) {
+      debugPrint('🗑️ ${todosToDelete.length}개의 오래된 완료 항목이 삭제되었습니다.');
+    }
+  }
+
+  void startAutoCleanup() {
+    cleanupOldDoneTodos();
+
+    // 1시간마다 정리 작업 실행 (너무 자주 실행하면 리소스 낭비)
+    _cleanupTimer = Timer.periodic(const Duration(hours: 1), (timer) {
+      cleanupOldDoneTodos();
+    });
+  }
+
+  @override
+  void dispose() {
+    _cleanupTimer?.cancel();
+    super.dispose();
   }
 }

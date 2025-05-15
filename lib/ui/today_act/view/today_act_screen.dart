@@ -59,31 +59,37 @@ class _TodayActScreenState extends State<TodayActScreen> {
   }
 
   Widget _buildEmptyState() {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.event_note_outlined,
-            size: 80,
-            color: Colors.grey,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(70),
+            child: Image.asset(
+              'assets/bad_logo_icon.png',
+              width: 150,
+              height: 150,
+              fit: BoxFit.fill,
+            ),
           ),
-          SizedBox(height: 16),
-          Text(
+          const SizedBox(height: 16),
+          const Text(
             '오늘 작성한 메모가 없습니다',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
+            textAlign: TextAlign.center,
           ),
           SizedBox(height: 8),
           Text(
-            '새로운 메모를 작성해보세요!',
+            '생각을 풀어놓으세요, \n정리는 우리에게 맡기고',
             style: TextStyle(
               fontSize: 16,
-              color: Colors.white,
+              color: Colors.black,
             ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),

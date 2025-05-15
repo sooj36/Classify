@@ -26,17 +26,21 @@ class TodoModel extends HiveObject {
   final bool? isImportant; // 중요도
 
   @HiveField(3)
-  final DateTime? lastModified; // 마지막 수정시간
+  final bool? isveryImportant; // 중요도
 
   @HiveField(4)
-  final bool? isDone; //  완료여부
+  final DateTime? lastModified; // 마지막 수정시간
 
   @HiveField(5)
+  final bool? isDone; //  완료여부
+
+  @HiveField(6)
   final String todoId; // 연결된 할일 ID
 
   TodoModel({
     required this.todoContent,
     this.isImportant = false,
+    this.isveryImportant = false,
     this.lastModified,
     DateTime? createdAt,
     this.isDone = false,
@@ -46,6 +50,7 @@ class TodoModel extends HiveObject {
   TodoModel copyWith({
     String? todoContent,
     bool? isImportant,
+    bool? isveryImportant,
     DateTime? lastModified,
     DateTime? createdAt,
     bool? isDone,
@@ -54,6 +59,7 @@ class TodoModel extends HiveObject {
       TodoModel(
         todoContent: todoContent ?? this.todoContent,
         isImportant: isImportant ?? this.isImportant,
+        isveryImportant: isveryImportant ?? this.isveryImportant,
         lastModified: lastModified ?? this.lastModified,
         createdAt: createdAt ?? this.createdAt,
         isDone: isDone ?? this.isDone,

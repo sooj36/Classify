@@ -3,6 +3,7 @@ import 'package:classify/domain/models/memo/memo_model.dart';
 import 'package:classify/ui/search/view_model/search_view_model.dart';
 import 'package:classify/ui/common/memo_card.dart';
 import 'package:classify/utils/top_level_setting.dart';
+
 class SearchScreen extends StatefulWidget {
   final SearchViewModel viewModel;
 
@@ -24,7 +25,7 @@ class _SearchScreenState extends State<SearchScreen> {
     widget.viewModel.connectStreamToCachedMemos();
     _searchController.addListener(_onSearchTextChanged);
   }
-  
+
   void _onSearchTextChanged() {
     widget.viewModel.search(_searchController.text);
   }
@@ -63,7 +64,7 @@ class _SearchScreenState extends State<SearchScreen> {
           hintText: '메모 제목이나 태그로 검색',
           prefixIcon: const Icon(Icons.search),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(30),
             borderSide: const BorderSide(color: AppTheme.textColor1),
           ),
           enabledBorder: OutlineInputBorder(
@@ -75,14 +76,14 @@ class _SearchScreenState extends State<SearchScreen> {
             borderSide: const BorderSide(color: AppTheme.textColor1, width: 2),
           ),
           suffixIcon: _searchController.text.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  _searchController.clear();
-                  widget.viewModel.clearSearch();
-                },
-              )
-            : null,
+              ? IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    _searchController.clear();
+                    widget.viewModel.clearSearch();
+                  },
+                )
+              : null,
         ),
       ),
     );
@@ -106,34 +107,33 @@ class _SearchScreenState extends State<SearchScreen> {
   // 정렬 옵션 위젯
   Widget _buildSortOptions() {
     // ValueNotifier 생성 및 초기화
-    final ValueNotifier<bool> isLatestSort = ValueNotifier<bool>(widget.viewModel.isLatestSort);
-    
+    final ValueNotifier<bool> isLatestSort =
+        ValueNotifier<bool>(widget.viewModel.isLatestSort);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const Text('정렬: '),
         const SizedBox(width: 8),
         _buildSortButton(
-          isLatestSort: isLatestSort,
-          isLatest: true,
-          icon: Icons.arrow_downward,
-          label: '최신순',
-          onPressed: () {
-            widget.viewModel.sortByLatest();
-            isLatestSort.value = true;
-          }
-        ),
+            isLatestSort: isLatestSort,
+            isLatest: true,
+            icon: Icons.arrow_downward,
+            label: '최신순',
+            onPressed: () {
+              widget.viewModel.sortByLatest();
+              isLatestSort.value = true;
+            }),
         const SizedBox(width: 4),
         _buildSortButton(
-          isLatestSort: isLatestSort,
-          isLatest: false,
-          icon: Icons.arrow_upward,
-          label: '오래된순',
-          onPressed: () {
-            widget.viewModel.sortByOldest();
-            isLatestSort.value = false;
-          }
-        ),
+            isLatestSort: isLatestSort,
+            isLatest: false,
+            icon: Icons.arrow_upward,
+            label: '오래된순',
+            onPressed: () {
+              widget.viewModel.sortByOldest();
+              isLatestSort.value = false;
+            }),
       ],
     );
   }
@@ -147,19 +147,27 @@ class _SearchScreenState extends State<SearchScreen> {
     required VoidCallback onPressed,
   }) {
     return ValueListenableBuilder<bool>(
-      valueListenable: isLatestSort,
-      builder: (context, value, _) {
-        final bool isSelected = isLatest ? value : !value;
-        return TextButton.icon(
-          onPressed: onPressed,
-          icon: Icon(icon, size: 16, color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1),
-          label: Text(label, style: TextStyle(color: isSelected ? AppTheme.primaryColor : AppTheme.textColor1)),
-          style: TextButton.styleFrom(
-            backgroundColor: isSelected ? AppTheme.primaryColor.withAlpha(26) : Colors.transparent,
-          ),
-        );
-      }
-    );
+        valueListenable: isLatestSort,
+        builder: (context, value, _) {
+          final bool isSelected = isLatest ? value : !value;
+          return TextButton.icon(
+            onPressed: onPressed,
+            icon: Icon(icon,
+                size: 16,
+                color:
+                    isSelected ? AppTheme.primaryColor : AppTheme.textColor1),
+            label: Text(label,
+                style: TextStyle(
+                    color: isSelected
+                        ? AppTheme.primaryColor
+                        : AppTheme.textColor1)),
+            style: TextButton.styleFrom(
+              backgroundColor: isSelected
+                  ? AppTheme.primaryColor.withAlpha(26)
+                  : Colors.transparent,
+            ),
+          );
+        });
   }
 
   // 필터 및 정렬 옵션 위젯
@@ -187,24 +195,24 @@ class _SearchScreenState extends State<SearchScreen> {
           if (widget.viewModel.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          
+
           // 오류 발생
           if (widget.viewModel.error != null) {
             return Center(child: Text('오류: ${widget.viewModel.error}'));
           }
-          
+
           // 검색어 없음
           if (_searchController.text.isEmpty) {
             return const Center(child: Text('검색어를 입력하세요'));
           }
-          
+
           final results = widget.viewModel.searchResults;
-          
+
           // 검색 결과 없음
           if (results.isEmpty) {
             return const Center(child: Text('검색 결과가 없습니다'));
           }
-          
+
           // 검색 결과 표시
           return ListView.builder(
             padding: const EdgeInsets.all(16.0),
@@ -256,33 +264,39 @@ class _SearchScreenState extends State<SearchScreen> {
                 // 내용
                 Text(memo.content),
                 const SizedBox(height: 16),
-                
-                // 카테고리 
+
+                // 카테고리
                 Row(
                   children: [
-                    const Text('카테고리: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Text('카테고리: ',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                     Text(memo.category),
                   ],
                 ),
-                
+
                 // 태그
                 if (memo.tags != null && memo.tags!.isNotEmpty) ...[
                   const SizedBox(height: 8),
-                  const Text('태그:', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text('태그:',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                   Wrap(
                     spacing: 8,
-                    children: memo.tags!.map((tag) => Chip(
-                      label: Text(tag),
-                      backgroundColor: AppTheme.primaryColor.withAlpha(26),
-                    )).toList(),
+                    children: memo.tags!
+                        .map((tag) => Chip(
+                              label: Text(tag),
+                              backgroundColor:
+                                  AppTheme.primaryColor.withAlpha(26),
+                            ))
+                        .toList(),
                   ),
                 ],
-                
+
                 // 생성 시간
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    const Text('생성: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Text('생성: ',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                     Text(
                       '${memo.createdAt.year}/${memo.createdAt.month}/${memo.createdAt.day} ${memo.createdAt.hour}:${memo.createdAt.minute}',
                     ),

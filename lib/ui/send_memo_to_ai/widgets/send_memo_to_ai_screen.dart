@@ -98,7 +98,7 @@ class _SendMemoToAiScreenState extends State<SendMemoToAiScreen> {
               backgroundColor: AppTheme.primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
-                side: BorderSide(color: AppTheme.textColor1, width: 1),
+                side: BorderSide(color: AppTheme.additionalColor, width: 2),
               ),
               onPressed: _saveMemo,
             ),
@@ -124,7 +124,7 @@ class _SendMemoToAiScreenState extends State<SendMemoToAiScreen> {
                   textAlignVertical: TextAlignVertical.top,
                   style: const TextStyle(fontSize: 16),
                   decoration: const InputDecoration(
-                    hintText: '텍스트를 입력해주세요...',
+                    hintText: ' 생각을 풀어놓으세요, 정리는 우리에게 맡기고',
                     hintStyle: TextStyle(color: Colors.grey),
                     border: InputBorder.none,
                     contentPadding:

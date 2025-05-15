@@ -167,8 +167,8 @@ class _StudyScreenState extends State<StudyScreen> {
     return const Text(
       'Random Study Question',
       style: TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.bold,
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
         color: AppTheme.pointTextColor,
       ),
     );
