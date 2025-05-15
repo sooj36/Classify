@@ -281,7 +281,7 @@ class _TodayActScreenState extends State<TodayActScreen> {
       case '참조':
         return Colors.orange;
       case '회고':
-        return Colors.purple;
+        return Colors.brown;
       default:
         return Colors.red;
     }
