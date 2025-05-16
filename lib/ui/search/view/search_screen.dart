@@ -224,6 +224,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: MemoCard(
                   memo: memo,
                   onTap: () => _showMemoDetail(memo),
+                  onLongPress: () => _showDeleteDialog(memo.memoId, memo.category),
                 ),
               );
             },
@@ -315,4 +316,30 @@ class _SearchScreenState extends State<SearchScreen> {
       },
     );
   }
+
+  // 삭제 다이얼로그
+  void _showDeleteDialog(String memoId, String category) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('삭제'),
+          content: const Text('이 메모를 삭제하시겠습니까?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('취소'),
+            ),
+            TextButton(
+              onPressed: () {
+                widget.viewModel.deleteMemo(memoId, category);
+                Navigator.of(context).pop();
+              },
+              child: const Text('삭제'),
+            ),
+          ],
+        );
+      },
+    );
+  }  
 }

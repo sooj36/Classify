@@ -16,6 +16,13 @@ import 'package:uuid/uuid.dart';
       => Map 자료구조의 각 Entry에 대해 map 메서드가 인자로 받는 변환 함수 적용
 */
 
+/*
+  [메모 CURD 시 주의사항]
+  - 메모 삭제 시 카테고리가 'AI분류 실패'인 경우 애초에 서버로 동기화를 하지 않음.
+  - 따라서 삭제 시 카테고리가 'AI분류 실패'인 경우 서버와의 상호작용은 막아놓았음.
+  */
+
+
 class MemoRepositoryRemote extends MemoRepository {
   final GeminiService _geminiService;
   final FirestoreService _firestoreService;

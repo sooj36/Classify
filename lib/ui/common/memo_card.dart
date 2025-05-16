@@ -5,11 +5,13 @@ import 'package:classify/utils/top_level_setting.dart';
 class MemoCard extends StatelessWidget {
   final MemoModel memo;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
 
   const MemoCard({
     super.key,
     required this.memo,
     this.onTap,
+    this.onLongPress,
   });
 
   @override
@@ -21,6 +23,7 @@ class MemoCard extends StatelessWidget {
       ),
       child: InkWell(
         onTap: onTap,
+        onLongPress: onLongPress,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16.0),

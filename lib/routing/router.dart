@@ -70,11 +70,11 @@ final router = GoRouter(
               memoRepository: context.read<MemoRepositoryRemote>(),
             ),
           ),
-          // ChangeNotifierProvider(
-          //   create: (context) => TodoViewModel(
-          //     todoRepository: context.read<TodoRepositoryRemote>(),
-          //   ),
-          // ),
+          ChangeNotifierProvider(
+            create: (context) => ProfileViewModel(
+              syncMonitorRepository: context.read<SyncMonitorRepositoryRemote>(),
+            ),
+          ),
         ],
         child: RootScreen(child: child),
       ),
@@ -110,7 +110,9 @@ final router = GoRouter(
           path: Routes.profile,
           pageBuilder: (context, state) => NoTransitionPage<void>(
             key: state.pageKey,
-            child: const ProfileScreen(),
+            child: ProfileScreen(
+              viewmodel: context.read<ProfileViewModel>(),
+            ),
           ),
         ),
         // GoRoute(
