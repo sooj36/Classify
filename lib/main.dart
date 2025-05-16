@@ -17,7 +17,7 @@ import 'package:classify/data/services/hive_service.dart';
 import 'package:classify/domain/models/memo/memo_model.dart';
 import 'package:classify/domain/models/todo/todo_model.dart';
 import 'package:classify/data/services/google_login_service.dart';
-
+import 'package:classify/data/repositories/sync/sync_monitor_repository_remote.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //flutter engine과 app 연결
   try {
@@ -29,8 +29,6 @@ void main() async {
     debugPrint('✅ SharedPreferences 초기화 성공!');
     initGemini(); 
     debugPrint('✅ Gemini 초기화 성공!');
-    await getIdToken();
-    debugPrint('✅ Firebase Auth Token 초기화 성공!: $idToken');
     final dir = await getApplicationDocumentsDirectory();
     Hive.init(dir.path);
     Hive.registerAdapter(MemoModelAdapter());
@@ -68,6 +66,12 @@ class MainApp extends StatelessWidget {
         Provider<GoogleLoginService>(
           create: (_) => GoogleLoginService(),
         ),
+        ChangeNotifierProvider<SyncMonitorRepositoryRemote>(
+          create: (context) => SyncMonitorRepositoryRemote(
+            firestoreService: context.read<FirestoreService>(),
+            hiveService: context.read<HiveService>(),
+          ),
+        ),
         ChangeNotifierProvider<AuthRepositoryRemote>(
           create: (context) => AuthRepositoryRemote(
             firebaseAuthService: context.read<FirebaseAuthService>(),
@@ -85,6 +89,9 @@ class MainApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp.router(
+        scrollBehavior: ScrollConfiguration.of(context).copyWith(
+          physics: const ClampingScrollPhysics(),
+        ),
         theme: AppTheme.lightTheme,
         localizationsDelegates: const [
           AppLocalizations.delegate,

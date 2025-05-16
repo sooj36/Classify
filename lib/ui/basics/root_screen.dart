@@ -29,6 +29,12 @@ class _RootScreenState extends State<RootScreen> {
         case 1:
           context.go(Routes.archive);
           break;
+        case 2:
+          context.go(Routes.study);
+          break;
+        case 3:
+          context.go(Routes.profile);
+          break;
       }
     });
   }
@@ -80,31 +86,70 @@ class _RootScreenState extends State<RootScreen> {
         elevation: 8,
         child: Container(
           height: 60,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+              // 왼쪽 영역: Today와 Archive
               Expanded(
-                child: IconButton(
-                  icon: Icon(
-                    Icons.today,
-                    color: _selectedIndex == 0 ? AppTheme.primaryColor : AppTheme.textColor2,
-                    size: 26,
-                  ),
-                  tooltip: '오늘',
-                  onPressed: () => _onItemTapped(0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    // Today 아이콘
+                    IconButton(
+                      icon: Icon(
+                        Icons.today,
+                        color: _selectedIndex == 0 ? AppTheme.primaryColor : AppTheme.textColor2,
+                        size: 26,
+                      ),
+                      tooltip: '오늘',
+                      onPressed: () => _onItemTapped(0),
+                    ),
+                    
+                    // Archive 아이콘
+                    IconButton(
+                      icon: Icon(
+                        Icons.archive,
+                        color: _selectedIndex == 1 ? AppTheme.primaryColor : AppTheme.textColor2,
+                        size: 26,
+                      ),
+                      tooltip: '보관함',
+                      onPressed: () => _onItemTapped(1),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(width: 48), // FAB 공간
+              
+              // FAB 공간
+              const SizedBox(width: 60),
+              
+              // 오른쪽 영역: Study와 Profile
               Expanded(
-                child: IconButton(
-                  icon: Icon(
-                    Icons.archive,
-                    color: _selectedIndex == 1 ? AppTheme.primaryColor : AppTheme.textColor2,
-                    size: 26,
-                  ),
-                  tooltip: '보관함',
-                  onPressed: () => _onItemTapped(1),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    // Study 아이콘
+                    IconButton(
+                      icon: Icon(
+                        Icons.school,
+                        color: _selectedIndex == 2 ? AppTheme.primaryColor : AppTheme.textColor2,
+                        size: 26,
+                      ),
+                      tooltip: '공부',
+                      onPressed: () => _onItemTapped(2),
+                    ),
+                    
+                    // Profile 아이콘
+                    IconButton(
+                      icon: Icon(
+                        Icons.person,
+                        color: _selectedIndex == 3 ? AppTheme.primaryColor : AppTheme.textColor2,
+                        size: 26,
+                      ),
+                      tooltip: '프로필',
+                      onPressed: () => _onItemTapped(3),
+                    ),
+                  ],
                 ),
               ),
             ],

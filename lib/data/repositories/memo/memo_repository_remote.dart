@@ -16,6 +16,12 @@ import 'package:uuid/uuid.dart';
       => Map 자료구조의 각 Entry에 대해 map 메서드가 인자로 받는 변환 함수 적용
 */
 
+/*
+  [메모 CURD 시 주의사항]
+  - 메모 삭제 시 카테고리가 'AI분류 실패'인 경우 애초에 서버로 동기화를 하지 않음.
+  - 따라서 삭제 시 카테고리가 'AI분류 실패'인 경우 서버와의 상호작용은 막아놓았음.
+  */
+
 
 class MemoRepositoryRemote extends MemoRepository {
   final GeminiService _geminiService;
@@ -48,7 +54,7 @@ class MemoRepositoryRemote extends MemoRepository {
     } catch (e) {
       debugPrint("❌ 카테고리 초기화 실패 in [_initCategories method] in [memo_repository_remote]: $e");
       // 기본 카테고리 설정
-      _categories = ["아이디어", "공부", "할 일", "업무", "스크랩"];
+      _categories = ["공부", "아이디어", "참조", "회고"];
     }
   }
 
@@ -64,11 +70,36 @@ class MemoRepositoryRemote extends MemoRepository {
 
       _hiveService.saveMemo(analyzedMemo, uuid);
       debugPrint('✅ 하이브 저장 완료');
+      if (analyzedMemo.category == 'AI분류 실패') {
+        return "AI분류 실패";
+      }
       _firestoreService.saveMemo(analyzedMemo, uuid);
       debugPrint('✅ 파이어스토어 저장 완료');
       return null;
     } catch (e) {
       debugPrint('❌ 메모 분석 및 저장 중 오류 in [analyzeAndSaveMemo method] in [memo_repository_remote]: $e');
+      return e.toString();
+    }
+  }
+
+  @override
+  Future<String?> reAnalyzeAndSaveMemo(String memo, String uuid) async {
+    try {
+      MemoModel reAnalyzedMemo = await _geminiService.analyzeMemo(memo, _categories, uuid);
+      debugPrint('🔍 재분류된 메모: ${reAnalyzedMemo.category}');
+      debugPrint('🔍 재분류된 메모: ${reAnalyzedMemo.title}');
+      debugPrint('🔍 재분류된 메모: ${reAnalyzedMemo.content}');
+
+      _hiveService.saveMemo(reAnalyzedMemo, uuid);
+      debugPrint('✅ 하이브 저장 완료');
+      if (reAnalyzedMemo.category == 'AI분류 실패') {
+        return "AI분류 실패";
+      }
+      _firestoreService.saveMemo(reAnalyzedMemo, uuid);
+      debugPrint('✅ 파이어스토어 저장 완료');
+      return null;
+    } catch (e) {
+      debugPrint('❌ 메모 재분석 및 저장 중 오류 in [reAnalyzeAndSaveMemo method] in [memo_repository_remote]: $e');
       return e.toString();
     }
   }
@@ -91,11 +122,15 @@ class MemoRepositoryRemote extends MemoRepository {
   }
 
   @override
-  Future<void> deleteMemo(String memoId) async {
+  Future<void> deleteMemo(String memoId, String category) async {
     try {
-      await _firestoreService.deleteMemo(memoId);
       _hiveService.deleteMemo(memoId);
-      debugPrint('✅ 메모 삭제 완료');
+      debugPrint('✅ 하이브에서 삭제 완료');
+      if (category == 'AI분류 실패') {
+        return;
+      }
+      await _firestoreService.deleteMemo(memoId);
+      debugPrint('✅ firestore에서 삭제 완료');
     } catch (e) {
       debugPrint('❌ 메모 삭제 실패 in [deleteMemo method] in [memo_repository_remote]: $e');
       rethrow;

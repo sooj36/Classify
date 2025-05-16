@@ -77,7 +77,7 @@ Widget buildTodoTabView(Map<String, MemoModel> memos, ArchiveViewModel viewModel
                   context,
                   memosList[index],
                   onTaskCompleted: (memoId) {
-                    viewModel.deleteMemo(memoId);
+                    viewModel.deleteMemo(memoId, '할 일');
                   },
                 ),
               );

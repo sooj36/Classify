@@ -5,9 +5,11 @@ abstract class MemoRepository extends ChangeNotifier {
 
   Future<String?> analyzeAndSaveMemo(String memo);
 
+  Future<String?> reAnalyzeAndSaveMemo(String memo, String uuid);
+
   Stream<Map<String, MemoModel>> watchMemoLocal();
 
-  Future<void> deleteMemo(String memoId);
+  Future<void> deleteMemo(String memoId, String category);
   
   Future<void> updateMemo(MemoModel memo);
 

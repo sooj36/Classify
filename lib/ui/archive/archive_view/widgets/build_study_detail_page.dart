@@ -294,7 +294,7 @@ class _StudyDetailPageState extends State<StudyDetailPage> {
           TextButton(
             onPressed: () {
               Navigator.pop(context); // 다이얼로그 닫기
-              widget.viewModel.deleteMemo(widget.memo.memoId);
+              widget.viewModel.deleteMemo(widget.memo.memoId, widget.memo.category);
               Navigator.pop(context); // 상세 페이지 닫기
             },
             child: const Text('삭제', style: TextStyle(color: AppTheme.errorColor)),

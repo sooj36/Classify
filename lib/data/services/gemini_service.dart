@@ -88,8 +88,8 @@ class GeminiService {
       // 오류 발생 시 기본 MemoModel 반환
       return MemoModel(
         memoId: memoId,
-        category: (categories.isNotEmpty ? categories.first : "할 일"),
-        title: "처리 실패한 메모",
+        category: "AI분류 실패",
+        title: "AI분류 실패한 메모",
         content: memoText,
         tags: [],
         isImportant: false,
