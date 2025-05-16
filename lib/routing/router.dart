@@ -25,8 +25,10 @@ import 'package:classify/ui/today_act/view_models/today_act_view_model.dart';
 import 'package:classify/ui/setting/widgets/privacy_policy_screen.dart';
 import 'package:classify/ui/study/view_models/study_view_model.dart';
 import 'package:classify/ui/study/view/study_screen.dart';
-import 'package:classify/ui/basics/profile_screen.dart';
 import 'package:classify/ui/todo/view/todo_screen.dart';
+import 'package:classify/ui/profile/profile_view_model.dart';
+import 'package:classify/data/repositories/sync/sync_monitor_repository_remote.dart';
+import 'package:classify/ui/profile/profile_screen.dart';
 
 // todo 페이지 진입 시, appbar 안보이게 설정
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();

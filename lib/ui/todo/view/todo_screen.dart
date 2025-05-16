@@ -90,7 +90,7 @@ class _TodoScreenState extends State<TodoScreen> {
                 borderRadius: BorderRadius.circular(20),
               ),
               title: const Text(
-                '행동하라, 기록하라, 이루어라\n계획 한 줄, 성취 한 걸음',
+                '계획 한 줄, 성취 한 걸음',
                 style: TextStyle(
                   color: AppTheme.primaryColor,
                   fontWeight: FontWeight.w500,
