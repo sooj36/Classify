@@ -29,6 +29,7 @@ class _TodoScreenState extends State<TodoScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.todoViewModel.initCachedTodos();
       widget.todoViewModel.connectStreamToCachedTodos();
+      widget.todoViewModel.startAutoCleanup();
     });
     // 리스너 추가
     widget.todoViewModel.addListener(_todoListener);
@@ -394,6 +395,17 @@ class _TodoScreenState extends State<TodoScreen> {
                         value: todo.isDone,
                         onChanged: (bool? value) {
                           widget.todoViewModel.toggleTodoStatus(todo.todoId);
+                          // 완료 처리 시 안내 메시지 표시
+                          if (value == true) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('완료된 할 일은 24시간 뒤 자동삭제 됩니다'),
+                                duration: Duration(seconds: 1),
+                                behavior: SnackBarBehavior.floating,
+                                backgroundColor: AppTheme.decorationColor2,
+                              ),
+                            );
+                          }
                         },
                       ),
                     ),
