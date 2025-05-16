@@ -13,22 +13,21 @@ part 'memo_model.g.dart';
 
 @HiveType(typeId: 1)
 class MemoModel extends HiveObject {
-  
   @HiveField(0)
   final DateTime createdAt;
-  
+
   @HiveField(1)
   final String title;
-  
+
   @HiveField(2)
   final String content;
-  
+
   @HiveField(3)
   final bool? isImportant;
-  
+
   @HiveField(4)
   final List<String>? tags;
-  
+
   @HiveField(5)
   final DateTime? lastModified;
 
@@ -36,26 +35,22 @@ class MemoModel extends HiveObject {
   final String category;
 
   @HiveField(7)
-  final bool? isDone;
-
-  @HiveField(8)
   final String memoId;
 
-  @HiveField(9)
+  @HiveField(8)
   final String? question;
 
-  MemoModel({
-    required this.title,
-    required this.content,
-    this.isImportant = false,
-    this.tags,
-    this.lastModified,
-    DateTime? createdAt,
-    required this.category,
-    this.isDone = false,
-    required this.memoId,
-    this.question
-  }) : createdAt = createdAt ?? DateTime.now();
+  MemoModel(
+      {required this.title,
+      required this.content,
+      this.isImportant = false,
+      this.tags,
+      this.lastModified,
+      DateTime? createdAt,
+      required this.category,
+      required this.memoId,
+      this.question})
+      : createdAt = createdAt ?? DateTime.now();
 
   MemoModel copyWith({
     String? title,
@@ -65,19 +60,18 @@ class MemoModel extends HiveObject {
     DateTime? lastModified,
     DateTime? createdAt,
     String? category,
-    bool? isDone,
     String? memoId,
     String? question,
-  }) => MemoModel(
-    title: title ?? this.title,
-    content: content ?? this.content,
-    isImportant: isImportant ?? this.isImportant,
-    tags: tags ?? this.tags,
-    lastModified: lastModified ?? this.lastModified,
-    createdAt: createdAt ?? this.createdAt,
-    category: category ?? this.category,
-    isDone: isDone ?? this.isDone,
-    memoId: memoId ?? this.memoId,
-    question: question ?? this.question,
-  );
+  }) =>
+      MemoModel(
+        title: title ?? this.title,
+        content: content ?? this.content,
+        isImportant: isImportant ?? this.isImportant,
+        tags: tags ?? this.tags,
+        lastModified: lastModified ?? this.lastModified,
+        createdAt: createdAt ?? this.createdAt,
+        category: category ?? this.category,
+        memoId: memoId ?? this.memoId,
+        question: question ?? this.question,
+      );
 }

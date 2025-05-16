@@ -1,0 +1,2 @@
+C:/Users/korea/Desktop/SOOJ/Classify/android/app/.cxx/RelWithDebInfo/444l5tx5/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/korea/Desktop/SOOJ/Classify/android/app/.cxx/RelWithDebInfo/444l5tx5/arm64-v8a/CMakeFiles/rebuild_cache.dir

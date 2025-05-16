@@ -12,16 +12,16 @@ class TodayActViewModel extends ChangeNotifier {
 
   TodayActViewModel({
     required MemoRepository memoRepository,
-  }) : _memoRepository = memoRepository,
-       _isLoading = false,
-       _error = null;
+  })  : _memoRepository = memoRepository,
+        _isLoading = false,
+        _error = null;
 
   Stream<Map<String, MemoModel>> get memos => _memos;
   Map<String, MemoModel> get cachedMemos => _cachedMemos;
   Map<String, MemoModel> get todayMemos => _todayMemos;
   bool get isLoading => _isLoading;
   String? get error => _error;
-  
+
   // 오늘 생성된 메모의 수를 반환
   int get todayMemoCount => _todayMemos.length;
 
@@ -35,19 +35,14 @@ class TodayActViewModel extends ChangeNotifier {
   void _filterTodayMemos() {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    
-    _todayMemos = Map.fromEntries(
-      _cachedMemos.entries.where((entry) {
-        final memo = entry.value;
-        final memoDate = DateTime(
-          memo.createdAt.year, 
-          memo.createdAt.month, 
-          memo.createdAt.day
-        );
-        return memoDate.isAtSameMomentAs(today);
-      })
-    );
-    
+
+    _todayMemos = Map.fromEntries(_cachedMemos.entries.where((entry) {
+      final memo = entry.value;
+      final memoDate = DateTime(
+          memo.createdAt.year, memo.createdAt.month, memo.createdAt.day);
+      return memoDate.isAtSameMomentAs(today);
+    }));
+
     debugPrint("✅ 오늘의 메모 개수: ${_todayMemos.length}");
   }
 
@@ -56,11 +51,11 @@ class TodayActViewModel extends ChangeNotifier {
       debugPrint("⭐ 1. connectStreamToCachedMemos 시작");
       _isLoading = true;
       notifyListeners();
-      
+
       debugPrint("⭐ 2. Stream 접근 시도");
       // _memos 필드에 스트림 할당
       _memos = _memoRepository.watchMemoLocal();
-      
+
       debugPrint("⭐ 3. Stream 구독 시작");
       _memos.listen((data) {
         debugPrint("⭐ 4. 데이터 받음: ${data.length}개");
@@ -69,15 +64,15 @@ class TodayActViewModel extends ChangeNotifier {
         _isLoading = false;
         notifyListeners();
       });
-      
+
       // 초기 데이터를 기다림
       _cachedMemos = await _memos.first;
       _filterTodayMemos();
       _isLoading = false;
       notifyListeners();
-      
     } catch (e) {
-      debugPrint("❌ 에러 발생: $e in [connectStreamToCachedMemos method] in [today_act_view_model]");
+      debugPrint(
+          "❌ 에러 발생: $e in [connectStreamToCachedMemos method] in [today_act_view_model]");
       _error = e.toString();
       _isLoading = false;
       notifyListeners();
@@ -88,17 +83,17 @@ class TodayActViewModel extends ChangeNotifier {
     _memoRepository.deleteMemo(memoId, category);
     notifyListeners();
   }
-  
+
   Future<void> updateMemo(MemoModel memo) async {
     try {
       // 로컬 캐시 업데이트
       _cachedMemos[memo.memoId] = memo;
       _filterTodayMemos(); // 오늘 메모 다시 필터링
       notifyListeners();
-      
+
       // MemoRepository를 통해 Hive와 Firestore에 저장
       await _memoRepository.updateMemo(memo);
-      
+
       debugPrint("✅ 메모 업데이트 완료: ${memo.memoId}");
     } catch (e) {
       debugPrint("❌ 메모 업데이트 중 오류 발생: $e");
@@ -106,16 +101,17 @@ class TodayActViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
-  
+
   // 메모 재분석 메서드 추가
   Future<String?> reAnalyzeMemo(MemoModel memo) async {
     try {
       _isLoading = true;
       notifyListeners();
-      
+
       // MemoRepository의 analyzeAndSaveMemo 메서드 호출하여 메모 내용을 다시 분석
-      final result = await _memoRepository.reAnalyzeAndSaveMemo(memo.content, memo.memoId);
-      
+      final result =
+          await _memoRepository.reAnalyzeAndSaveMemo(memo.content, memo.memoId);
+
       _isLoading = false;
       notifyListeners();
       return result;

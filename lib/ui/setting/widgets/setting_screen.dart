@@ -1,3 +1,4 @@
+import 'package:classify/utils/top_level_setting.dart';
 import 'package:flutter/material.dart';
 import 'package:classify/routing/routes.dart';
 import 'package:go_router/go_router.dart';
@@ -5,7 +6,7 @@ import 'package:classify/ui/setting/view_models/setting_viewmodel.dart';
 
 class SettingScreen extends StatelessWidget {
   final SettingViewModel viewModel;
-  
+
   const SettingScreen({
     super.key,
     required this.viewModel,
@@ -21,16 +22,19 @@ class SettingScreen extends StatelessWidget {
         children: [
           ListTile(
             leading: const Icon(Icons.logout),
+            iconColor: AppTheme.additionalColor.withOpacity(0.8),
             title: const Text('로그아웃'),
             onTap: () => _logout(context),
           ),
           ListTile(
             leading: const Icon(Icons.person_off),
+            iconColor: AppTheme.additionalColor.withOpacity(0.8),
             title: const Text('회원 탈퇴'),
             onTap: () => _showDeleteConfirmDialog(context),
           ),
           ListTile(
             leading: const Icon(Icons.privacy_tip),
+            iconColor: AppTheme.additionalColor.withOpacity(0.8),
             title: const Text('개인정보처리방침'),
             onTap: () => _navigateToPrivacyPolicy(context),
           ),
@@ -38,7 +42,7 @@ class SettingScreen extends StatelessWidget {
       ),
     );
   }
-  
+
   Future<void> _logout(BuildContext context) async {
     final success = await viewModel.logout();
     if (success && context.mounted) {
@@ -84,7 +88,7 @@ class SettingScreen extends StatelessWidget {
       },
     );
   }
-  
+
   void _navigateToPrivacyPolicy(BuildContext context) {
     context.push(Routes.privacyPolicy);
   }

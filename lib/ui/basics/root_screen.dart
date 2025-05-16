@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:classify/routing/routes.dart';
 import 'package:classify/utils/top_level_setting.dart';
+import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 
 class RootScreen extends StatefulWidget {
-const RootScreen({super.key, required this.child});
+  const RootScreen({super.key, required this.child});
   final Widget child;
   @override
   State<RootScreen> createState() => _RootScreenState();
@@ -42,27 +44,120 @@ class _RootScreenState extends State<RootScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
+    // 현재 라우트 경로 가져오기
+    final currentRoute = GoRouterState.of(context).matchedLocation;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "classify", 
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+        toolbarHeight: 65,
+        title: TextButton(
+          onPressed: () {
+            // todo go
+            context.push(Routes.todo);
+          },
+          // child: Container(
+          //   padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+          //   decoration: BoxDecoration(
+          //     color: AppTheme.backgroundColor,
+          //     borderRadius: BorderRadius.circular(25),
+          //     border: Border.all(
+          //         color: AppTheme.textColor1.withOpacity(0.9),
+          //         width: 0.7), // 할일 테두리
+          //     boxShadow: [
+          //       BoxShadow(
+          //         color: Colors.black.withOpacity(0.08),
+          //         blurRadius: 3,
+          //         offset: const Offset(0, 1),
+          //       ),
+          //     ],
+          //   ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Image.asset(
+              //   // 고화질로 수정 예정
+              //   'assets/logo_icon.png',
+              //   width: 30,
+              //   height: 30,
+              // ),
+              // const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 8),
+                decoration: BoxDecoration(
+                  color: AppTheme.backgroundColor,
+                  borderRadius: BorderRadius.circular(25),
+                  border: Border.all(
+                    color: AppTheme.textColor1.withOpacity(0.9),
+                    width: 0.9,
+                  ), // 할일 테두리
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.12),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      AppTheme.backgroundColor,
+                      AppTheme.backgroundColor.withOpacity(0.9),
+                    ],
+                  ),
+                ),
+                child: Text(
+                  "todo",
+                  style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w400,
+                      color: AppTheme.textColor1,
+                      fontSize: 15),
+                ),
+              ),
+            ],
+          ),
+          // ),
+        ),
+        backgroundColor: AppTheme.backgroundColor,
+        elevation: 0,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(35), // 하단 모서리만 둥글게
+          ),
+          // side: BorderSide(
+          //   color: AppTheme.additionalColor,
+          //   width: 3.0,
+          // ),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(10.0),
+          child: Column(
+            children: [
+              Container(
+                height: 5.0,
+                color: AppTheme.additionalColor,
+                margin: const EdgeInsets.only(bottom: 1),
+              ),
+              // Container(
+              //   height: 5.0,
+              //   color: AppTheme.additionalColor,
+              //   margin: const EdgeInsets.only(bottom: 1),
+              // ),
+            ],
           ),
         ),
-        backgroundColor: AppTheme.primaryColor,
-        elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.search, color: Colors.white),
+            icon: const Icon(Icons.search_outlined,
+                color: AppTheme.pointTextColor),
             onPressed: () {
               context.push(Routes.search);
             },
           ),
           IconButton(
-            icon: const Icon(Icons.settings, color: Colors.white),
+            icon: const Icon(Icons.settings_outlined,
+                color: AppTheme.pointTextColor),
             onPressed: () {
               context.push(Routes.setting);
             },
@@ -74,9 +169,24 @@ class _RootScreenState extends State<RootScreen> {
         onPressed: () {
           context.push(Routes.sendMemo);
         },
-        backgroundColor: AppTheme.accentColor,
-        elevation: 4,
-        child: const Icon(Icons.add, color: Colors.white),
+        // backgroundColor: AppTheme.additionalColor,
+        backgroundColor: Colors.white70,
+        elevation: 0,
+        shape: const CircleBorder(
+          side: BorderSide(
+            color: AppTheme.additionalColor,
+            // color: Colors.black,
+            width: 1.8,
+          ),
+        ),
+        child:
+            // Image.asset('assets/logo_icon.png',
+            //     width: 30, height: 30, fit: BoxFit.fill)
+            const Icon(
+          Icons.add_outlined,
+          color: Colors.black,
+          size: 27,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
@@ -98,19 +208,23 @@ class _RootScreenState extends State<RootScreen> {
                     // Today 아이콘
                     IconButton(
                       icon: Icon(
-                        Icons.today,
-                        color: _selectedIndex == 0 ? AppTheme.primaryColor : AppTheme.textColor2,
+                        Icons.today_outlined,
+                        color: _selectedIndex == 0
+                            ? AppTheme.pointTextColor
+                            : AppTheme.textColor3,
                         size: 26,
                       ),
                       tooltip: '오늘',
                       onPressed: () => _onItemTapped(0),
                     ),
-                    
+
                     // Archive 아이콘
                     IconButton(
                       icon: Icon(
-                        Icons.archive,
-                        color: _selectedIndex == 1 ? AppTheme.primaryColor : AppTheme.textColor2,
+                        Icons.archive_outlined,
+                        color: _selectedIndex == 1
+                            ? AppTheme.pointTextColor
+                            : AppTheme.textColor3,
                         size: 26,
                       ),
                       tooltip: '보관함',
@@ -119,10 +233,10 @@ class _RootScreenState extends State<RootScreen> {
                   ],
                 ),
               ),
-              
+
               // FAB 공간
               const SizedBox(width: 60),
-              
+
               // 오른쪽 영역: Study와 Profile
               Expanded(
                 child: Row(
@@ -131,19 +245,23 @@ class _RootScreenState extends State<RootScreen> {
                     // Study 아이콘
                     IconButton(
                       icon: Icon(
-                        Icons.school,
-                        color: _selectedIndex == 2 ? AppTheme.primaryColor : AppTheme.textColor2,
+                        Icons.school_outlined,
+                        color: _selectedIndex == 2
+                            ? AppTheme.pointTextColor
+                            : AppTheme.textColor3,
                         size: 26,
                       ),
                       tooltip: '공부',
                       onPressed: () => _onItemTapped(2),
                     ),
-                    
+
                     // Profile 아이콘
                     IconButton(
                       icon: Icon(
-                        Icons.person,
-                        color: _selectedIndex == 3 ? AppTheme.primaryColor : AppTheme.textColor2,
+                        Icons.person_outline,
+                        color: _selectedIndex == 3
+                            ? AppTheme.pointTextColor
+                            : AppTheme.textColor3,
                         size: 26,
                       ),
                       tooltip: '프로필',
