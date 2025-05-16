@@ -135,7 +135,7 @@ class TodoViewModel extends ChangeNotifier {
         final difference = now.difference(completedTime);
 
         // 1분이 지났는지 확인 (테스트용)
-        if (difference.inHours >= 1) {
+        if (difference.inHours >= 24) {
           todosToDelete.add(todoId);
           debugPrint(
               '⏰ 삭제 예정 항목: ${todo.todoContent} (완료 후 ${difference.inHours}분 경과)');
