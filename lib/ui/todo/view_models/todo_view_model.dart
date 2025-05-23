@@ -124,7 +124,7 @@ class TodoViewModel extends ChangeNotifier {
     }
   }
 
-  // 24시간 뒤 자동 삭제
+  // 완료된 할 일, 24시간 뒤 자동 삭제
   void cleanupOldDoneTodos() {
     final now = DateTime.now();
     final todosToDelete = <String>[];
@@ -133,7 +133,6 @@ class TodoViewModel extends ChangeNotifier {
       if (todo.isDone == true) {
         final completedTime = todo.lastModified ?? todo.createdAt;
         final difference = now.difference(completedTime);
-
 
         if (difference.inHours >= 24) {
           todosToDelete.add(todoId);

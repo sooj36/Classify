@@ -56,32 +56,11 @@ class _RootScreenState extends State<RootScreen> {
             // todo go
             context.push(Routes.todo);
           },
-          // child: Container(
-          //   padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
-          //   decoration: BoxDecoration(
-          //     color: AppTheme.backgroundColor,
-          //     borderRadius: BorderRadius.circular(25),
-          //     border: Border.all(
-          //         color: AppTheme.textColor1.withOpacity(0.9),
-          //         width: 0.7), // 할일 테두리
-          //     boxShadow: [
-          //       BoxShadow(
-          //         color: Colors.black.withOpacity(0.08),
-          //         blurRadius: 3,
-          //         offset: const Offset(0, 1),
-          //       ),
-          //     ],
-          //   ),
+
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Image.asset(
-              //   // 고화질로 수정 예정
-              //   'assets/logo_icon.png',
-              //   width: 30,
-              //   height: 30,
-              // ),
-              // const SizedBox(width: 8),
+
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 8),
                 decoration: BoxDecoration(

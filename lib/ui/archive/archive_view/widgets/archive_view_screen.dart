@@ -37,7 +37,7 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
           if (widget.viewModel.cachedMemos.isEmpty) {
             return const Center(
               child: Text(
-                "할일 목록이 텅 비었네요!🌱\n오늘의 작은 계획이 내일의 큰 성취가 됩니다.\n\n+ 버튼을 눌러 첫 걸음을 시작해보세요.",
+                "아직 작성한 메모가 없어요\n\n오늘의 작은 계획이 내일의 큰 성취가 됩니다.\n(+) 버튼을 눌러 첫 걸음을 시작해보세요.",
                 style: TextStyle(
                   fontSize: 17,
                   color: AppTheme.textColor2,
