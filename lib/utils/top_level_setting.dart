@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 //android or ios 인식해서 그에 맞게 UI를 그려줌
 class PlatformWidget extends StatelessWidget {

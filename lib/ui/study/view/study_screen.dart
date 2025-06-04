@@ -146,7 +146,7 @@ class _StudyScreenState extends State<StudyScreen> {
                       minimumSize: const Size(200, 48),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24), // 라운드 처리
-                        side: BorderSide(
+                        side: const BorderSide(
                           color: AppTheme.primaryColor, // 테두리 색상
                           width: 2, // 테두리 두께
                         ),

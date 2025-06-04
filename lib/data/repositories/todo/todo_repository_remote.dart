@@ -1,6 +1,4 @@
 import 'package:classify/data/repositories/todo/todo_repository.dart';
-import 'package:classify/data/services/firestore_service.dart';
-import 'package:classify/data/services/hive_service.dart';
 import 'package:classify/data/services/todo_services/todo_firebase_service.dart';
 import 'package:classify/data/services/todo_services/todo_hive_service.dart';
 import 'package:classify/domain/models/todo/todo_model.dart';

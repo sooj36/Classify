@@ -93,8 +93,8 @@ class _TodayActScreenState extends State<TodayActScreen> {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 8),
-          Text(
+          const SizedBox(height: 8),
+          const Text(
             '생각을 풀어놓으세요, \n정리는 우리에게 맡기고',
             style: TextStyle(
               fontSize: 16,

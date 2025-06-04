@@ -98,7 +98,7 @@ class _SendMemoToAiScreenState extends State<SendMemoToAiScreen> {
               backgroundColor: AppTheme.primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
-                side: BorderSide(color: AppTheme.additionalColor, width: 2),
+                side: const BorderSide(color: AppTheme.additionalColor, width: 2),
               ),
               onPressed: _saveMemo,
             ),

@@ -1,5 +1,3 @@
-import 'package:classify/data/repositories/todo/todo_repository_remote.dart';
-import 'package:classify/domain/models/todo/todo_model.dart';
 import 'package:classify/ui/todo/view_models/todo_view_model.dart'
     show TodoViewModel;
 import 'package:flutter/material.dart';
