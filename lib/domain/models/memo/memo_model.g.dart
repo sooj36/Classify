@@ -24,15 +24,15 @@ class MemoModelAdapter extends TypeAdapter<MemoModel> {
       lastModified: fields[5] as DateTime?,
       createdAt: fields[0] as DateTime?,
       category: fields[6] as String,
-      memoId: fields[8] as String,
-      question: fields[9] as String?,
+      memoId: fields[7] as String,
+      question: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, MemoModel obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.createdAt)
       ..writeByte(1)
