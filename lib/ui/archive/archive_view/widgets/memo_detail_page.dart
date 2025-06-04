@@ -21,7 +21,6 @@ class MemoDetailPage extends StatefulWidget {
 class _MemoDetailPageState extends State<MemoDetailPage> {
   late TextEditingController _titleController;
   late TextEditingController _contentController;
-  late TextEditingController _categoryController;
   late TextEditingController _tagController;
   late DateTime _createdAt;
   late List<String> _tags;
@@ -32,7 +31,6 @@ class _MemoDetailPageState extends State<MemoDetailPage> {
     super.initState();
     _titleController = TextEditingController(text: widget.memo.title);
     _contentController = TextEditingController(text: widget.memo.content);
-    _categoryController = TextEditingController(text: widget.memo.category);
     _tagController = TextEditingController();
     _createdAt = widget.memo.createdAt;
     _tags = widget.memo.tags?.toList() ?? [];
@@ -42,7 +40,6 @@ class _MemoDetailPageState extends State<MemoDetailPage> {
   void dispose() {
     _titleController.dispose();
     _contentController.dispose();
-    _categoryController.dispose();
     _tagController.dispose();
     super.dispose();
   }
@@ -52,7 +49,6 @@ class _MemoDetailPageState extends State<MemoDetailPage> {
     return widget.memo.copyWith(
       title: _titleController.text,
       content: _contentController.text,
-      category: _categoryController.text,
       tags: _tags,
       lastModified: DateTime.now(),
     );
@@ -134,17 +130,9 @@ class _MemoDetailPageState extends State<MemoDetailPage> {
               children: [
                 const Icon(Icons.category, size: 18, color: AppTheme.textColor1),
                 const SizedBox(width: 8),
-                Expanded(
-                  child: TextField(
-                    controller: _categoryController,
-                    enabled: _isEditing,
-                    style: const TextStyle(fontSize: 14),
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      hintText: '카테고리',
-                      filled: false
-                    ),
-                  ),
+                Text(
+                  widget.memo.category,
+                  style: const TextStyle(fontSize: 14, color: AppTheme.textColor1),
                 ),
               ],
             ),
